@@ -27,13 +27,19 @@ public class SetCoursesActivity extends AppCompatActivity {
         TextView courseNameTextView = findViewById(R.id.course_name_textview);
         TextView courseNumberTextView = findViewById(R.id.course_number_textview);
         //get the spinner from the xml.
+        Spinner quarterAndYearSpinner = findViewById(R.id.quarter_and_year_spinner);
+        //create a list of items for the spinner.
+        //String[] items = new String[]{"Fall 2021", "Summer 2021","Spring 2021", "Winter 2020", "Fall 2020", "Summer 2020", "Spring 2020", "Winter 2020", "Fall 2019"};
 
-//create a list of items for the spinner.
-        String[] items = new String[]{"Fall 2021", "Spring 2021", "Winter 2020", "Fall 2020", "Spring 2020"};
-//create an adapter to describe how the items are displayed, adapters are used in several places in android.
-//There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-//set the spinners adapter to the previously created one.
+        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
+        //There are multiple variations of this, but this is the basic variant.
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        //set the spinners adapter to the previously created one.
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.quarter_year_array, android.R.layout.simple_spinner_dropdown_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         quarterAndYearSpinner.setAdapter(adapter);
 
     }
@@ -42,7 +48,6 @@ public class SetCoursesActivity extends AppCompatActivity {
     public void onCoursesHelpClicked(View view){
         String help_message = "";
         Utilities.showAlert(this, help_message);
-
     }
 
     public void onCoursesSubmitClicked(View view) {

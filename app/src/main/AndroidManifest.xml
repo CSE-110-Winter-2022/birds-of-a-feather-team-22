@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
         <activity
+            android:name=".BluetoothActivity"
+            android:exported="false" />
+        <activity
             android:name=".SetCoursesActivity"
             android:exported="false" />
         <activity

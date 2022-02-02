@@ -33,6 +33,7 @@
         android:onClick="onNextClicked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        style="?android:attr/borderlessButtonStyle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

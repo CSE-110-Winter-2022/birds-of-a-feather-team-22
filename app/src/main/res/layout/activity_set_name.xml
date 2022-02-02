@@ -31,7 +31,7 @@
         android:onClick="onNextClicked"
         android:shadowColor="#FFFFFF"
         android:text="Next Step"
-        android:textColor="#69BF9E"
+        android:textColor="@color/seafoam"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

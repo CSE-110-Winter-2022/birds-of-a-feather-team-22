@@ -10,6 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
         <activity
+            android:name=".SetCoursesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SetPhotoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SetNameActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

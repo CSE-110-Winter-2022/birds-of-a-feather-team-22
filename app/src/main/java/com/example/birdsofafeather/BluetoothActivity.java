@@ -3,6 +3,9 @@ package com.example.birdsofafeather;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class BluetoothActivity extends AppCompatActivity {
 
@@ -10,5 +13,16 @@ public class BluetoothActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
+    }
+    public void onClickStart(View view) {
+        Button stopButton = findViewById(R.id.button8);
+        TextView findMatches = findViewById(R.id.textView6);
+
+        stopButton.setVisibility(View.VISIBLE);
+        findMatches.setVisibility(View.VISIBLE);
+    }
+
+    public void onClickStop(View view) {
+
     }
 }

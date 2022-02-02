@@ -4,17 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".SetNameActivity">
 
     <ImageButton
         android:id="@+id/imageButton4"
-        android:layout_width="69dp"
-        android:layout_height="58dp"
-        android:layout_marginStart="297dp"
-        android:layout_marginTop="634dp"
+        android:layout_width="60dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="276dp"
+        android:layout_marginTop="544dp"
         android:background="#FFFFFF"
         android:onClick="onNextClicked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/next_arrow_3_square" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:backgroundTint="#FFFFFF"
+        android:text="Button"
+        android:textColor="#69BF9E"
+        tools:layout_editor_absoluteX="176dp"
+        tools:layout_editor_absoluteY="543dp"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

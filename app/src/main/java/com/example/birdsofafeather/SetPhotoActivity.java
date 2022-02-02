@@ -15,7 +15,7 @@ public class SetPhotoActivity extends AppCompatActivity {
     }
 
     public void onNextClicked(View view){
-        Intent intent = new Intent(this, SetPhotoActivity.class);
+        Intent intent = new Intent(this, SetCoursesActivity.class);
         startActivity(intent);
     }
 }

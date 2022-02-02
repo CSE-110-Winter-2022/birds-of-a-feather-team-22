@@ -23,12 +23,16 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="196dp"
+        android:layout_marginTop="544dp"
         android:background="@color/white"
         android:backgroundTint="#FFFFFF"
+        android:shadowColor="#FFFFFF"
         android:text="Button"
         android:textColor="#69BF9E"
-        tools:layout_editor_absoluteX="176dp"
-        tools:layout_editor_absoluteY="543dp"
+        android:onClick="onNextClicked"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

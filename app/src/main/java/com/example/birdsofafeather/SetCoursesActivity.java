@@ -77,7 +77,7 @@ public class SetCoursesActivity extends AppCompatActivity {
         Intent intent = new Intent(this,BluetoothActivity.class);
 
         //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar2);
+        ProgressBar progressBar = findViewById(R.id.progressBar3);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
         animator.setDuration(1200);

@@ -26,7 +26,7 @@ public class SetNameActivity extends AppCompatActivity {
 
 
         //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar2);
+        ProgressBar progressBar = findViewById(R.id.progressBar);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
         animator.setDuration(1200);

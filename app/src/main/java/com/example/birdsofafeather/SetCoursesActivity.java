@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.Optional;
+
 public class SetCoursesActivity extends AppCompatActivity {
 
 
@@ -45,11 +47,19 @@ public class SetCoursesActivity extends AppCompatActivity {
 
     public void onCoursesSubmitClicked(View view) {
         /*get input and load appropriately*/
+        String courseName = courseNameTextView.getText().toString();
+        Optional<Integer> maybeCourseNumber = Utilities.parseCount(courseNumberTextView.getText().toString());
+
+        //if input is invalid, show alert
+        if(!maybeCourseNumber.isPresent()){
+            Utilities.showAlert(this, "Please enter a valid course number, such as 15 or 120");
+            return;
+        }
 
 
         /*clear all form fields*/
         courseNameTextView.setText("");
-        //courseNumberTextView.setText("");
+        courseNumberTextView.setText("");
 
     }
 

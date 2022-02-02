@@ -17,10 +17,18 @@ public class SetNameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_name);
 
+
+
+    }
+
+    public void onNextClicked(View view){
+        Intent intent = new Intent(this, SetPhotoActivity.class);
+
         //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar);
+        ProgressBar progressBar = findViewById(R.id.progressBar2);
+
         ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(3000);
+        animator.setDuration(1200);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation){
@@ -33,15 +41,10 @@ public class SetNameActivity extends AppCompatActivity {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
 
+                startActivity(intent);
             }
         });
         animator.start();
-
-    }
-
-    public void onNextClicked(View view){
-        Intent intent = new Intent(this, SetPhotoActivity.class);
-        startActivity(intent);
     }
 
 

@@ -15,11 +15,12 @@ public class BluetoothActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bluetooth);
     }
     public void onClickStart(View view) {
-        Button stopButton = findViewById(R.id.button8);
+        Button stopButton = findViewById(R.id.stopButton);
         TextView findMatches = findViewById(R.id.textView6);
 
         stopButton.setVisibility(View.VISIBLE);
         findMatches.setVisibility(View.VISIBLE);
+        findViewById(R.id.startButton).setVisibility(View.INVISIBLE);
     }
 
     public void onClickStop(View view) {

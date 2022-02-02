@@ -6,4 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".SetPhotoActivity">
 
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="55dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="528dp"
+        android:background="#FFFFFF"
+        android:onClick="onNextClicked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/next_arrow_3_square" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button3"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="151dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="488dp"
+        android:background="@color/white"
+        android:backgroundTint="#FFFFFF"
+        android:onClick="onNextClicked"
+        android:shadowColor="#FFFFFF"
+        android:text="Next Step"
+        android:textColor="@color/seafoam"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

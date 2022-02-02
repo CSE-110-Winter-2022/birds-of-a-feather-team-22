@@ -39,7 +39,7 @@ public class SetPhotoActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SetCoursesActivity.class);
 
         //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar);
+        ProgressBar progressBar = findViewById(R.id.progressBar2);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
         animator.setDuration(1000);

@@ -4,14 +4,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SetNameActivity">
-
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="204dp"
-        android:layout_height="208dp"
-        android:background="#FFFFFF"
-        app:srcCompat="@drawable/next_arrow_1"
-        tools:layout_editor_absoluteX="225dp"
-        tools:layout_editor_absoluteY="548dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".SetNameActivity"/>

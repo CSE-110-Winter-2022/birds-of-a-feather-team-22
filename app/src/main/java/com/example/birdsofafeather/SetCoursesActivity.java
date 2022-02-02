@@ -3,6 +3,7 @@ package com.example.birdsofafeather;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -21,5 +22,12 @@ public class SetCoursesActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
 //set the spinners adapter to the previously created one.
         dropdown.setAdapter(adapter);
+    }
+
+    /*display alertbox showing user-readable usage statement*/
+    public void onCoursesHelpClicked(View view){
+        String help_message = "";
+        Utilities.showAlert(this, help_message);
+
     }
 }

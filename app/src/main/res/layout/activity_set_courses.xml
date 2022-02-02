@@ -8,36 +8,25 @@
     android:backgroundTint="#FFFFFF"
     tools:context=".SetCoursesActivity">
 
-    <Button
-        android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="472dp"
-        android:text="Submit"
-        android:onClick="onCoursesSubmitClicked"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
-        android:id="@+id/courses_next_step_image_button"
+        android:id="@+id/imageButton4"
         android:layout_width="55dp"
         android:layout_height="48dp"
-        android:layout_marginTop="580dp"
+        android:layout_marginTop="528dp"
         android:background="#FFFFFF"
         android:onClick="onNextClicked"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/next_arrow_3_square" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/courses_next_step_button"
+        android:id="@+id/button3"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="151dp"
         android:layout_height="51dp"
-        android:layout_marginTop="536dp"
+        android:layout_marginTop="488dp"
         android:background="@color/white"
         android:backgroundTint="#FFFFFF"
         android:onClick="onNextClicked"
@@ -46,9 +35,22 @@
         android:textColor="@color/seafoam"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="408dp"
+        android:onClick="onCoursesSubmitClicked"
+        android:text="Submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/courses_title"
@@ -66,12 +68,11 @@
         android:id="@+id/quarter_and_year_spinner"
         android:layout_width="213dp"
         android:layout_height="54dp"
-        android:layout_marginTop="387dp"
+        android:layout_marginTop="320dp"
         android:background="@color/seafoam"
         android:backgroundTint="#FFFFFF"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -79,13 +80,13 @@
         android:id="@+id/course_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="254dp"
+        android:layout_marginTop="176dp"
         android:ems="10"
+        android:hint="Course Name"
         android:inputType="textPersonName"
         android:text=""
-        android:hint="Course Name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -93,13 +94,13 @@
         android:id="@+id/course_number_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="323dp"
+        android:layout_marginTop="248dp"
         android:ems="10"
+        android:hint="Course Number"
         android:inputType="number"
         android:text=""
-        android:hint="Course Number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -124,5 +125,49 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="628dp"
+        app:layout_constraintEnd_toStartOf="@+id/progressBar3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/progressBar2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="628dp"
+        app:layout_constraintEnd_toStartOf="@+id/progressBar3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar3"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="628dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/progressBar2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="652dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/feather_1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

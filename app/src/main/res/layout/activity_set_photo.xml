@@ -39,16 +39,16 @@
         tools:ignore="MissingConstraints" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/url_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="346dp"
+        android:layout_marginTop="344dp"
         android:ems="10"
         android:hint="https://www...."
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.273"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,8 +68,8 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="287dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginStart="336dp"
+        android:layout_marginTop="88dp"
         android:background="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -77,13 +77,27 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="58dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="207dp"
-        android:layout_marginTop="108dp"
+        android:layout_width="46dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="288dp"
+        android:layout_marginTop="88dp"
         android:text="Help"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button"
+        android:layout_width="74dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="352dp"
+        android:onClick="onURLClearClicked"
+        android:text="Clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.305"
+        app:layout_constraintStart_toEndOf="@+id/url_textview"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

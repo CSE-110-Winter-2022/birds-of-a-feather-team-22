@@ -14,7 +14,7 @@ public class SetCoursesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_courses);
         //get the spinner from the xml.
-        Spinner dropdown = findViewById(R.id.spinner1);
+        Spinner dropdown = findViewById(R.id.quarter_and_year_spinner);
 //create a list of items for the spinner.
         String[] items = new String[]{"Fall 2021", "Spring 2021", "Winter 2020", "Fall 2020", "Spring 2020"};
 //create an adapter to describe how the items are displayed, adapters are used in several places in android.
@@ -28,6 +28,10 @@ public class SetCoursesActivity extends AppCompatActivity {
     public void onCoursesHelpClicked(View view){
         String help_message = "";
         Utilities.showAlert(this, help_message);
+
+    }
+
+    public void onCoursesSubmitClicked(View view) {
 
     }
 }

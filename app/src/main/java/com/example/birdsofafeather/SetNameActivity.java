@@ -21,8 +21,9 @@ public class SetNameActivity extends AppCompatActivity {
 
     }
 
-    public void onNextClicked(View view){
+    public void onNextClicked(View view) {
         Intent intent = new Intent(this, SetPhotoActivity.class);
+
 
         //testing
         ProgressBar progressBar = findViewById(R.id.progressBar2);
@@ -40,8 +41,8 @@ public class SetNameActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
+                    startActivity(intent);
 
-                startActivity(intent);
             }
         });
         animator.start();

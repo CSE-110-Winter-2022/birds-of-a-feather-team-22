@@ -1,6 +1,8 @@
-package com.example.birdsofafeather;
+package com.example.birdsofafeather.unused;
 
 import androidx.annotation.NonNull;
+
+import com.example.birdsofafeather.db.Course;
 
 import java.util.HashMap;
 import java.util.HashSet;

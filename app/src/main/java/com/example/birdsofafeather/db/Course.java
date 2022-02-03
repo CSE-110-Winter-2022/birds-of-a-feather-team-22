@@ -1,14 +1,11 @@
 package com.example.birdsofafeather.db;
 import java.util.*;
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity (tableName = "COURSE")
 public class Course {
-
-    //Course obj = db.find(course, {key: key, ... }
 
     @PrimaryKey
     @ColumnInfo(name = "courseId")
@@ -26,8 +23,8 @@ public class Course {
     @ColumnInfo(name = "number")
     private String number;
 
-    @ColumnInfo(name = "list")
-    private List<Integer> id;
+    @ColumnInfo(name = "students")
+    private List<Integer> students;
 
     public Course() {
         this.year = "";
@@ -61,11 +58,10 @@ public class Course {
 //    }
 
     public void addUserId(int id) {
-        this.id.add(id);
+        this.students.add(id);
     }
 
-    @NonNull
-    public String toString() {
-        return "(" + this.year + "," + this.quarter + "," + this.subject + "," + this.number + ")";
+    public int getId() {
+        return this.courseId;
     }
 }

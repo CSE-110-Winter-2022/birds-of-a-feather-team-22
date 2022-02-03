@@ -17,4 +17,7 @@ public class SharedCoursesTracker {
     @ColumnInfo(name = "sharedCourses")
     private HashMap<Integer, List<Course>> sharedCourses;
 
+    public int getId() {
+        return this.trackerId;
+    }
 }

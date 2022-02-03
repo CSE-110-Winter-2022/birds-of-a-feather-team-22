@@ -13,8 +13,8 @@ import java.util.*;
 public class Profile {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo (name = "id")
-    private int id;
+    @ColumnInfo (name = "profileId")
+    private int profileId;
 
     @ColumnInfo (name = "name")
     private String name;
@@ -33,13 +33,6 @@ public class Profile {
         this.courses = new ArrayList<>();
     }
 
-//    public Profile(String name, Image photo, List<Course> courses) {
-//        this.name = name;
-//        this.photo = photo;
-//        this.courses = courses;
-//    }
-
-
     public void setName(String name) {
         this.name = name;
     }
@@ -50,7 +43,7 @@ public class Profile {
 
     public void addCourse(Course course) {
         this.courses.add(course);
-        course.addUserId(this.id);
+        course.addUserId(this.profileId);
     }
 
     public String getName() {
@@ -66,7 +59,7 @@ public class Profile {
     }
 
     public int getId() {
-        return this.id;
+        return this.profileId;
     }
 
 }

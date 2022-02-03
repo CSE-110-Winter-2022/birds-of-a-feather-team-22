@@ -1,7 +1,5 @@
 package com.example.birdsofafeather;
 
-import androidx.annotation.NonNull;
-
 public class Image {
     private String url;
 
@@ -21,8 +19,4 @@ public class Image {
         return this.url;
     }
 
-    @NonNull
-    public String toString() {
-        return this.url;
-    }
 }

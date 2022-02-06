@@ -17,7 +17,6 @@ import java.util.Optional;
 
 public class SetCoursesActivity extends AppCompatActivity {
 
-    /*test if this merges*///hello, goodbye, the sky is falling
     /*UI elements*/
     private TextView courseNameTextView;
     private TextView courseNumberTextView;
@@ -28,11 +27,13 @@ public class SetCoursesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_courses);
 
+        setTitle("Pick Your Classes");
         /*instantiate field variables*/
         TextView courseNameTextView = findViewById(R.id.course_name_textview);
         TextView courseNumberTextView = findViewById(R.id.course_number_textview);
         //get the spinner from the xml.
         Spinner quarterAndYearSpinner = findViewById(R.id.quarter_and_year_spinner);
+
         //create a list of items for the spinner.
         //String[] items = new String[]{"Fall 2021", "Summer 2021","Spring 2021", "Winter 2020", "Fall 2020", "Summer 2020", "Spring 2020", "Winter 2020", "Fall 2019"};
 

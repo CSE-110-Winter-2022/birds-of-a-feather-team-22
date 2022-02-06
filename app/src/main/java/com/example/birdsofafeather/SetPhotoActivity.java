@@ -19,6 +19,7 @@ public class SetPhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_photo);
 
+        setTitle("Set a Profile Picture");
         //testing
         ProgressBar progressBar = findViewById(R.id.progressBar2);
 

@@ -17,7 +17,7 @@ public class SetNameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_name);
 
-
+        setTitle("What's Your Name?");
 
     }
 

@@ -20,7 +20,8 @@ public class SetCoursesActivity extends AppCompatActivity {
     /*UI elements*/
     private TextView courseNameTextView;
     private TextView courseNumberTextView;
-    private Spinner quarterAndYearSpinner;
+    private Spinner quarterSpinner;
+    private Spinner yearSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,8 @@ public class SetCoursesActivity extends AppCompatActivity {
         courseNameTextView = findViewById(R.id.course_name_textview);
         courseNumberTextView = findViewById(R.id.course_number_textview);
         //get the spinner from the xml.
-        quarterAndYearSpinner = findViewById(R.id.quarter_and_year_spinner);
+        quarterSpinner = findViewById(R.id.quarter_spinner);
+        yearSpinner = findViewById(R.id.year_spinner);
 
         //create a list of items for the spinner.
         //String[] items = new String[]{"Fall 2021", "Summer 2021","Spring 2021", "Winter 2020", "Fall 2020", "Summer 2020", "Spring 2020", "Winter 2020", "Fall 2019"};
@@ -65,11 +67,18 @@ public class SetCoursesActivity extends AppCompatActivity {
         //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         //set the spinners adapter to the previously created one.
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.quarter_year_array, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array, android.R.layout.simple_spinner_dropdown_item);
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        quarterAndYearSpinner.setAdapter(adapter);
+
+        ArrayAdapter<CharSequence> year_adapter = ArrayAdapter.createFromResource(this, R.array.year_array, android.R.layout.simple_spinner_dropdown_item);
+        // Specify the layout to use when the list of choices appears
+        year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+        quarterSpinner.setAdapter(quarter_adapter);
+        yearSpinner.setAdapter(year_adapter);
 
 
 

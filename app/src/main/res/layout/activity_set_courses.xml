@@ -12,7 +12,7 @@
         android:id="@+id/imageButton4"
         android:layout_width="55dp"
         android:layout_height="48dp"
-        android:layout_marginTop="528dp"
+        android:layout_marginTop="540dp"
         android:background="#FFFFFF"
         android:onClick="onNextClicked"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="151dp"
         android:layout_height="51dp"
-        android:layout_marginTop="488dp"
+        android:layout_marginTop="500dp"
         android:background="@color/white"
         android:backgroundTint="#FFFFFF"
         android:onClick="onNextClicked"
@@ -44,11 +44,11 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="408dp"
+        android:layout_marginTop="440dp"
         android:onClick="onCoursesSubmitClicked"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Pick Some Classes"
+        android:text="Class 1"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -65,29 +65,44 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/quarter_and_year_spinner"
+        android:id="@+id/quarter_spinner"
         android:layout_width="213dp"
         android:layout_height="54dp"
-        android:layout_marginTop="320dp"
+        android:layout_marginTop="275dp"
         android:background="@color/seafoam"
         android:backgroundTint="#FFFFFF"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <Spinner
+        android:id="@+id/year_spinner"
+        android:layout_width="213dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="360dp"
+        android:background="@color/seafoam"
+        android:backgroundTint="#FFFFFF"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck"/>
 
     <EditText
         android:id="@+id/course_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="176dp"
+        android:layout_marginTop="125dp"
         android:ems="10"
         android:hint="CSE"
         android:inputType="textPersonName"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TouchTargetSizeCheck" />
@@ -96,36 +111,13 @@
         android:id="@+id/course_number_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="248dp"
+        android:layout_marginTop="200dp"
         android:ems="10"
         android:hint="110"
         android:inputType="number"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="336dp"
-        android:layout_marginTop="88dp"
-        android:background="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/down_arrow_1"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="46dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="288dp"
-        android:layout_marginTop="88dp"
-        android:text="Help"
-        android:textSize="20sp"
+        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -195,8 +187,8 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="148dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="100dp"
         android:text="Course Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -205,8 +197,8 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="69dp"
-        android:layout_marginTop="224dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="175dp"
         android:text="Course Number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -215,20 +207,21 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="296dp"
-        android:text="Quarter and Year"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="250dp"
+        android:text="Quarter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/course_count_textview"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="182dp"
-        android:layout_marginTop="93dp"
-        android:text="Class 1"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="335dp"
+        android:text="Year"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

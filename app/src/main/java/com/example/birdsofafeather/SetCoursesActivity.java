@@ -28,11 +28,34 @@ public class SetCoursesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_courses);
 
         setTitle("Pick Your Classes");
+
+        //progress bar animation at start
+        ProgressBar progressBar = findViewById(R.id.progressBar3);
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
+        animator.setDuration(1000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation){
+                progressBar.setProgress((Integer)animation.getAnimatedValue());
+            }
+        });
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+
+            }
+        });
+        animator.start();
+
         /*instantiate field variables*/
-        TextView courseNameTextView = findViewById(R.id.course_name_textview);
-        TextView courseNumberTextView = findViewById(R.id.course_number_textview);
+        courseNameTextView = findViewById(R.id.course_name_textview);
+        courseNumberTextView = findViewById(R.id.course_number_textview);
         //get the spinner from the xml.
-        Spinner quarterAndYearSpinner = findViewById(R.id.quarter_and_year_spinner);
+        quarterAndYearSpinner = findViewById(R.id.quarter_and_year_spinner);
 
         //create a list of items for the spinner.
         //String[] items = new String[]{"Fall 2021", "Summer 2021","Spring 2021", "Winter 2020", "Fall 2020", "Summer 2020", "Spring 2020", "Winter 2020", "Fall 2019"};
@@ -47,6 +70,8 @@ public class SetCoursesActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         quarterAndYearSpinner.setAdapter(adapter);
+
+
 
     }
 
@@ -76,27 +101,7 @@ public class SetCoursesActivity extends AppCompatActivity {
 
     public void onNextClicked(View view){
         Intent intent = new Intent(this,BluetoothActivity.class);
+        startActivity(intent);
 
-        //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar3);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1200);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
-
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                startActivity(intent);
-
-            }
-        });
-        animator.start();
     }
 }

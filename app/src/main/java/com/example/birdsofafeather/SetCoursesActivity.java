@@ -31,7 +31,7 @@ public class SetCoursesActivity extends AppCompatActivity {
         setTitle("Pick Your Classes");
 
         //progress bar animation at start
-        ProgressBar progressBar = findViewById(R.id.progressBar3);
+        /*ProgressBar progressBar = findViewById(R.id.progressBar3);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
         animator.setDuration(1000);
@@ -51,7 +51,7 @@ public class SetCoursesActivity extends AppCompatActivity {
             }
         });
         animator.start();
-
+        */
         /*instantiate field variables*/
         courseNameTextView = findViewById(R.id.course_name_textview);
         courseNumberTextView = findViewById(R.id.course_number_textview);

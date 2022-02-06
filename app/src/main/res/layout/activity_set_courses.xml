@@ -8,30 +8,18 @@
     android:backgroundTint="#FFFFFF"
     tools:context=".SetCoursesActivity">
 
-    <ImageButton
-        android:id="@+id/imageButton4"
-        android:layout_width="55dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="540dp"
-        android:background="#FFFFFF"
-        android:onClick="onNextClicked"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/next_arrow_3_square" />
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button3"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="151dp"
         android:layout_height="51dp"
-        android:layout_marginTop="500dp"
+        android:layout_marginTop="650dp"
         android:background="@color/white"
         android:backgroundTint="#FFFFFF"
         android:onClick="onNextClicked"
         android:shadowColor="#FFFFFF"
-        android:text="Next Step"
+        android:text="Done"
+        android:visibility="invisible"
         android:textColor="@color/seafoam"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,9 +32,9 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="440dp"
+        android:layout_marginTop="585dp"
         android:onClick="onCoursesSubmitClicked"
-        android:text="Submit"
+        android:text="Enter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +56,7 @@
         android:id="@+id/quarter_spinner"
         android:layout_width="213dp"
         android:layout_height="54dp"
-        android:layout_marginTop="275dp"
+        android:layout_marginTop="380dp"
         android:background="@color/seafoam"
         android:backgroundTint="#FFFFFF"
         android:spinnerMode="dropdown"
@@ -82,7 +70,7 @@
         android:id="@+id/year_spinner"
         android:layout_width="213dp"
         android:layout_height="54dp"
-        android:layout_marginTop="360dp"
+        android:layout_marginTop="505dp"
         android:background="@color/seafoam"
         android:backgroundTint="#FFFFFF"
         android:spinnerMode="dropdown"
@@ -96,7 +84,7 @@
         android:id="@+id/course_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="130dp"
         android:ems="10"
         android:hint="CSE"
         android:inputType="textPersonName"
@@ -111,7 +99,7 @@
         android:id="@+id/course_number_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="255dp"
         android:ems="10"
         android:hint="110"
         android:inputType="number"
@@ -120,68 +108,6 @@
         app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="628dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/progressBar2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="628dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/progressBar3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/progressBar3"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="628dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/progressBar4"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/progressBar2"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/progressBar4"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="628dp"
-        android:layout_marginEnd="70dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/progressBar3"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/Leaf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="656dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.622"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/feather_1" />
 
     <TextView
         android:id="@+id/textView3"
@@ -198,7 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="175dp"
+        android:layout_marginTop="225dp"
         android:text="Course Number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -208,7 +134,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="350dp"
         android:text="Quarter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -218,7 +144,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="335dp"
+        android:layout_marginTop="475dp"
         android:text="Year"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

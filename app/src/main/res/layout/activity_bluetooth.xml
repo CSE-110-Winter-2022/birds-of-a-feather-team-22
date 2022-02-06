@@ -156,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CSE 110, CSE 100" />
+                android:text="Classes matched: " />
         </LinearLayout>
 
     </LinearLayout>

@@ -11,5 +11,7 @@ public interface ProfileDao {
     @Insert
     void insert(Profile profile);
 
+    @Query("SELECT * FROM PROFILE WHERE profileId=:profileId")
+    Profile getProfile(int profileId);
 
 }

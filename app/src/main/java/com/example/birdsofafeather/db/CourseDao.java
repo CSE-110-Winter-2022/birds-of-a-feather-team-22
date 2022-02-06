@@ -12,13 +12,19 @@ public interface CourseDao {
 
     @Transaction
     @Query("SELECT profile_id FROM COURSE WHERE year=:year AND quarter=:quarter AND subject=:subject AND number=:number")
-    List<Integer> getCourseByInfo(int year, int quarter, int subject, int number);
+    List<Integer> getProfileIdsByInfo(String year, String quarter, String subject, String number);
 
     @Transaction
     @Query("SELECT * FROM COURSE WHERE profile_id=:profileId")
     List<Course> getCourseByProfileId(int profileId);
 
+    @Query("SELECT profile_id FROM COURSE WHERE profile_id=:profileId AND year=:year AND quarter=:quarter AND subject=:subject AND number=:number")
+    int getCourseId(int profileId, String year, String quarter, String subject, String number);
+
     @Insert
     void insert(Course course);
+
+    @Query("SELECT COUNT(*) FROM COURSE")
+    int count();
 
 }

@@ -24,7 +24,7 @@ public class SetPhotoActivity extends AppCompatActivity {
         ProgressBar progressBar = findViewById(R.id.progressBar2);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1);
+        animator.setDuration(1000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation){

@@ -3,13 +3,17 @@ import java.util.*;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Relation;
 
 @Entity (tableName = "COURSE")
 public class Course {
 
-    @PrimaryKey
-    @ColumnInfo(name = "courseId")
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "course_id")
     private int courseId;
+
+    @ColumnInfo(name = "profile_id")
+    private int profileId;
 
     @ColumnInfo(name = "year")
     private String year;
@@ -23,42 +27,65 @@ public class Course {
     @ColumnInfo(name = "number")
     private String number;
 
-    @ColumnInfo(name = "students")
-    private List<Integer> students;
-
-    public Course() {
-        this.year = "";
-        this.quarter = "";
-        this.subject = "";
-        this.number = "";
-    }
-
-    public Course(String year, String quarter, String subject, String number) {
+    public Course(int courseId, int profileId,String year, String quarter, String subject, String number) {
+        this.courseId = courseId;
+        this.profileId = profileId;
         this.year = year;
         this.quarter = quarter;
         this.subject = subject;
         this.number = number;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//
-//        if (o == null || this.getClass() != o.getClass() ) {
-//            return false;
-//        }
-//
-//        Course course = (Course) o;
-//        return this.year.equals(course.year) &&
-//                this.quarter.equals(course.quarter) &&
-//                this.subject.equals(course.subject) &&
-//                this.number.equals(course.number);
-//    }
+    public int getCourseId() {
+        return this.courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public int getProfileId() {
+        return this.profileId;
+    }
+
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
+    }
+
+    public String getYear() {
+        return this.year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getQuarter() {
+        return this.quarter;
+    }
+
+    public void setQuarter(String quarter) {
+        this.quarter = quarter;
+    }
+
+    public String getSubject() {
+        return this.subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getNumber() {
+        return this.number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
     public void addUserId(int id) {
-        this.students.add(id);
+        // this.students.getStudentIds().add(id);
     }
 
     public int getId() {

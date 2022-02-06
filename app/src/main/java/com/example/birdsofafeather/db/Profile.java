@@ -20,46 +20,39 @@ public class Profile {
     private String name;
 
     @ColumnInfo (name = "photo")
-    private Image photo;
-
-    @ColumnInfo (name = "courses")
-    private List<Course> courses;
+    private String photo;
 
 
 
-    public Profile() {
-        this.name = "";
-        this.photo = new Image();
-        this.courses = new ArrayList<>();
-    }
-
-    public void setName(String name) {
+    public Profile(String name, String photo) {
         this.name = name;
+        this.photo = photo;
     }
 
-    public void setPhoto(String url) {
-        this.photo.setImage(url);
+    public int getProfileId() {
+        return this.profileId;
     }
 
-    public void addCourse(Course course) {
-        this.courses.add(course);
-        course.addUserId(this.profileId);
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public Image getPhoto() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhoto() {
         return this.photo;
     }
 
-    public List<Course> getCourses() {
-        return this.courses;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
-    public int getId() {
-        return this.profileId;
-    }
+
 
 }

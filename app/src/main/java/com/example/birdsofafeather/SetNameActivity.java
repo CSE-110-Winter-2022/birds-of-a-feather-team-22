@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class SetNameActivity extends AppCompatActivity {
 
@@ -22,30 +24,19 @@ public class SetNameActivity extends AppCompatActivity {
     }
 
     public void onNextClicked(View view) {
-        Intent intent = new Intent(this, SetPhotoActivity.class);
+        Context context = view.getContext();
+        Intent intent = new Intent(context, SetPhotoActivity.class);
+
+        TextView name_view = findViewById(R.id.editTextTextPersonName);
+
+        String name = name_view.getText().toString();
 
 
-        //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar);
+        if (name.length() > 0) {
+            intent.putExtra("name", name);
+            context.startActivity(intent);
+        }
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1200);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
-
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                    startActivity(intent);
-
-            }
-        });
-        animator.start();
     }
 
 

@@ -1,3 +1,4 @@
+/*
 package com.example.birdsofafeather.db;
 
 import androidx.room.ColumnInfo;
@@ -8,7 +9,6 @@ import androidx.room.Query;
 import java.util.HashMap;
 import java.util.List;
 
-@Entity(tableName = "sct")
 public class SharedCoursesTracker {
 
     @PrimaryKey
@@ -22,3 +22,4 @@ public class SharedCoursesTracker {
         return this.trackerId;
     }
 }
+*/

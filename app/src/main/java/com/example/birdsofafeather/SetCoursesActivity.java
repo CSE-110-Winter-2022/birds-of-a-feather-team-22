@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class SetCoursesActivity extends AppCompatActivity {
 
-
+    /*test if this merges*///hello, goodbye, the sky is falling
     /*UI elements*/
     private TextView courseNameTextView;
     private TextView courseNumberTextView;

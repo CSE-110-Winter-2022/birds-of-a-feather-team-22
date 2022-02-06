@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.widget.ProgressBar;
 
 public class BluetoothActivity extends AppCompatActivity {
-
+//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

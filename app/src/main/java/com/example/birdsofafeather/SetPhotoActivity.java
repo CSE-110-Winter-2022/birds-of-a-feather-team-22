@@ -19,11 +19,12 @@ public class SetPhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_photo);
 
+        setTitle("Set a Profile Picture");
         //testing
         ProgressBar progressBar = findViewById(R.id.progressBar2);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1);
+        animator.setDuration(1000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation){
@@ -37,29 +38,7 @@ public class SetPhotoActivity extends AppCompatActivity {
 
     public void onNextClicked(View view){
         Intent intent = new Intent(this, SetCoursesActivity.class);
-
-        //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar2);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
-
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-
-                startActivity(intent);
-
-            }
-        });
-        animator.start();
+        startActivity(intent);
 
 
     }

@@ -17,13 +17,7 @@ public class SetNameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_name);
 
-
-
-    }
-
-    public void onNextClicked(View view) {
-        Intent intent = new Intent(this, SetPhotoActivity.class);
-
+        setTitle("What's Your Name?");
 
         //testing
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -41,11 +35,17 @@ public class SetNameActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                    startActivity(intent);
+
 
             }
         });
         animator.start();
+
+    }
+
+    public void onNextClicked(View view) {
+        Intent intent = new Intent(this, SetPhotoActivity.class);
+        startActivity(intent);
     }
 
 

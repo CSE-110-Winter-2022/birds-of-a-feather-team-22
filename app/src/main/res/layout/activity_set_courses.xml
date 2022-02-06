@@ -9,7 +9,7 @@
     tools:context=".SetCoursesActivity">
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button3"
+        android:id="@+id/done_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="151dp"
         android:layout_height="51dp"

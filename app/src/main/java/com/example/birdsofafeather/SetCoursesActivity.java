@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -105,7 +106,8 @@ public class SetCoursesActivity extends AppCompatActivity {
         /*clear all form fields*/
         courseNameTextView.setText("");
         courseNumberTextView.setText("");
-
+        Button doneButton = findViewById(R.id.done_button);
+        doneButton.setVisibility(View.VISIBLE);
     }
 
     public void onNextClicked(View view){

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Birds of a Feather</string>
+    <string name="confirm">Confirm</string>
+    <string name="name">Name</string>
+    <string name="submit">Submit</string>
+    <string name="photo">Photo</string>
+    <string name="enter">enter</string>
 </resources>

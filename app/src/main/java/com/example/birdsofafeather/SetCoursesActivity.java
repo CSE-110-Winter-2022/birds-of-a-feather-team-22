@@ -74,7 +74,6 @@ public class SetCoursesActivity extends AppCompatActivity {
     }
 
     public void onNextClicked(View view){
-        Intent intent = new Intent(this,BluetoothActivity.class);
 
         //testing
         ProgressBar progressBar = findViewById(R.id.progressBar3);
@@ -92,7 +91,6 @@ public class SetCoursesActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                startActivity(intent);
 
             }
         });

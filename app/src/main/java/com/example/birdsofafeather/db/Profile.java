@@ -4,11 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.birdsofafeather.Image;
-
-import java.util.HashMap;
-import java.util.*;
-
 @Entity(tableName = "PROFILE")
 public class Profile {
 

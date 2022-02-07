@@ -17,18 +17,30 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     public void onSubmitClicked(View view) {
-        Context context = view.getContext();
-        Intent intent = new Intent(context, SetCoursesActivity.class);
+        TextView photo_view = findViewById(R.id.photo_view);
+        String photo = photo_view.getText().toString();
 
-        TextView photo_view = findViewById(R.id.url_textview);
+        if (photo.length() > 0) {
+            String name = getIntent().getStringExtra("name");
 
-        String name = getIntent().getStringExtra("name");
-        String url = photo_view.getText().toString();
+            Context context = view.getContext();
+            Intent intent = new Intent(context, FirstCourseActivity.class);
 
-        if (url.length() > 0) {
-            intent.putExtra("photo", url);
+            // TODO: Check if photo provided is valid photo, otherwise use placeholder photo
+
+            intent.putExtra("photo", photo);
             intent.putExtra("name", name);
+
             context.startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (false) {
+            super.onBackPressed();
+        } else {
         }
     }
 }

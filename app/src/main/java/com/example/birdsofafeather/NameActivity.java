@@ -17,17 +17,24 @@ public class NameActivity extends AppCompatActivity {
     }
 
     public void onConfirmClicked(View view) {
-        Context context = view.getContext();
-        Intent intent = new Intent(context, PhotoActivity.class);
-
         TextView name_view = findViewById(R.id.name_view);
-
         String name = name_view.getText().toString();
 
-
         if (name.length() > 0) {
+            Context context = view.getContext();
+            Intent intent = new Intent(context, PhotoActivity.class);
+
             intent.putExtra("name", name);
             context.startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (false) {
+            super.onBackPressed();
+        } else {
         }
     }
 }

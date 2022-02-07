@@ -44,4 +44,8 @@ public class Utilities {
             return Optional.empty();
         }
     }
+
+    public static String formatString(String str) {
+        return str.trim().toLowerCase();
+    }
 }

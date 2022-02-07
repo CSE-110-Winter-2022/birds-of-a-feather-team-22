@@ -10,16 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
         <activity
-            android:name=".BluetoothActivity"
+            android:name=".CourseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FirstCourseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PhotoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NameActivity"
             android:exported="false" />
         <activity
             android:name=".SetCoursesActivity"
             android:exported="false" />
         <activity
             android:name=".SetPhotoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SetNameActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,53 +20,28 @@ public class SetPhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_photo);
 
-        //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar2);
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
-
-        animator.start();
     }
 
 
     public void onNextClicked(View view){
-        Intent intent = new Intent(this, SetCoursesActivity.class);
+        Context context = view.getContext();
+        Intent intent = new Intent(context, SetCoursesActivity.class);
 
-        //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar2);
+        TextView photo_view = findViewById(R.id.url_textview);
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
+        String name = getIntent().getStringExtra("name");
+        String url = photo_view.getText().toString();
 
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
+        if (url.length() > 0) {
+            intent.putExtra("photo", url);
+            intent.putExtra("name", name);
+            context.startActivity(intent);
+        }
 
-                startActivity(intent);
 
-            }
-        });
-        animator.start();
 
 
     }
 
-    public void onURLClearClicked(View view){
-        TextView urlTextView = findViewById(R.id.url_textview);
-        urlTextView.setText("");
-    }
 }

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Birds of a Feather</string>
+    <string name="confirm">Confirm</string>
+    <string name="name">Name</string>
+    <string name="submit">Submit</string>
+    <string name="photo">Photo</string>
+    <string name="enter">Enter</string>
+    <string name="quarter">Quarter</string>
+    <string name="number">Number</string>
+    <string name="year">Year</string>
+    <string name="subject">Subject</string>
+    <string name="done">Done</string>
 </resources>

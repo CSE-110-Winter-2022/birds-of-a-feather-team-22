@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 
 import android.content.Context;
 
+import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -37,7 +38,7 @@ public class TestDB {
     @Before
     public void setup() {
         Context context = ApplicationProvider.getApplicationContext();
-        db = AppDatabase.singleton(context);
+        db = Room.inMemoryDatabaseBuilder(context, AppDatabase.class).build();
     }
 
 
@@ -68,7 +69,7 @@ public class TestDB {
         });
     }
 
-    /*
+
     @Test
     public void delete() {
         this.future = backgroundThreadExecutor.submit(() -> {
@@ -110,7 +111,7 @@ public class TestDB {
             return null;
         });
     }
-    */
+
 
     private void print(String output) {
         System.out.println(output);

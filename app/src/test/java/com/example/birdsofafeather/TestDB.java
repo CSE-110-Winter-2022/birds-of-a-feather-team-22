@@ -31,8 +31,6 @@ import java.util.concurrent.Future;
 public class TestDB {
 
     private AppDatabase db;
-    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private Future<Void> future;
 
     @Before
     public void setup() {
@@ -43,29 +41,26 @@ public class TestDB {
 
     @Test
     public void insert() throws Exception {
-        this.future = backgroundThreadExecutor.submit(() -> {
-            db.profileDao().insert(new Profile(1, "Rob", "test"));
-            Profile p = db.profileDao().getProfile(1);
-            assertNotNull(p);
-            assertEquals(1, p.getProfileId());
-            assertEquals("Rob", p.getName());
-            assertEquals("test", p.getPhoto());
+        db.profileDao().insert(new Profile(1, "Rob", "test"));
+        Profile p = db.profileDao().getProfile(1);
+        assertNotNull(p);
+        assertEquals(1, p.getProfileId());
+        assertEquals("Rob", p.getName());
+        assertEquals("test", p.getPhoto());
 
-            db.courseDao().insert(new Course(1, "2022", "Winter", "CSE", "110"));
-            int courseId = db.courseDao().getCourseId(1, "2022", "Winter", "CSE", "110");
-            assertEquals(1, courseId);
-            List<Course> courses = db.courseDao().getCourseByProfileId(1);
-            assertNotNull(courses);
-            assertEquals(1, courses.size());
-            assertEquals(courseId, courses.get(0).getCourseId());
-            assertEquals(1 , courses.get(0).getProfileId());
-            assertEquals("2022", courses.get(0).getYear());
-            assertEquals("Winter", courses.get(0).getQuarter());
-            assertEquals("CSE", courses.get(0).getSubject());
-            assertEquals("110", courses.get(0).getNumber());
-            db.clearAllTables();
-            return null;
-        });
+        db.courseDao().insert(new Course(1, "2022", "Winter", "CSE", "110"));
+        int courseId = db.courseDao().getCourseId(1, "2022", "Winter", "CSE", "110");
+        System.out.println(courseId);
+        List<Course> courses = db.courseDao().getCourseByProfileId(1);
+        assertNotNull(courses);
+        assertEquals(1, courses.size());
+        assertEquals(courseId, courses.get(0).getCourseId());
+        assertEquals(1 , courses.get(0).getProfileId());
+        assertEquals("2022", courses.get(0).getYear());
+        assertEquals("Winter", courses.get(0).getQuarter());
+        assertEquals("CSE", courses.get(0).getSubject());
+        assertEquals("110", courses.get(0).getNumber());
+        db.clearAllTables();
     }
 
     /*
@@ -119,6 +114,5 @@ public class TestDB {
     @After
     public void finish() throws IOException {
         db.close();
-        this.future.cancel(true);
     }
 }

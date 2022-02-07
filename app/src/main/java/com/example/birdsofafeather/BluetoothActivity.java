@@ -21,7 +21,7 @@ public class BluetoothActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
 
-        setTitle("Your Birds of a Feather...");
+        setTitle("Birds of a Feather");
     }
     public void onClickStart(View view) {
 

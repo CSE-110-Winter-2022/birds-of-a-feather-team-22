@@ -28,6 +28,7 @@ public class CourseActivity extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future<Profile> future;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,7 @@ public class CourseActivity extends AppCompatActivity {
 
         this.future = backgroundThreadExecutor.submit(() -> {
             int courseId = db.courseDao().getCourseId(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
-            if (year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0 && courseId > 0) {
+            if (year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0 && courseId == 0) {
                 Course course = new Course(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
                 db.courseDao().insert(course);
             }

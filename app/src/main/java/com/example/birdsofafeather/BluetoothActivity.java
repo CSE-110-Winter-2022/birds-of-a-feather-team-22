@@ -21,23 +21,6 @@ public class BluetoothActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bluetooth);
     }
     public void onClickStart(View view) {
-        ProgressBar progressBar = findViewById(R.id.progressBar4);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1200);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-            }
-        });
-        animator.start();
 
         Button stopButton = findViewById(R.id.stopButton);
         TextView findMatches = findViewById(R.id.textView6);

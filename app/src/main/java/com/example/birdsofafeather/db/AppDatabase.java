@@ -10,10 +10,12 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase singletonInstance;
 
     public static AppDatabase singleton(Context context){
-        if (singletonInstance == null){
+        if (singletonInstance == null) {
             singletonInstance = Room.databaseBuilder(context, AppDatabase.class, "profile.db")
+                    .allowMainThreadQueries()
                     .build();
         }
+
         return singletonInstance;
     }
 

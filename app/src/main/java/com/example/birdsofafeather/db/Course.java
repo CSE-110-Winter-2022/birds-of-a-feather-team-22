@@ -8,7 +8,7 @@ import androidx.room.Relation;
 @Entity (tableName = "COURSE")
 public class Course {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "course_id")
     private int courseId;
 

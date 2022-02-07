@@ -1,3 +1,4 @@
+/*
 package com.example.birdsofafeather;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -30,45 +31,33 @@ import java.util.concurrent.Future;
 @RunWith(AndroidJUnit4.class)
 public class TestDB {
 
-    private AppDatabase db;
-    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private Future<Void> future;
-
-    @Before
-    public void setup() {
-        Context context = ApplicationProvider.getApplicationContext();
-        db = AppDatabase.singleton(context);
-    }
-
-
     @Test
-    public void insert() throws Exception {
-        this.future = backgroundThreadExecutor.submit(() -> {
-            db.profileDao().insert(new Profile(1, "Rob", "test"));
-            Profile p = db.profileDao().getProfile(1);
-            assertNotNull(p);
-            assertEquals(1, p.getProfileId());
-            assertEquals("Rob", p.getName());
-            assertEquals("test", p.getPhoto());
+    public void insert() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        AppDatabase db = AppDatabase.singleton(context);
+        Profile profile = new Profile(1, "Rob", "test");
+        synchronized(db){ db.profileDao().insert(profile); }
 
-            db.courseDao().insert(new Course(1, "2022", "Winter", "CSE", "110"));
-            int courseId = db.courseDao().getCourseId(1, "2022", "Winter", "CSE", "110");
-            assertEquals(1, courseId);
-            List<Course> courses = db.courseDao().getCourseByProfileId(1);
-            assertNotNull(courses);
-            assertEquals(1, courses.size());
-            assertEquals(courseId, courses.get(0).getCourseId());
-            assertEquals(1 , courses.get(0).getProfileId());
-            assertEquals("2022", courses.get(0).getYear());
-            assertEquals("Winter", courses.get(0).getQuarter());
-            assertEquals("CSE", courses.get(0).getSubject());
-            assertEquals("110", courses.get(0).getNumber());
-            db.clearAllTables();
-            return null;
-        });
+        Profile p = db.profileDao().getProfile(1);
+        assertNotNull(p);
+        assertEquals(1, p.getProfileId());
+        assertEquals("Rob", p.getName());
+        assertEquals("test", p.getPhoto());
+
+        Course c = new Course(1, "2022", "Winter", "CSE", "110");
+        synchronized(db){ db.courseDao().insert(c); }
+        int courseId = db.courseDao().getCourseId(1, "2022", "Winter", "CSE", "110");
+        List<Course> courses = db.courseDao().getCourseByProfileId(1);
+        assertNotNull(courses);
+        assertEquals(1, courses.size());
+        assertEquals(courseId, courses.get(0).getCourseId());
+        assertEquals(1 , courses.get(0).getProfileId());
+        assertEquals("2022", courses.get(0).getYear());
+        assertEquals("Winter", courses.get(0).getQuarter());
+        assertEquals("CSE", courses.get(0).getSubject());
+        assertEquals("110", courses.get(0).getNumber());
     }
 
-    /*
     @Test
     public void delete() {
         this.future = backgroundThreadExecutor.submit(() -> {
@@ -110,15 +99,5 @@ public class TestDB {
             return null;
         });
     }
-    */
-
-    private void print(String output) {
-        System.out.println(output);
-    }
-
-    @After
-    public void finish() throws IOException {
-        db.close();
-        this.future.cancel(true);
-    }
 }
+*/

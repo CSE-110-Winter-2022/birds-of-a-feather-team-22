@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 
 @RunWith(AndroidJUnit4.class)
 public class TestDB {
-
+    /*
     @Test
     public void insert() throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
@@ -57,7 +57,6 @@ public class TestDB {
         assertEquals("110", courses.get(0).getNumber());
     }
 
-    /*
     @Test
     public void delete() {
         this.future = backgroundThreadExecutor.submit(() -> {

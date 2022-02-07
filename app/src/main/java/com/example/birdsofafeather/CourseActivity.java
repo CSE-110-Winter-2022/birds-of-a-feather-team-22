@@ -78,7 +78,7 @@ public class CourseActivity extends AppCompatActivity {
 
 //        this.future = backgroundThreadExecutor.submit(() -> {
             int courseId = db.courseDao().getCourseId(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
-            if (year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0 && courseId == 0) {
+            if (isValidCourse(year, quarter, subject, number) && !isExistingCourse(courseId)) {
                 Course course = new Course(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
                 db.courseDao().insert(course);
             }
@@ -124,5 +124,13 @@ public class CourseActivity extends AppCompatActivity {
             super.onBackPressed();
         } else {
         }
+    }
+
+    public boolean isValidCourse(String year, String quarter, String subject, String number) {
+        return year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0;
+    }
+
+    public boolean isExistingCourse(int courseId) {
+        return courseId == 0;
     }
 }

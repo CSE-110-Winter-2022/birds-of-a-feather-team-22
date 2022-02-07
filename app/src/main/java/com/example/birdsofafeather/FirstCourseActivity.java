@@ -56,7 +56,7 @@ public class FirstCourseActivity extends AppCompatActivity {
         String number = number_view.getText().toString();
 
 
-        if (year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0) {
+        if (isValidCourse(year, quarter, subject, number)) {
             String name = getIntent().getStringExtra("name");
             String photo = getIntent().getStringExtra("photo");
 
@@ -80,6 +80,10 @@ public class FirstCourseActivity extends AppCompatActivity {
 //                return null;
 //            });
         }
+    }
+
+    public boolean isValidCourse(String year, String quarter, String subject, String number) {
+        return year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0;
     }
 
     @Override

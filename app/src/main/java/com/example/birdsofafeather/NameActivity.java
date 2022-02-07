@@ -20,7 +20,7 @@ public class NameActivity extends AppCompatActivity {
         TextView name_view = findViewById(R.id.name_view);
         String name = name_view.getText().toString();
 
-        if (name.length() > 0) {
+        if (isValidName(name)) {
             Context context = view.getContext();
             Intent intent = new Intent(context, PhotoActivity.class);
 
@@ -36,5 +36,10 @@ public class NameActivity extends AppCompatActivity {
             super.onBackPressed();
         } else {
         }
+    }
+
+    // TODO: Check if name provided is a valid name
+    public boolean isValidName(String name) {
+        return name.length() > 0;
     }
 }

@@ -20,13 +20,11 @@ public class PhotoActivity extends AppCompatActivity {
         TextView photo_view = findViewById(R.id.photo_view);
         String photo = photo_view.getText().toString();
 
-        if (photo.length() > 0) {
+        if (isValidPhoto(photo)) {
             String name = getIntent().getStringExtra("name");
 
             Context context = view.getContext();
             Intent intent = new Intent(context, FirstCourseActivity.class);
-
-            // TODO: Check if photo provided is valid photo, otherwise use placeholder photo
 
             intent.putExtra("photo", photo);
             intent.putExtra("name", name);
@@ -42,5 +40,10 @@ public class PhotoActivity extends AppCompatActivity {
             super.onBackPressed();
         } else {
         }
+    }
+
+    // TODO: Check if photo provided is valid photo, otherwise use placeholder photo
+    public boolean isValidPhoto(String photo) {
+        return photo.length() > 0;
     }
 }

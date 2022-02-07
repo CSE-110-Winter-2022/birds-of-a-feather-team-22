@@ -10,14 +10,14 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="330dp"
         android:onClick="onSubmitClicked"
         android:text="@string/submit"
         android:textColor="#424242"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.518" />
 
     <com.google.android.material.textfield.TextInputEditText
 
@@ -25,12 +25,11 @@
         android:layout_width="355dp"
         android:layout_height="50dp"
         android:hint="@string/photo"
-        android:onClick="onSubmitClicked"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+        app:layout_constraintVertical_bias="0.434" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

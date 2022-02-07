@@ -20,19 +20,7 @@ public class SetPhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_photo);
 
         setTitle("Set a Profile Picture");
-        //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar2);
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
-
-        animator.start();
     }
 
 

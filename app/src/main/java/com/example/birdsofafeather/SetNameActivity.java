@@ -19,28 +19,6 @@ public class SetNameActivity extends AppCompatActivity {
 
         setTitle("What's Your Name?");
 
-        //testing
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
-        animator.setDuration(1200);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation){
-                progressBar.setProgress((Integer)animation.getAnimatedValue());
-            }
-        });
-
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-
-
-            }
-        });
-        animator.start();
-
     }
 
     public void onNextClicked(View view) {

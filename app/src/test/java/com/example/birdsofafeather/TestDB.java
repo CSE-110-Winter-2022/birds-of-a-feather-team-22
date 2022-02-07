@@ -30,19 +30,12 @@ import java.util.concurrent.Future;
 @RunWith(AndroidJUnit4.class)
 public class TestDB {
 
-    private AppDatabase db;
-
-    @Before
-    public void setup() {
-        Context context = ApplicationProvider.getApplicationContext();
-        db = AppDatabase.singleton(context);
-    }
-
-
     @Test
     public void insert() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        AppDatabase db = AppDatabase.singleton(context);
+
         db.profileDao().insert(new Profile(1, "Rob", "test"));
-        Thread.sleep(2000);
         Profile p = db.profileDao().getProfile(1);
         assertNotNull(p);
         assertEquals(1, p.getProfileId());
@@ -106,13 +99,4 @@ public class TestDB {
         });
     }
     */
-
-    private void print(String output) {
-        System.out.println(output);
-    }
-
-    @After
-    public void finish() throws IOException {
-        db.close();
-    }
 }

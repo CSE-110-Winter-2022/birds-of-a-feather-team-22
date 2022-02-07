@@ -35,14 +35,16 @@ public class TestDB {
         Context context = ApplicationProvider.getApplicationContext();
         AppDatabase db = AppDatabase.singleton(context);
 
-        db.profileDao().insert(new Profile(1, "Rob", "test"));
+        Profile profile = new Profile(1, "Rob", "test");
+        db.profileDao().insert(profile);
         Profile p = db.profileDao().getProfile(1);
         assertNotNull(p);
         assertEquals(1, p.getProfileId());
         assertEquals("Rob", p.getName());
         assertEquals("test", p.getPhoto());
 
-        db.courseDao().insert(new Course(1, "2022", "Winter", "CSE", "110"));
+        Course c = new Course(1, "2022", "Winter", "CSE", "110");
+        db.courseDao().insert(c);
         int courseId = db.courseDao().getCourseId(1, "2022", "Winter", "CSE", "110");
         List<Course> courses = db.courseDao().getCourseByProfileId(1);
         assertNotNull(courses);

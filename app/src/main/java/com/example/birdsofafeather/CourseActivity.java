@@ -85,6 +85,7 @@ public class CourseActivity extends AppCompatActivity {
 //            return null;
 //        });
 
+        // Autofill fields for the next screen
         for (int i = 0; i < year_spinner.getCount(); i++) {
             if (year_spinner.getItemAtPosition(i).equals(year)) {
                 year_spinner.setSelection(i);

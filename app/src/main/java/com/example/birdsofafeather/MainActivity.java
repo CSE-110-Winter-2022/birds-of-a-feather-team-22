@@ -25,20 +25,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = AppDatabase.singleton(this);
-        boolean isSet = true;
-        this.future = backgroundThreadExecutor.submit(() -> {
+//        this.future = backgroundThreadExecutor.submit(() -> {
             Profile p = db.profileDao().getProfile(1);
             if (p == null) {
-                runOnUiThread(() -> {
+//                runOnUiThread(() -> {
                     Intent intent = new Intent(this, NameActivity.class);
                     startActivity(intent);
-                });
+//                });
             }
 
-            return null;
-        });
+//            return null;
+//        });
 
-        // Check whether profile need to be set
     }
 
 }

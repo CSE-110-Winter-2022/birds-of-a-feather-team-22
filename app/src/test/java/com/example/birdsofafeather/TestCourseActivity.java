@@ -23,8 +23,6 @@ import org.junit.runner.RunWith;
 import java.util.List;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-
-
 @RunWith(AndroidJUnit4.class)
 public class TestCourseActivity {
     @Rule

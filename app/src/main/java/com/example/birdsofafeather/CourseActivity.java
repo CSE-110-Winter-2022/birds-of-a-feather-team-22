@@ -76,14 +76,14 @@ public class CourseActivity extends AppCompatActivity {
         String subject = subject_view.getText().toString();
         String number = number_view.getText().toString();
 
-        this.future = backgroundThreadExecutor.submit(() -> {
+//        this.future = backgroundThreadExecutor.submit(() -> {
             int courseId = db.courseDao().getCourseId(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
             if (year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0 && courseId == 0) {
                 Course course = new Course(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
                 db.courseDao().insert(course);
             }
-            return null;
-        });
+//            return null;
+//        });
 
         for (int i = 0; i < year_spinner.getCount(); i++) {
             if (year_spinner.getItemAtPosition(i).equals(year)) {
@@ -105,12 +105,12 @@ public class CourseActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra("name");
         String photo = getIntent().getStringExtra("photo");
 
-        this.future = backgroundThreadExecutor.submit(() -> {
+//        this.future = backgroundThreadExecutor.submit(() -> {
             Profile userProfile = new Profile(1, name, photo);
             db.profileDao().insert(userProfile);
 
-            return null;
-        });
+//            return null;
+//        });
 
 //        this.future.cancel(true);
 

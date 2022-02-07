@@ -63,11 +63,11 @@ public class FirstCourseActivity extends AppCompatActivity {
             Context context = view.getContext();
             Intent intent = new Intent(context, CourseActivity.class);
 
-            this.future = backgroundThreadExecutor.submit(() -> {
+//            this.future = backgroundThreadExecutor.submit(() -> {
                 Course course = new Course(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
                 db.courseDao().insert(course);
 
-                runOnUiThread(() -> {
+//                runOnUiThread(() -> {
                     intent.putExtra("name", name);
                     intent.putExtra("photo", photo);
                     intent.putExtra("year", year);
@@ -76,9 +76,9 @@ public class FirstCourseActivity extends AppCompatActivity {
                     intent.putExtra("number", number);
                     context.startActivity(intent);
                     finish();
-                });
-                return null;
-            });
+//                });
+//                return null;
+//            });
         }
     }
 

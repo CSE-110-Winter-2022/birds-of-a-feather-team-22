@@ -50,7 +50,6 @@ public class TestDB {
 
         db.courseDao().insert(new Course(1, "2022", "Winter", "CSE", "110"));
         int courseId = db.courseDao().getCourseId(1, "2022", "Winter", "CSE", "110");
-        System.out.println(courseId);
         List<Course> courses = db.courseDao().getCourseByProfileId(1);
         assertNotNull(courses);
         assertEquals(1, courses.size());

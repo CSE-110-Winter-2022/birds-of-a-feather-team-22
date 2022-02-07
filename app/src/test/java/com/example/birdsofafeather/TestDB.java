@@ -29,14 +29,14 @@ import java.util.concurrent.Future;
 
 @RunWith(AndroidJUnit4.class)
 public class TestDB {
-    /*
+
     @Test
     public void insert() throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         AppDatabase db = AppDatabase.singleton(context);
-
         Profile profile = new Profile(1, "Rob", "test");
-        db.profileDao().insert(profile);
+        synchronized(db){ db.profileDao().insert(profile); }
+
         Profile p = db.profileDao().getProfile(1);
         assertNotNull(p);
         assertEquals(1, p.getProfileId());
@@ -44,7 +44,7 @@ public class TestDB {
         assertEquals("test", p.getPhoto());
 
         Course c = new Course(1, "2022", "Winter", "CSE", "110");
-        db.courseDao().insert(c);
+        synchronized(db){ db.courseDao().insert(c); }
         int courseId = db.courseDao().getCourseId(1, "2022", "Winter", "CSE", "110");
         List<Course> courses = db.courseDao().getCourseByProfileId(1);
         assertNotNull(courses);
@@ -57,6 +57,7 @@ public class TestDB {
         assertEquals("110", courses.get(0).getNumber());
     }
 
+    /*
     @Test
     public void delete() {
         this.future = backgroundThreadExecutor.submit(() -> {

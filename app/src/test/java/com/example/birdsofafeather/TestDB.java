@@ -40,8 +40,9 @@ public class TestDB {
 
 
     @Test
-    public void insert() throws Exception {
+    public void insert() throws InterruptedException {
         db.profileDao().insert(new Profile(1, "Rob", "test"));
+        Thread.sleep(2000);
         Profile p = db.profileDao().getProfile(1);
         assertNotNull(p);
         assertEquals(1, p.getProfileId());

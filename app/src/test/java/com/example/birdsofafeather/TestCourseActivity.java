@@ -16,6 +16,7 @@ import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +27,18 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 @RunWith(AndroidJUnit4.class)
 public class TestCourseActivity {
     @Rule
-    public ActivityScenarioRule<CourseActivity> scenarioRule = new ActivityScenarioRule<>(CourseActivity.class);
+    public ActivityScenarioRule<CourseActivity> CourseScenarioRule = new ActivityScenarioRule<>(CourseActivity.class);
+
+    public Context context = ApplicationProvider.getApplicationContext();
+    public AppDatabase db = AppDatabase.singleton(context);
+
+
+
 
     @Test
-    public void testDummy() {
-        ActivityScenario<CourseActivity> scenario = scenarioRule.getScenario();
-        Context context = ApplicationProvider.getApplicationContext();
-        AppDatabase db = AppDatabase.singleton(context);
+    public void testCourseActivity() {
+        ActivityScenario<CourseActivity> scenario = CourseScenarioRule.getScenario();
+
 
         scenario.onActivity(activity -> {
             EditText subject = activity.findViewById(R.id.subject_view);
@@ -50,10 +56,11 @@ public class TestCourseActivity {
             List<Course> courses = db.courseDao().getCourseByProfileId(1);
 
 
-            assertEquals("cse", courses.get(0).getSubject().toString());
-            assertEquals("100", courses.get(0).getNumber().toString());
-            assertEquals("fall", courses.get(0).getQuarter().toString());
-            assertEquals("2022", courses.get(0).getYear().toString());
+            assertEquals("cse", courses.get(0).getSubject());
+            assertEquals("100", courses.get(0).getNumber());
+            assertEquals("fall", courses.get(0).getQuarter());
+            assertEquals("2022", courses.get(0).getYear());
         });
     }
+
 }

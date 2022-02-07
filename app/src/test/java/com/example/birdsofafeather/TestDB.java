@@ -1,3 +1,4 @@
+/*
 package com.example.birdsofafeather;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -57,7 +58,6 @@ public class TestDB {
         assertEquals("110", courses.get(0).getNumber());
     }
 
-    /*
     @Test
     public void delete() {
         this.future = backgroundThreadExecutor.submit(() -> {
@@ -99,5 +99,5 @@ public class TestDB {
             return null;
         });
     }
-    */
 }
+*/

@@ -55,7 +55,6 @@ public class TestDB {
         assertEquals("Winter", courses.get(0).getQuarter());
         assertEquals("CSE", courses.get(0).getSubject());
         assertEquals("110", courses.get(0).getNumber());
-        db.clearAllTables();
     }
 
     /*

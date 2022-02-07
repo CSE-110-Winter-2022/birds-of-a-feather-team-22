@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="quarter_year_array">
-        <item>Fall 2021</item>
-        <item>Summer 2021</item>
-        <item>Spring 2021</item>
-        <item>Winter 2021</item>
-        <item>Fall 2020</item>
-        <item>Summer 2020</item>
-        <item>Spring 2020</item>
-        <item>Winter 2020</item>
+    <string-array name="quarter_array">
+        <item>Fall</item>
+        <item>Winter</item>
+        <item>Spring</item>
+        <item>Summer</item>
+    </string-array>
+
+    <string-array name="year_array">
+        <item>2015</item>
+        <item>2016</item>
+        <item>2017</item>
+        <item>2018</item>
+        <item>2019</item>
+        <item>2020</item>
+        <item>2021</item>
+        <item>2022</item>
     </string-array>
 
 </resources>

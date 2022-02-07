@@ -22,12 +22,6 @@
             android:name=".NameActivity"
             android:exported="false" />
         <activity
-            android:name=".SetCoursesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SetPhotoActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

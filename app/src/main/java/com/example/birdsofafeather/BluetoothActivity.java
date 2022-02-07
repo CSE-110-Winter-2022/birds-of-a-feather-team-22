@@ -6,19 +6,50 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+=======
+import android.widget.ProgressBar;
+>>>>>>> 24ebf21a91d5dfa243f89f1bace7ef76c6eb8c7d
 
 public class BluetoothActivity extends AppCompatActivity {
-
+//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
+
+        setTitle("Your Birds of a Feather...");
+
+        //progress bar at start
+        ProgressBar progressBar = findViewById(R.id.progressBar4);
+
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, progressBar.getMax());
+        animator.setDuration(1200);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation){
+                progressBar.setProgress((Integer)animation.getAnimatedValue());
+            }
+        });
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+
+            }
+        });
+        animator.start();
+
+
     }
     public void onClickStart(View view) {
 

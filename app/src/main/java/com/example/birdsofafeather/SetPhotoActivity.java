@@ -20,11 +20,16 @@ public class SetPhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_photo);
 
+<<<<<<< HEAD
+=======
+        setTitle("Set a Profile Picture");
+>>>>>>> 24ebf21a91d5dfa243f89f1bace7ef76c6eb8c7d
 
     }
 
 
     public void onNextClicked(View view){
+<<<<<<< HEAD
         Context context = view.getContext();
         Intent intent = new Intent(context, SetCoursesActivity.class);
 
@@ -40,6 +45,10 @@ public class SetPhotoActivity extends AppCompatActivity {
         }
 
 
+=======
+        Intent intent = new Intent(this, SetCoursesActivity.class);
+        startActivity(intent);
+>>>>>>> 24ebf21a91d5dfa243f89f1bace7ef76c6eb8c7d
 
 
     }

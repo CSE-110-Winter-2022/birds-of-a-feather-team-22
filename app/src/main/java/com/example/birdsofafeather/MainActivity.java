@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
             return null;
         });
 
-        // Check whether profile need to be set
     }
 
 }

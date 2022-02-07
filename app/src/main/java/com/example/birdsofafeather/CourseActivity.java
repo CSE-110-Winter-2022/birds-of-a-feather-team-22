@@ -131,6 +131,6 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     public boolean isExistingCourse(int courseId) {
-        return courseId == 0;
+        return courseId != 0;
     }
 }

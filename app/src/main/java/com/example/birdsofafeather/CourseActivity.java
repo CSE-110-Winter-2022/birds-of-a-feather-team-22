@@ -76,14 +76,14 @@ public class CourseActivity extends AppCompatActivity {
         String subject = subject_view.getText().toString();
         String number = number_view.getText().toString();
 
-//        this.future = backgroundThreadExecutor.submit(() -> {
+        this.future = backgroundThreadExecutor.submit(() -> {
             int courseId = db.courseDao().getCourseId(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
             if (isValidCourse(year, quarter, subject, number) && !isExistingCourse(courseId)) {
                 Course course = new Course(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
                 db.courseDao().insert(course);
             }
-//            return null;
-//        });
+            return null;
+        });
 
         // Autofill fields for the next screen
         for (int i = 0; i < year_spinner.getCount(); i++) {
@@ -103,17 +103,17 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     public void onDoneClicked(View view) {
-        String name = getIntent().getStringExtra("name");
-        String photo = getIntent().getStringExtra("photo");
+//        String name = getIntent().getStringExtra("name");
+//        String photo = getIntent().getStringExtra("photo");
 
 //        this.future = backgroundThreadExecutor.submit(() -> {
-            Profile userProfile = new Profile(1, name, photo);
-            db.profileDao().insert(userProfile);
-
+//            Profile userProfile = new Profile(1, name, photo);
+//            db.profileDao().insert(userProfile);
+//
 //            return null;
 //        });
 
-//        this.future.cancel(true);
+        this.future.cancel(true);
 
         finish();
     }

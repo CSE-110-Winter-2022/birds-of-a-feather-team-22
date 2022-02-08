@@ -63,22 +63,23 @@ public class FirstCourseActivity extends AppCompatActivity {
             Context context = view.getContext();
             Intent intent = new Intent(context, CourseActivity.class);
 
-//            this.future = backgroundThreadExecutor.submit(() -> {
+            this.future = backgroundThreadExecutor.submit(() -> {
                 Course course = new Course(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
                 db.courseDao().insert(course);
-
-//                runOnUiThread(() -> {
-                    intent.putExtra("name", name);
-                    intent.putExtra("photo", photo);
-                    intent.putExtra("year", year);
-                    intent.putExtra("quarter", quarter);
-                    intent.putExtra("subject", subject);
-                    intent.putExtra("number", number);
+                Profile userProfile = new Profile(1, name, photo);
+                db.profileDao().insert(userProfile);
+                runOnUiThread(() -> {
+//                    intent.putExtra("name", name);
+//                    intent.putExtra("photo", photo);
+//                    intent.putExtra("year", year);
+//                    intent.putExtra("quarter", quarter);
+//                    intent.putExtra("subject", subject);
+//                    intent.putExtra("number", number);
                     context.startActivity(intent);
                     finish();
-//                });
-//                return null;
-//            });
+                });
+                return null;
+            });
         }
     }
 

@@ -41,7 +41,7 @@ public class SetupProfileUITest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
+//
     @Test
     public void uI_Test() {
         ViewInteraction textInputEditText = onView(

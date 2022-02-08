@@ -27,17 +27,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("Birds of a Feather");
         db = AppDatabase.singleton(this);
-//        this.future = backgroundThreadExecutor.submit(() -> {
+        this.future = backgroundThreadExecutor.submit(() -> {
             Profile p = db.profileDao().getProfile(1);
             if (p == null) {
-//                runOnUiThread(() -> {
+                runOnUiThread(() -> {
                     Intent intent = new Intent(this, NameActivity.class);
                     startActivity(intent);
-//                });
+                });
             }
 
-//            return null;
-//        });
+            return null;
+        });
 
     }
 

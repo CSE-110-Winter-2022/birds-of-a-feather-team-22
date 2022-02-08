@@ -15,7 +15,9 @@ public interface ProfileDao {
     @Delete
     void delete(Profile profile);
 
-    @Query("SELECT * FROM PROFILE WHERE profileId=:profileId")
+    @Query("SELECT * FROM PROFILE WHERE profile_id=:profileId")
     Profile getProfile(int profileId);
 
+    @Query("SELECT MAX(profile_id) FROM PROFILE")
+    int maxId();
 }

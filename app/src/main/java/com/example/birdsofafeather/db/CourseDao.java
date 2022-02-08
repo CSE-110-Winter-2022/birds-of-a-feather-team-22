@@ -17,7 +17,7 @@ public interface CourseDao {
 
     @Transaction
     @Query("SELECT * FROM COURSE WHERE profile_id=:profileId")
-    List<Course> getCourseByProfileId(int profileId);
+    List<Course> getCoursesByProfileId(int profileId);
 
     @Query("SELECT course_id FROM COURSE WHERE profile_id=:profileId AND year=:year AND quarter=:quarter AND subject=:subject AND number=:number")
     int getCourseId(int profileId, String year, String quarter, String subject, String number);
@@ -30,5 +30,8 @@ public interface CourseDao {
 
     @Query("SELECT COUNT(*) FROM COURSE")
     int count();
+
+    @Query("SELECT MAX(course_id) FROM COURSE")
+    int maxId();
 
 }

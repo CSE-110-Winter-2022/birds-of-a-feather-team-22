@@ -71,10 +71,10 @@ public class FirstCourseActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
 //                    intent.putExtra("name", name);
 //                    intent.putExtra("photo", photo);
-//                    intent.putExtra("year", year);
-//                    intent.putExtra("quarter", quarter);
-//                    intent.putExtra("subject", subject);
-//                    intent.putExtra("number", number);
+                    intent.putExtra("year", year);
+                    intent.putExtra("quarter", quarter);
+                    intent.putExtra("subject", subject);
+                    intent.putExtra("number", number);
                     context.startActivity(intent);
                     finish();
                 });

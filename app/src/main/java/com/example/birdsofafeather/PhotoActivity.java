@@ -17,6 +17,8 @@ public class PhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         this.photo_view = findViewById(R.id.photo_view);
+
+        this.setTitle("Setup: Add Photo");
     }
 
     public void onSubmitClicked(View view) {
@@ -27,7 +29,7 @@ public class PhotoActivity extends AppCompatActivity {
             String name = getIntent().getStringExtra("name");
 
             Context context = view.getContext();
-            Intent intent = new Intent(context, FirstCourseActivity.class);
+            Intent intent = new Intent(context, CourseActivity.class);
 
             intent.putExtra("photo", photo);
             intent.putExtra("name", name);

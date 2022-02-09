@@ -18,6 +18,8 @@ public class NameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name);
         this.name_view = findViewById(R.id.name_view);
+
+        this.setTitle("Setup: Add Name");
     }
 
     public void onConfirmClicked(View view) {

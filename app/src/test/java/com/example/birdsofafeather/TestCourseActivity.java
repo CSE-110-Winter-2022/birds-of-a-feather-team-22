@@ -46,8 +46,8 @@ public class TestCourseActivity {
 
             subject.setText("CSE");
             number.setText("100");
-            quarter.setSelection(0);
-            year.setSelection(0);
+            quarter.setSelection(1);
+            year.setSelection(1);
 
             enterButton.performClick();
             List<Course> courses = db.courseDao().getCoursesByProfileId(1);

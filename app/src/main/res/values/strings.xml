@@ -10,4 +10,6 @@
     <string name="year">Year</string>
     <string name="subject">Subject</string>
     <string name="done">Done</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 </resources>

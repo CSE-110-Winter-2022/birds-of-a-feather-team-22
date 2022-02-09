@@ -16,16 +16,13 @@
             android:name=".CourseActivity"
             android:exported="false" />
         <activity
-            android:name=".FirstCourseActivity"
-            android:exported="false" />
-        <activity
             android:name=".PhotoActivity"
             android:exported="false" />
         <activity
             android:name=".NameActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

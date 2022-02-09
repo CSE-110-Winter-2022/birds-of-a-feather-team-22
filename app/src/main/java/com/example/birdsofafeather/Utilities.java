@@ -12,24 +12,20 @@ public class Utilities {
         alertBuilder
                 .setTitle("Alert")
                 .setMessage(message)
-                .setPositiveButton("Ok", (dialog, id) -> {
-                    dialog.cancel();
-                })
+                .setPositiveButton("Ok", (dialog, id) -> dialog.cancel())
                 .setCancelable(true);
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
     }
 
-    public static void showError(Activity activity, String message){
+    public static void showError(Activity activity, String title, String message){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
 
         alertBuilder
-                .setTitle("Error")
+                .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("Ok", (dialog, id) -> {
-                    dialog.cancel();
-                })
+                .setPositiveButton("Ok", (dialog, id) -> dialog.cancel())
                 .setCancelable(true);
 
         AlertDialog alertDialog = alertBuilder.create();
@@ -46,6 +42,6 @@ public class Utilities {
     }
 
     public static String formatString(String str) {
-        return str.trim().toLowerCase();
+        return str.trim().toUpperCase();
     }
 }

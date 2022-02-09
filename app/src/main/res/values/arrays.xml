@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="year_array">
+        <item>Year</item>
         <item>2022</item>
         <item>2021</item>
         <item>2020</item>
@@ -8,10 +9,11 @@
         <item>2018</item>
     </string-array>
     <string-array name="quarter_array">
+        <item>Quarter</item>
         <item>Fall</item>
         <item>Winter</item>
         <item>Spring</item>
-        <item>Summer I</item>
-        <item>Summer II</item>
+        <item>Summer Session 1</item>
+        <item>Summer Session 2</item>
     </string-array>
 </resources>

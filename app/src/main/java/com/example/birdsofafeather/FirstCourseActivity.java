@@ -33,11 +33,11 @@ public class FirstCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_course);
 
-        year_spinner = findViewById(R.id.year_spinner);
-        quarter_spinner = findViewById(R.id.quarter_spinner);
-        subject_view = findViewById(R.id.subject_view);
-        number_view = findViewById(R.id.number_view);
-        db = AppDatabase.singleton(this);
+        this.year_spinner = findViewById(R.id.year_spinner);
+        this.quarter_spinner = findViewById(R.id.quarter_spinner);
+        this.subject_view = findViewById(R.id.subject_view);
+        this.number_view = findViewById(R.id.number_view);
+        this.db = AppDatabase.singleton(this);
 
         ArrayAdapter<CharSequence> year_adapter = ArrayAdapter.createFromResource(this, R.array.year_array, android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array, android.R.layout.simple_spinner_dropdown_item);
@@ -45,15 +45,15 @@ public class FirstCourseActivity extends AppCompatActivity {
         year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        year_spinner.setAdapter(year_adapter);
-        quarter_spinner.setAdapter(quarter_adapter);
+        this.year_spinner.setAdapter(year_adapter);
+        this.quarter_spinner.setAdapter(quarter_adapter);
     }
 
     public void onEnterClicked(View view) {
-        String year = year_spinner.getSelectedItem().toString();
-        String quarter = quarter_spinner.getSelectedItem().toString();
-        String subject = subject_view.getText().toString();
-        String number = number_view.getText().toString();
+        String year = this.year_spinner.getSelectedItem().toString().trim();
+        String quarter = this.quarter_spinner.getSelectedItem().toString().trim();
+        String subject = this.subject_view.getText().toString().trim().toUpperCase();
+        String number = this.number_view.getText().toString().trim();
 
 
         if (isValidCourse(year, quarter, subject, number)) {
@@ -63,11 +63,11 @@ public class FirstCourseActivity extends AppCompatActivity {
             Context context = view.getContext();
             Intent intent = new Intent(context, CourseActivity.class);
 
-            this.future = backgroundThreadExecutor.submit(() -> {
-                Course course = new Course(1, Utilities.formatString(year), Utilities.formatString(quarter), Utilities.formatString(subject), Utilities.formatString(number));
-                db.courseDao().insert(course);
+            this.future = this.backgroundThreadExecutor.submit(() -> {
+                Course course = new Course(1, year, quarter, subject, number);
+                this.db.courseDao().insert(course);
                 Profile userProfile = new Profile(1, name, photo);
-                db.profileDao().insert(userProfile);
+                this.db.profileDao().insert(userProfile);
                 runOnUiThread(() -> {
 //                    intent.putExtra("name", name);
 //                    intent.putExtra("photo", photo);
@@ -84,14 +84,56 @@ public class FirstCourseActivity extends AppCompatActivity {
     }
 
     public boolean isValidCourse(String year, String quarter, String subject, String number) {
-        return year.length() > 0 && quarter.length() > 0 && subject.length() > 0 && number.length() > 0;
+
+        if (subject.trim().length() <= 0) {
+            Utilities.showError(this, "Error: Invalid Input", "Please enter a valid subject for your course.");
+            return false;
+        }
+
+        else {
+            for (char c : subject.trim().toCharArray()) {
+                if (!Character.isLetter(c)) {
+                    Utilities.showError(this, "Error: Invalid Input", "Please enter a valid subject for your course.");
+                    return false;
+                }
+            }
+        }
+
+        if (number.trim().length() <= 0 ) {
+            Utilities.showError(this, "Error: Invalid Input", "Please enter a valid number for your course.");
+            return false;
+        }
+        else {
+            for (char c : number.trim().toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    Utilities.showError(this, "Error: Invalid Input", "Please enter a valid number for your course.");
+                    return false;
+                }
+            }
+        }
+
+        if (quarter.equals("Quarter")) {
+            Utilities.showError(this, "Error: Invalid Selection", "Please select a quarter for your course.");
+            return false;
+        }
+
+        if (year.equals("Year")) {
+            Utilities.showError(this, "Error: Invalid Selection", "Please select a year for your course.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void clearFields() {
+        this.year_spinner.setSelection(0);
+        this.quarter_spinner.setSelection(0);
+        this.subject_view.setText("");
+        this.number_view.setText("");
     }
 
     @Override
     public void onBackPressed() {
-        if (false) {
-            super.onBackPressed();
-        } else {
-        }
+        clearFields();
     }
 }

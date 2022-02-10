@@ -26,12 +26,13 @@ import java.util.function.Consumer;
 
 public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.ViewHolder>{
         private final List<Course> sharedCourses;
-
+        private final int profileId;
 
         //constructor
-        public ViewProfileAdapter(List<Course> sharedCourses){
+        public ViewProfileAdapter(List<Course> sharedCourses, int profileId){
             super();
             this.sharedCourses = sharedCourses;
+            this.profileId = profileId;
 
         }
 
@@ -74,7 +75,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
             public void setCourse(Course course){
                 this.course = course;
                 this.courseSubjectTextView.setText(course.getSubject());
-                this.courseIdTextView.setText(course.getCourseId());
+                this.courseIdTextView.setText(course.getNumber());
                 this.courseQuarterTextView.setText(course.getQuarter());
                 this.courseYearTextView.setText(course.getYear());
             }

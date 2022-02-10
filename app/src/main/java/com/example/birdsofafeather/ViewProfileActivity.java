@@ -16,7 +16,10 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
+import com.example.birdsofafeather.db.CourseDao;
+import com.example.birdsofafeather.db.ProfileDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,16 @@ public class ViewProfileActivity extends AppCompatActivity {
         //Intent intent = getIntent();
         //int profileId = intent.getIntExtra("profile_id", 0);
 
+        int profileId = 3;
+
+        AppDatabase db = AppDatabase.singleton(BoFApplication.getContext());
+        CourseDao courseDao = db.courseDao();
+        ProfileDao profileDao = db.profileDao();
+
+        //set name
+        TextView nameTextView = findViewById(R.id.profile_name_textview);
+        nameTextView.setText(profileDao.getProfile(profileId).getName());
+
         //List<Course> sharedCourses = databaseTracker.getSharedCourses(1);
         Course testCourse = new Course(1,"2016", "fall","CSE","110");
         List<Course> sharedCourses = new ArrayList<Course>();
@@ -47,7 +60,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         sharedCoursesLayoutManager = new LinearLayoutManager(this);
         sharedCoursesRecyclerView.setLayoutManager(sharedCoursesLayoutManager);
 
-        viewProfileAdapter = new ViewProfileAdapter(sharedCourses);
+        viewProfileAdapter = new ViewProfileAdapter(sharedCourses, profileId);
         sharedCoursesRecyclerView.setAdapter(viewProfileAdapter);
     }
 

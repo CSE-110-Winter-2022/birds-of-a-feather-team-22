@@ -52,19 +52,23 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private static ImageView picture;
-        private static TextView name;
+        private final TextView name;
         private final TextView numMatches;
+        private final TextView userID;
 
         ViewHolder(View view) {
             super(view);
             this.picture = view.findViewById(R.id.match_userPicture);
             this.name = view.findViewById(R.id.match_name);
             this.numMatches = view.findViewById(R.id.match_classesMatched);
+            this.userID = view.findViewById(R.id.match_userID);
         }
 
         public void setMatch(Profile profile) throws IOException {
             this.name.setText(profile.getName());
             this.numMatches.setText("Classes matched: " + profile.getProfileId());
+            this.userID.setText(new Integer(profile.getProfileId()).toString());
+
             InputStream url = (InputStream) new java.net.URL(profile.getPhoto()).openStream();
             Bitmap picture = BitmapFactory.decodeStream(url);
             this.picture.setImageBitmap(picture);

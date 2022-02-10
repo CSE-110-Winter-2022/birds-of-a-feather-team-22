@@ -88,15 +88,15 @@
 
     <TextView
         android:id="@+id/matchesFound"
-        android:layout_width="294dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="246dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="24dp"
         android:text="Student Matches"
         android:textAlignment="center"
         android:textSize="10pt"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

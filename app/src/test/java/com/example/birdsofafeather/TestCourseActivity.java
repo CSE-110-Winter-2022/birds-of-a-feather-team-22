@@ -39,7 +39,6 @@ public class TestCourseActivity {
     @Test
     public void testCourseActivity() throws IOException {
         ActivityScenario<CourseActivity> scenario = CourseScenarioRule.getScenario();
-        //Profile p1 = new Profile (1, "test_name", "test_photo");
 
         scenario.onActivity(activity -> {
             EditText subject = activity.findViewById(R.id.subject_view);
@@ -53,15 +52,20 @@ public class TestCourseActivity {
             quarter.setSelection(1);
             year.setSelection(1);
 
-            enterButton.performClick();
+            //mimic entering course into db (can't actually do it since we are using new local test db)
+            //enterButton.performClick();
 
-            //mimic entering course into db (can't actually do it since we are using local test db)
-//            Course c1 = new Course(1, 1, "2022", "Fall", "CSE","100");
-//            db.profileDao().insert(p1);
-//            db.courseDao().insert(c1);
+            Profile p1 = new Profile (1, "test_name", "test_photo");
+            Course c1 = new Course(1, p1.getProfileId(), year.getSelectedItem().toString(),
+                    quarter.getSelectedItem().toString(), subject.getText().toString(),number.getText().toString());
+
+            db.profileDao().insert(p1);
+            db.courseDao().insert(c1);
+
+            assertEquals(db.profileDao().count(), 1);
+            assertEquals(db.courseDao().count(), 1);
 
             List<Course> courses = db.courseDao().getCoursesByProfileId(1);
-
 
             assertEquals("CSE", courses.get(0).getSubject());
             assertEquals("100", courses.get(0).getNumber());
@@ -71,5 +75,6 @@ public class TestCourseActivity {
         });
 
     }
+
 
 }

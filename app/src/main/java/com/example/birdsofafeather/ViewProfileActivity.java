@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.CourseDao;
+import com.example.birdsofafeather.db.Profile;
 import com.example.birdsofafeather.db.ProfileDao;
 
 import java.util.ArrayList;
@@ -30,31 +31,47 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected  ViewProfileAdapter viewProfileAdapter;
 
     private DatabaseTracker databaseTracker;
+    private TextView nameTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
+
         /**comment out for now, until full implementation from HomeScreen*/
         //Intent intent = getIntent();
         //int profileId = intent.getIntExtra("profile_id", 0);
 
         int profileId = 3;
 
-        AppDatabase db = AppDatabase.singleton(BoFApplication.getContext());
+        AppDatabase db = AppDatabase.singleton(this);
         CourseDao courseDao = db.courseDao();
         ProfileDao profileDao = db.profileDao();
 
+        Profile testProfile = new Profile(3,"Drake", "https://www.google.com");
+        profileDao.insert(testProfile);
+
+        setName();
+        setPhoto();
+
         //set name
-        TextView nameTextView = findViewById(R.id.profile_name_textview);
+        nameTextView = findViewById(R.id.profile_name_textview);
         nameTextView.setText(profileDao.getProfile(profileId).getName());
 
-        //List<Course> sharedCourses = databaseTracker.getSharedCourses(1);
-        Course testCourse = new Course(1,"2016", "fall","CSE","110");
+        //List<Course> sharedCourses = databaseTracker.getSharedCourses(profileId);
+        Course testCourse1 = new Course(3,"2016", "Fall","CSE","11");
+        Course testCourse2 = new Course(3,"2017", "Spring","CSE","100");
+        Course testCourse3 = new Course(3,"2017", "Spring","MATH","20");
+        Course testCourse4 = new Course(3,"2018", "Fall","CSE","110");
+        Course testCourse5 = new Course(3,"2018", "Winter","CSE","120");
         List<Course> sharedCourses = new ArrayList<Course>();
         
-        sharedCourses.add(testCourse); 
-        
+        sharedCourses.add(testCourse1);
+        sharedCourses.add(testCourse2);
+        sharedCourses.add(testCourse3);
+        sharedCourses.add(testCourse4);
+        sharedCourses.add(testCourse5);
+
         sharedCoursesRecyclerView = findViewById(R.id.shared_courses_view);
 
         sharedCoursesLayoutManager = new LinearLayoutManager(this);
@@ -62,6 +79,14 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         viewProfileAdapter = new ViewProfileAdapter(sharedCourses, profileId);
         sharedCoursesRecyclerView.setAdapter(viewProfileAdapter);
+    }
+
+    private void setName(){
+
+    }
+
+    private void setPhoto(){
+
     }
 
     public void onClickStart(View view) {

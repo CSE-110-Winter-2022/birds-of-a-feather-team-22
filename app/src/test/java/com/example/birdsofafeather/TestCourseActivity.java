@@ -30,7 +30,7 @@ public class TestCourseActivity {
     public ActivityScenarioRule<CourseActivity> CourseScenarioRule = new ActivityScenarioRule<>(CourseActivity.class);
 
     public Context context = ApplicationProvider.getApplicationContext();
-    public AppDatabase db = AppDatabase.singleton(context);
+    public AppDatabase db = AppDatabase.useTestSingleton(context);
 
     @Test
     public void testCourseActivity() {
@@ -53,9 +53,9 @@ public class TestCourseActivity {
             List<Course> courses = db.courseDao().getCoursesByProfileId(1);
 
 
-            assertEquals("cse", courses.get(0).getSubject());
+            assertEquals("CSE", courses.get(0).getSubject());
             assertEquals("100", courses.get(0).getNumber());
-            assertEquals("fall", courses.get(0).getQuarter());
+            assertEquals("Fall", courses.get(0).getQuarter());
             assertEquals("2022", courses.get(0).getYear());
         });
     }

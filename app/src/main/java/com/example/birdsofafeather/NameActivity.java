@@ -22,6 +22,10 @@ public class NameActivity extends AppCompatActivity {
         this.name_view = findViewById(R.id.name_view);
 
         this.setTitle("Setup: Add Name");
+
+        /**TESTING PURPOSES ONLY-- REMOVE ONCE FINISHED*/
+        Intent intent = new Intent(this, ViewProfileActivity.class);
+        startActivity(intent);
     }
 
     public void onConfirmClicked(View view) {

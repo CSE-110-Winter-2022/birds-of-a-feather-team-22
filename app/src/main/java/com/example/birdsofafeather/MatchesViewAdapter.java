@@ -1,5 +1,7 @@
 package com.example.birdsofafeather;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.birdsofafeather.db.Profile;
 
 import java.io.IOException;
@@ -19,10 +22,11 @@ import java.util.List;
 
 public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.ViewHolder> {
     private final List<Profile> matches;
-
-    public MatchesViewAdapter(List<Profile> matches) {
+    private Context context;
+    public MatchesViewAdapter(List<Profile> matches, Context context) {
         super();
         this.matches = matches;
+        this.context = context;
     }
 
     @NonNull
@@ -38,7 +42,7 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
-            holder.setMatch(this.matches.get(position));
+            holder.setMatch(this.matches.get(position),this.context);
         } catch (IOException exception) {
             ViewHolder.picture.setImageResource(R.drawable.feather_1);
         }
@@ -62,12 +66,14 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
             this.numMatches = view.findViewById(R.id.match_classesMatched);
         }
 
-        public void setMatch(Profile profile) throws IOException {
+        public void setMatch(Profile profile,Context context) throws IOException {
             this.name.setText(profile.getName());
             this.numMatches.setText("Classes matched: " + profile.getProfileId());
-            InputStream url = (InputStream) new java.net.URL(profile.getPhoto()).openStream();
+            Glide.with(context).load(profile.getPhoto()).into(picture);
+            /*InputStream url = (InputStream) new java.net.URL(profile.getPhoto()).openStream();
             Bitmap picture = BitmapFactory.decodeStream(url);
             this.picture.setImageBitmap(picture);
+            */
         }
 
     }

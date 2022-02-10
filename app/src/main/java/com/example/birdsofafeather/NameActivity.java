@@ -12,6 +12,8 @@ import android.widget.TextView;
 public class NameActivity extends AppCompatActivity {
 
     private TextView name_view;
+    private final static int MAX_NAME_LENGTH = 20;
+    private AlertDialog mostRecentDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,14 @@ public class NameActivity extends AppCompatActivity {
     // TODO: Check if name provided is a valid name
     public boolean isValidName(String name) {
         if (name.length() <= 0) {
-            Utilities.showError(this, "Error: Invalid Input", "Please enter a valid name for your profile.");
+            mostRecentDialog = Utilities.showError(this, "Error: Invalid Input", "Please enter a valid name for your profile.");
             return false;
         }
 
+        if (name.length() >= MAX_NAME_LENGTH){
+            mostRecentDialog = Utilities.showError(this, "Error: Invalid Input",
+                    String.format("Please enter a name less than %d characters", MAX_NAME_LENGTH));
+        }
         return true;
     }
 }

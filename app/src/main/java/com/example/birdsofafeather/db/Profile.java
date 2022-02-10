@@ -8,15 +8,14 @@ import androidx.room.PrimaryKey;
 public class Profile {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo (name = "profileId")
+    @ColumnInfo(name = "profile_id")
     private int profileId;
 
-    @ColumnInfo (name = "name")
+    @ColumnInfo(name = "name")
     private String name;
 
-    @ColumnInfo (name = "photo")
+    @ColumnInfo(name = "photo")
     private String photo;
-
 
 
     public Profile(int profileId, String name, String photo) {
@@ -48,7 +47,5 @@ public class Profile {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
-
-
 
 }

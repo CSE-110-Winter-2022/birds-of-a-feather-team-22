@@ -40,8 +40,8 @@ import org.junit.runner.RunWith;
 public class SetupProfileUITest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
+    public ActivityTestRule<HomeScreenActivity> mActivityTestRule = new ActivityTestRule<>(HomeScreenActivity.class);
+//
     @Test
     public void uI_Test() {
         ViewInteraction textInputEditText = onView(

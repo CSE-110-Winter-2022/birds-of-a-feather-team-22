@@ -8,18 +8,19 @@
         <entry key="..\:/Users/ferna/AndroidStudioProjects/birds-of-a-feather-team-22/app/src/main/res/layout/activity_set_courses.xml" value="0.264" />
         <entry key="..\:/Users/ferna/AndroidStudioProjects/birds-of-a-feather-team-22/app/src/main/res/layout/activity_set_name.xml" value="0.264" />
         <entry key="..\:/Users/ferna/AndroidStudioProjects/birds-of-a-feather-team-22/app/src/main/res/layout/activity_set_photo.xml" value="0.6" />
-        <entry key="..\:/Users/rober/AppData/Local/Android/Sdk/platforms/android-32/data/res/layout/simple_spinner_dropdown_item.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_bluetooth.xml" value="0.2" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_course.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_course1.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_first_course.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_first_course1.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_main.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_main1.xml" value="0.18958333333333333" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_name.xml" value="0.22" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_photo.xml" value="0.22" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_set_courses.xml" value="0.21041666666666667" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/BirdsOfAFeather/app/src/main/res/layout/activity_set_name.xml" value="0.1" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_bluetooth.xml" value="0.26811594202898553" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_course.xml" value="0.25" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_first_course.xml" value="0.25" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_first_course1.xml" value="0.67" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_home_screen.xml" value="0.2" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_main.xml" value="0.26811594202898553" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_name.xml" value="0.2" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_photo.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_set_courses.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_set_name.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_set_photo.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/activity_view_profile.xml" value="0.26811594202898553" />
+        <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/match_row.xml" value="0.20520833333333333" />
         <entry key="app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.22760416666666666" />
         <entry key="app/src/main/res/drawable-anydpi/next_arrow_1.xml" value="0.22760416666666666" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.21145833333333333" />

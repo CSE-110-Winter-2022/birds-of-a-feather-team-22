@@ -32,9 +32,6 @@ public class TestCourseActivity {
     public Context context = ApplicationProvider.getApplicationContext();
     public AppDatabase db = AppDatabase.singleton(context);
 
-
-
-
     @Test
     public void testCourseActivity() {
         ActivityScenario<CourseActivity> scenario = CourseScenarioRule.getScenario();
@@ -49,11 +46,11 @@ public class TestCourseActivity {
 
             subject.setText("CSE");
             number.setText("100");
-            quarter.setSelection(0);
-            year.setSelection(0);
+            quarter.setSelection(1);
+            year.setSelection(1);
 
             enterButton.performClick();
-            List<Course> courses = db.courseDao().getCourseByProfileId(1);
+            List<Course> courses = db.courseDao().getCoursesByProfileId(1);
 
 
             assertEquals("cse", courses.get(0).getSubject());

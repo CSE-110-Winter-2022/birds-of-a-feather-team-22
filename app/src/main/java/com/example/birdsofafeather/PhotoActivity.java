@@ -10,23 +10,26 @@ import android.widget.TextView;
 
 public class PhotoActivity extends AppCompatActivity {
 
+    private TextView photo_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
+        this.photo_view = findViewById(R.id.photo_view);
+
+        this.setTitle("Setup: Add Photo");
     }
 
     public void onSubmitClicked(View view) {
-        TextView photo_view = findViewById(R.id.photo_view);
-        String photo = photo_view.getText().toString();
 
-        if (photo.length() > 0) {
+        String photo = this.photo_view.getText().toString().trim();
+
+        if (isValidPhoto(photo)) {
             String name = getIntent().getStringExtra("name");
 
             Context context = view.getContext();
-            Intent intent = new Intent(context, FirstCourseActivity.class);
-
-            // TODO: Check if photo provided is valid photo, otherwise use placeholder photo
+            Intent intent = new Intent(context, CourseActivity.class);
 
             intent.putExtra("photo", photo);
             intent.putExtra("name", name);
@@ -38,9 +41,20 @@ public class PhotoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (false) {
-            super.onBackPressed();
-        } else {
+        clearFields();
+    }
+
+    private void clearFields() {
+        this.photo_view.setText("");
+    }
+
+    // TODO: Check if photo provided is valid photo, otherwise use placeholder photo
+    public boolean isValidPhoto(String photo) {
+        if (photo.length() <= 0) {
+            Utilities.showError(this, "Error: Invalid Input", "Please enter a valid photo URL for your profile.");
+            return false;
         }
+
+        return true;
     }
 }

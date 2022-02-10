@@ -29,7 +29,7 @@ public class TestPhotoActivity {
     public ActivityScenarioRule<PhotoActivity> scenarioRule = new ActivityScenarioRule<>(PhotoActivity.class);
 
     @Test
-    public void testDummy() {
+    public void testPhotoActivity() {
         ActivityScenario<PhotoActivity> scenario = scenarioRule.getScenario();
 
         scenario.onActivity(activity -> {
@@ -41,5 +41,20 @@ public class TestPhotoActivity {
 
             assertEquals("test_photo.png", photo.getText().toString());
         });
+    }
+
+    @Test
+    public void testInvalidPhotos() {
+        ActivityScenario<PhotoActivity> scenario = scenarioRule.getScenario();
+        scenario.onActivity(activity -> {
+            EditText photo = activity.findViewById(R.id.photo_view);
+            Button submitButton = activity.findViewById(R.id.submit_button);
+
+            photo.setText("test_photo.png");
+            submitButton.performClick();
+
+            assertEquals("test_photo.png", photo.getText().toString());
+        });
+
     }
 }

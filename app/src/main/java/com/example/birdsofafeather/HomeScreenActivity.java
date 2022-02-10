@@ -45,7 +45,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
             return null;
         });
-
+        //
         data = new ArrayList<>();
         Profile dummy1 = new Profile(3, "Bob", "test");
         Profile dummy2 = new Profile(4, "Sam", "test");

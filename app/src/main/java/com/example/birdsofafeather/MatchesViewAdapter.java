@@ -23,6 +23,7 @@ import java.util.List;
 public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.ViewHolder> {
     private final List<Profile> matches;
     private Context context;
+
     public MatchesViewAdapter(List<Profile> matches, Context context) {
         super();
         this.matches = matches;
@@ -42,7 +43,7 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
-            holder.setMatch(this.matches.get(position),this.context);
+            holder.setMatch(this.matches.get(position), this.context);
         } catch (IOException exception) {
             ViewHolder.picture.setImageResource(R.drawable.feather_1);
         }
@@ -68,11 +69,11 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
             this.userID = view.findViewById(R.id.match_userID);
         }
 
-        public void setMatch(Profile profile,Context context) throws IOException {
+        public void setMatch(Profile profile, Context context) throws IOException {
             this.name.setText(profile.getName());
             this.numMatches.setText("Classes matched: " + profile.getProfileId());
-
-        }
             this.userID.setText(new Integer(profile.getProfileId()).toString());
             Glide.with(context).load(profile.getPhoto()).into(picture);
-         }
+        }
+    }
+}

@@ -51,9 +51,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         Profile testProfile = new Profile(3,"Drake", "https://www.google.com");
         profileDao.insert(testProfile);
 
-        setName();
-        setPhoto();
-
         //set name
         nameTextView = findViewById(R.id.profile_name_textview);
         nameTextView.setText(profileDao.getProfile(profileId).getName());
@@ -81,13 +78,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         sharedCoursesRecyclerView.setAdapter(viewProfileAdapter);
     }
 
-    private void setName(){
-
-    }
-
-    private void setPhoto(){
-
-    }
 
     public void onClickStart(View view) {
 

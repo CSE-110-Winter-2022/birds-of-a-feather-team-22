@@ -79,6 +79,8 @@ public class DatabaseTracker {
         return courseDao.getCoursesByProfileId(1);
     }
 
+    public List<Course> getMyCourses() { return courseDao.getCoursesByProfileId(1);}
+
     public Profile getUserProfile(int profileId){ return profileDao.getProfile(profileId);}
 
 

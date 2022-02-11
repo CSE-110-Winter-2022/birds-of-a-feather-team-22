@@ -29,7 +29,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     private RecyclerView matchesRecyclerView;
     private RecyclerView.LayoutManager matchesLayoutManager;
     private MatchesViewAdapter matchesViewAdapter;
-
+//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

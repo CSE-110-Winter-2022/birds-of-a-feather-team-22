@@ -29,7 +29,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     private RecyclerView matchesRecyclerView;
     private RecyclerView.LayoutManager matchesLayoutManager;
     private MatchesViewAdapter matchesViewAdapter;
-//
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +51,13 @@ public class HomeScreenActivity extends AppCompatActivity {
         Profile dummy1 = new Profile(3, "Bob","https://polisci.ucsd.edu/_images/210115-Geisel-135DSC_7396-UCSanDiego-ErikJepsen_1.jpeg");
         Profile dummy2 = new Profile(4, "Sam", "https://i0.wp.com/post.healthline.com/wp-content/uploads/2021/02/Female_Portrait_1296x728-header-1296x729.jpg?w=1155&h=2268");
         Profile dummy4 = new Profile(5, "Paul", "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png");
-        Profile dummy5 = new Profile(8, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+        Profile dummy5 = new Profile(10, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+        Profile dummy6 = new Profile(12, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+        Profile dummy7 = new Profile(13, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+        Profile dummy8 = new Profile(154, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+        Profile dummy9 = new Profile(2222, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+        Profile dummy10 = new Profile(312312, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+
         /*
         Profile dummy6 = new Profile(5, "Paul", "test");
         Profile dummy7 = new Profile(5, "Paul", "test");
@@ -62,16 +68,14 @@ public class HomeScreenActivity extends AppCompatActivity {
          */
         data.add(dummy1);
         data.add(dummy2);
-        //data.add(dummy8);
+        data.add(dummy8);
         data.add(dummy4);
         data.add(dummy5);
-        /*
+
         data.add(dummy6);
         data.add(dummy7);
         data.add(dummy9);
         data.add(dummy10);
-        data.add(dummy11);
-         **/
 
         matchesRecyclerView = findViewById(R.id.matchesList);
         matchesViewAdapter = new MatchesViewAdapter(data,this);

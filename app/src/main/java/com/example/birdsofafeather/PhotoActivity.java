@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 
 public class PhotoActivity extends AppCompatActivity {
@@ -50,10 +51,7 @@ public class PhotoActivity extends AppCompatActivity {
 
     // TODO: Check if photo provided is valid photo, otherwise use placeholder photo
     public boolean isValidPhoto(String photo) {
-        if (photo.length() <= 0) {
-            Utilities.showError(this, "Error: Invalid Input", "Please enter a valid photo URL for your profile.");
-            return false;
-        }
+        URLUtil.isValidUrl(photo);
 
         return true;
     }

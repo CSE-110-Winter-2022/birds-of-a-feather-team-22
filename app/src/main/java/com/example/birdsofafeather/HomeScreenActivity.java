@@ -71,7 +71,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         data.add(dummy9);
         data.add(dummy10);
         data.add(dummy11);
-        */
+         **/
 
         matchesRecyclerView = findViewById(R.id.matchesList);
         matchesViewAdapter = new MatchesViewAdapter(data,this);
@@ -81,11 +81,13 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     public void onClickStart(View view) {
-
+        RecyclerView matchesList = findViewById(R.id.matchesList);
         Button stopButton = findViewById(R.id.stopButton);
         TextView findMatches = findViewById(R.id.textView6);
         Button startButton = findViewById(R.id.startButton);
+        TextView matchesFound = findViewById(R.id.matchesFound);
 
+        matchesFound.setVisibility(View.GONE);
         findMatches.setVisibility(View.VISIBLE);
         stopButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
@@ -93,6 +95,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void onClickStop(View view) {
         Button stopButton = findViewById(R.id.stopButton);
+        Button startButton = findViewById(R.id.startButton);
         TextView matchesFound = findViewById(R.id.matchesFound);
         TextView findMatches = findViewById(R.id.textView6);
         RecyclerView recyclerView = findViewById(R.id.matchesList);
@@ -101,6 +104,15 @@ public class HomeScreenActivity extends AppCompatActivity {
         matchesFound.setVisibility(View.VISIBLE);
         findMatches.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        startButton.setVisibility(View.VISIBLE);
+    }
+
+    public void onClickMatch(View view) {
+        TextView id = view.findViewById(R.id.match_userID);
+        int userID = Integer.parseInt(id.getText().toString());
+        Intent intent = new Intent(this, ViewProfileActivity.class);
+        intent.putExtra("match", userID);
+        startActivity(intent);
     }
 
     public void onDeleteDBClicked(View view) {

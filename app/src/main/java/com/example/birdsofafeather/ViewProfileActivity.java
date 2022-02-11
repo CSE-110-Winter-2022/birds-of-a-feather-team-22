@@ -33,6 +33,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private DatabaseTracker databaseTracker;
     private TextView nameTextView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +41,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         /**comment out for now, until full implementation from HomeScreen*/
         //Intent intent = getIntent();
-        //int profileId = intent.getIntExtra("profile_id", 0);
+        //int profileId = intent.getIntExtra("profileId", 1);
 
         int profileId = 3;
 

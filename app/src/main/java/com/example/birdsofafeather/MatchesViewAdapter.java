@@ -19,7 +19,7 @@ import java.util.List;
 public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.ViewHolder> {
     private final List<Profile> matches;
     private Context context;
-//
+
     public MatchesViewAdapter(List<Profile> matches, Context context) {
         super();
         this.matches = matches;

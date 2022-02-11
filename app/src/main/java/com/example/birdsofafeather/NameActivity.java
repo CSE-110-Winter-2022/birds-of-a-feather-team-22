@@ -12,7 +12,6 @@ import android.widget.TextView;
 public class NameActivity extends AppCompatActivity {
 
     private TextView name_view;
-    private final static int MAX_NAME_LENGTH = 20;
     private AlertDialog mostRecentDialog = null;
 
     @Override
@@ -24,8 +23,8 @@ public class NameActivity extends AppCompatActivity {
         this.setTitle("Setup: Add Name");
 
         /**TESTING PURPOSES ONLY-- REMOVE ONCE FINISHED*/
-        Intent intent = new Intent(this, ViewProfileActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, ViewProfileActivity.class);
+        //startActivity(intent);
     }
 
     public void onConfirmClicked(View view) {
@@ -57,10 +56,6 @@ public class NameActivity extends AppCompatActivity {
             return false;
         }
 
-        if (name.length() >= MAX_NAME_LENGTH){
-            mostRecentDialog = Utilities.showError(this, "Error: Invalid Input",
-                    String.format("Please enter a name less than %d characters", MAX_NAME_LENGTH));
-        }
         return true;
     }
 }

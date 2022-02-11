@@ -32,8 +32,6 @@ public class TestNameActivity {
     @Test
     public void testDummy() {
         ActivityScenario<NameActivity> scenario = scenarioRule.getScenario();
-//        Context context = ApplicationProvider.getApplicationContext();
-//        AppDatabase db = AppDatabase.singleton(context);
 
         scenario.onActivity(activity -> {
             EditText name = activity.findViewById(R.id.name_view);

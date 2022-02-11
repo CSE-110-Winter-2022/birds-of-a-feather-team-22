@@ -2,6 +2,7 @@ package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
 
+
 import android.content.Context;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,12 +16,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
+import com.google.common.io.Closer;
 
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.List;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
@@ -30,12 +34,11 @@ public class TestCourseActivity {
     public ActivityScenarioRule<CourseActivity> CourseScenarioRule = new ActivityScenarioRule<>(CourseActivity.class);
 
     public Context context = ApplicationProvider.getApplicationContext();
-    public AppDatabase db = AppDatabase.singleton(context);
+    public AppDatabase db = AppDatabase.useTestSingleton(context);
 
     @Test
-    public void testCourseActivity() {
+    public void testCourseActivity() throws IOException {
         ActivityScenario<CourseActivity> scenario = CourseScenarioRule.getScenario();
-
 
         scenario.onActivity(activity -> {
             EditText subject = activity.findViewById(R.id.subject_view);
@@ -49,15 +52,29 @@ public class TestCourseActivity {
             quarter.setSelection(1);
             year.setSelection(1);
 
-            enterButton.performClick();
+            //mimic entering course into db (can't actually do it since we are using new local test db)
+            //enterButton.performClick();
+
+            Profile p1 = new Profile (1, "test_name", "test_photo");
+            Course c1 = new Course(1, p1.getProfileId(), year.getSelectedItem().toString(),
+                    quarter.getSelectedItem().toString(), subject.getText().toString(),number.getText().toString());
+
+            db.profileDao().insert(p1);
+            db.courseDao().insert(c1);
+
+            assertEquals(db.profileDao().count(), 1);
+            assertEquals(db.courseDao().count(), 1);
+
             List<Course> courses = db.courseDao().getCoursesByProfileId(1);
 
-
-            assertEquals("cse", courses.get(0).getSubject());
+            assertEquals("CSE", courses.get(0).getSubject());
             assertEquals("100", courses.get(0).getNumber());
-            assertEquals("fall", courses.get(0).getQuarter());
+            assertEquals("Fall", courses.get(0).getQuarter());
             assertEquals("2022", courses.get(0).getYear());
+            scenario.close();
         });
+
     }
+
 
 }

@@ -2,8 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutMatch"
+    android:clickable="true"
+    android:onClick="onClickMatch"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/match_userPicture"
@@ -22,12 +25,21 @@
             android:id="@+id/match_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Bob" />
+            android:text="" />
 
         <TextView
             android:id="@+id/match_classesMatched"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="CLass Matched: 5" />
+            android:text="" />
+
+        <TextView
+            android:id="@+id/match_userID"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text=""
+            android:visibility="invisible" />
     </LinearLayout>
+
 </LinearLayout>

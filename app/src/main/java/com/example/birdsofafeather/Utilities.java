@@ -19,7 +19,7 @@ public class Utilities {
         alertDialog.show();
     }
 
-    public static void showError(Activity activity, String title, String message){
+    public static AlertDialog showError(Activity activity, String title, String message){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
 
         alertBuilder
@@ -30,6 +30,7 @@ public class Utilities {
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+        return alertDialog;
     }
 
     public static Optional<Integer> parseCount(String str){

@@ -50,6 +50,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         findMatches.setVisibility(View.VISIBLE);
         stopButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
+
+
     }
 
     public void onClickStop(View view) {

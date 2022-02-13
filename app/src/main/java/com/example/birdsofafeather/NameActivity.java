@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class NameActivity extends AppCompatActivity {
 
     private TextView name_view;
+    private AlertDialog mostRecentDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,10 @@ public class NameActivity extends AppCompatActivity {
         this.name_view = findViewById(R.id.name_view);
 
         this.setTitle("Setup: Add Name");
+
+        /**TESTING PURPOSES ONLY-- REMOVE ONCE FINISHED*/
+        //Intent intent = new Intent(this, ViewProfileActivity.class);
+        //startActivity(intent);
     }
 
     public void onConfirmClicked(View view) {
@@ -47,7 +52,7 @@ public class NameActivity extends AppCompatActivity {
     // TODO: Check if name provided is a valid name
     public boolean isValidName(String name) {
         if (name.length() <= 0) {
-            Utilities.showError(this, "Error: Invalid Input", "Please enter a valid name for your profile.");
+            mostRecentDialog = Utilities.showError(this, "Error: Invalid Input", "Please enter a valid name for your profile.");
             return false;
         }
 

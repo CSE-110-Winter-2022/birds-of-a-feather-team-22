@@ -71,11 +71,17 @@ public class DatabaseTracker {
         });
     }
 
-    public Profile getUserProfile() {
-        return profileDao.getProfile(1);
+    public Profile getMyProfile() {
+        return getUserProfile(1);
     }
 
-    public List<Course> getUserCourses() {
-        return courseDao.getCoursesByProfileId(1);
+    public List<Course> getMyCourses() {
+        return getUserCourses(1);
+    }
+
+    public Profile getUserProfile(int profileId) { return profileDao.getProfile(profileId);}
+
+    public List<Course> getUserCourses(int profileId) {
+        return courseDao.getCoursesByProfileId(profileId);
     }
 }

@@ -18,10 +18,11 @@ public class TestProfileDB {
 
     public Context context = ApplicationProvider.getApplicationContext();
     public AppDatabase db = AppDatabase.useTestSingleton(context);
+    private String default_photo = "https://imgur.com/a/vgBKZMN";
 
     @Test
     public void testProfileInDB() {
-        Profile p1 = new Profile(1, "Name1", "test_photo.png");
+        Profile p1 = new Profile(1, "Name1", "invalid_url");
         db.profileDao().insert(p1);
 
         assertEquals(db.profileDao().count(), 1);
@@ -30,9 +31,10 @@ public class TestProfileDB {
 
         assertEquals(grabP1.getProfileId(), 1);
         assertEquals(grabP1.getName(), "Name1");
-        assertEquals(grabP1.getPhoto(), "test_photo.png");
+        assertEquals(grabP1.getPhoto(), default_photo);
 
-        Profile p2 = new Profile(db.profileDao().maxId()+1, "Name2", "another_test_photo_png");
+        String gary_meme_photo = "https://i.redd.it/2j60p7c3nt301.png";
+        Profile p2 = new Profile(db.profileDao().maxId()+1, "Name2", gary_meme_photo);
         db.profileDao().insert(p2);
 
         assertEquals(db.profileDao().count(), 2);
@@ -41,7 +43,9 @@ public class TestProfileDB {
 
         assertEquals(grabP2.getProfileId(), 2);
         assertEquals(grabP2.getName(), "Name2");
-        assertEquals(grabP2.getPhoto(), "another_test_photo_png");
+        assertEquals(grabP2.getPhoto(), gary_meme_photo);
+
+        db.close();
     }
 
     @Test
@@ -59,5 +63,7 @@ public class TestProfileDB {
 
         db.profileDao().delete(p2);
         assertEquals(db.profileDao().count(), 0);
+
+        db.close();
     }
 }

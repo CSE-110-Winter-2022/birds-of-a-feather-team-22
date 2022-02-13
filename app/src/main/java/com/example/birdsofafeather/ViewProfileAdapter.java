@@ -9,17 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import com.example.birdsofafeather.db.Course;
 
-
+// View adapter for ViewProfileActivity
 public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.ViewHolder>{
         private final List<Course> sharedCourses;
-        private final int profileId;
 
-        //constructor
-        public ViewProfileAdapter(List<Course> sharedCourses, int profileId){
+        public ViewProfileAdapter(List<Course> sharedCourses){
             super();
             this.sharedCourses = sharedCourses;
-            this.profileId = profileId;
-
         }
 
 
@@ -28,7 +24,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
         public ViewProfileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
             View view = LayoutInflater
                     .from(parent.getContext())
-                    .inflate(R.layout.shared_class_row, parent, false);
+                    .inflate(R.layout.shared_course_row, parent, false);
 
             return new ViewHolder(view);
         }
@@ -48,7 +44,6 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
             private final TextView courseIdTextView;
             private final TextView courseYearTextView;
             private final TextView courseQuarterTextView;
-            private Course course;
 
             ViewHolder(View itemView){
                 super(itemView);
@@ -57,14 +52,11 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
                 this.courseYearTextView = itemView.findViewById(R.id.course_year_row_textview);
                 this.courseQuarterTextView = itemView.findViewById(R.id.course_quarter_row_textview);
             }
-
             public void setCourse(Course course){
-                this.course = course;
                 this.courseSubjectTextView.setText(course.getSubject());
                 this.courseIdTextView.setText(course.getNumber());
                 this.courseQuarterTextView.setText(course.getQuarter());
                 this.courseYearTextView.setText(course.getYear());
             }
-
         }
 }

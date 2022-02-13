@@ -1,18 +1,18 @@
 package com.example.birdsofafeather.db;
-import java.util.*;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.Relation;
 
+// Course class used to store course information
 @Entity (tableName = "COURSE")
 public class Course {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "course_id")
+    @PrimaryKey
+    @ColumnInfo(name = "courseId")
     private int courseId;
 
-    @ColumnInfo(name = "profile_id")
+    @ColumnInfo(name = "profileId")
     private int profileId;
 
     @ColumnInfo(name = "year")
@@ -84,11 +84,10 @@ public class Course {
         this.number = number;
     }
 
-    public void addUserId(int id) {
-        // this.students.getStudentIds().add(id);
+    // For testing purposes
+    @Override
+    public String toString() {
+        return "" + this.courseId + " " + this.profileId + " " +  this.year + " " + this.quarter + " " + this.subject + " " + this.number;
     }
 
-    public int getId() {
-        return this.courseId;
-    }
 }

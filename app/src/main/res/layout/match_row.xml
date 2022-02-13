@@ -9,38 +9,50 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/match_userPicture"
-        android:layout_width="316dp"
+        android:id="@+id/match_photo_view"
+        android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:adjustViewBounds="false"
-        android:scaleX="0.75"
-        android:scaleY="0.75"
+        android:contentDescription="@string/profile_picture"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        tools:ignore="ImageContrastCheck"
         tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
+        android:id="@+id/match_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/match_name"
+            android:id="@+id/forappearance"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:text="" />
 
         <TextView
-            android:id="@+id/match_classesMatched"
+            android:id="@+id/match_name_view"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="" />
+            android:layout_height="35dp"
+            android:text=""
+            android:textColor="@color/dark_seafoam"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/match_userID"
+            android:id="@+id/match_num_courses_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="35dp"
+            android:text=""
+            android:textColor="@color/seafoam" />
+
+        <TextView
+            android:id="@+id/match_profile_id_view"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
             android:text=""
             android:visibility="invisible" />
     </LinearLayout>

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+// Refers to the screen where the user can enter and confirm their name
 public class NameActivity extends AppCompatActivity {
 
     private TextView name_view;
@@ -27,29 +28,23 @@ public class NameActivity extends AppCompatActivity {
         //startActivity(intent);
     }
 
+    // When the confirm button is clicked
     public void onConfirmClicked(View view) {
         String name = this.name_view.getText().toString().trim();
 
+        // Check if name is valid
         if (isValidName(name)) {
             Context context = view.getContext();
             Intent intent = new Intent(context, PhotoActivity.class);
 
+            // Pass on name to the set profile photo activity
             intent.putExtra("name", name);
             context.startActivity(intent);
             finish();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        clearFields();
-    }
-
-    private void clearFields() {
-        this.name_view.setText("");
-    }
-
-    // TODO: Check if name provided is a valid name
+    // Checks if a name is valid, otherwise, shows an error
     public boolean isValidName(String name) {
         if (name.length() <= 0) {
             mostRecentDialog = Utilities.showError(this, "Error: Invalid Input", "Please enter a valid name for your profile.");
@@ -57,5 +52,15 @@ public class NameActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    // Overrides back button to clearing all fields
+    @Override
+    public void onBackPressed() {
+        clearFields();
+    }
+
+    private void clearFields() {
+        this.name_view.setText("");
     }
 }

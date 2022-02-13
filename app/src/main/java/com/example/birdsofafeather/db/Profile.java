@@ -1,14 +1,17 @@
 package com.example.birdsofafeather.db;
 
+import android.webkit.URLUtil;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+// Profile class used to store profile information
 @Entity(tableName = "PROFILE")
 public class Profile {
 
     @PrimaryKey
-    @ColumnInfo(name = "profile_id")
+    @ColumnInfo(name = "profileId")
     private int profileId;
 
     @ColumnInfo(name = "name")
@@ -18,10 +21,17 @@ public class Profile {
     private String photo;
 
 
+    // Checks if the photo URL is valid, otherwise uses a placeholder/default photo
     public Profile(int profileId, String name, String photo) {
         this.profileId = profileId;
         this.name = name;
-        this.photo = photo;
+        if (!URLUtil.isValidUrl(photo)) {
+            this.photo = "https://imgur/.com/a/vgBKZMN";
+        }
+        else {
+            this.photo = photo;
+        }
+
     }
 
     public int getProfileId() {

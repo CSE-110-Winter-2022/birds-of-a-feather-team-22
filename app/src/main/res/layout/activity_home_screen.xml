@@ -8,41 +8,40 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/matchesList"
-        android:layout_width="311dp"
-        android:layout_height="422dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="33dp"
-        android:layout_marginBottom="148dp"
+        android:id="@+id/matches_view"
+        android:layout_width="366dp"
+        android:layout_height="625dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="102dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="21dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.679" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/delete_db_button"
         android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="600dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="72dp"
         android:background="@color/white"
         android:backgroundTint="@color/white"
         android:onClick="onDeleteDBClicked"
         android:shadowColor="@color/white"
-        android:text="Delete DB"
+        android:text="@string/delete_db"
         android:textColor="@color/seafoam"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.882"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="OnClick" />
+        tools:ignore="OnClick,TextContrastCheck" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/startButton"
+        android:id="@+id/start_button"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
@@ -56,10 +55,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/stopButton"
+        android:id="@+id/stop_button"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
@@ -71,38 +71,9 @@
         android:textColor="@color/seafoam"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="145dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="24dp"
-        android:text="Finding Matches..."
-        android:textSize="7pt"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/matchesFound"
-        android:layout_width="241dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="7dp"
-        android:text="Student Matches"
-        android:textAlignment="center"
-        android:textSize="10pt"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/matchesList"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.788"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/title_view"
@@ -111,7 +82,7 @@
         android:layout_marginBottom="585dp"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="8sp"
-        android:text="Birds of a Feather"
+        android:text="@string/app_name"
         android:textAlignment="textStart"
         android:textColor="@color/seafoam"
         android:textSize="24sp"
@@ -120,7 +91,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/startButton"
+        app:layout_constraintStart_toEndOf="@+id/start_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.32999998" />
 

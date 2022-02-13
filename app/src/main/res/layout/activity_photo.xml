@@ -16,7 +16,7 @@
         android:shadowColor="@color/white"
         android:textColor="@color/seafoam"
         android:onClick="onSubmitClicked"
-        android:text="Submit"
+        android:text="@string/submit"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,14 +31,16 @@
         android:layout_width="280dp"
         android:layout_height="50dp"
         android:layout_marginTop="240dp"
+        android:autofillHints=""
         android:ems="10"
-        android:hint="Photo URL"
+        android:hint="@string/photo_url"
         android:inputType="textPersonName"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

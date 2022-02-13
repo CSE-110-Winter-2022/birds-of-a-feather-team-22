@@ -3,27 +3,18 @@ package com.example.birdsofafeather;
 import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
+import android.util.Pair;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
 
 import com.example.birdsofafeather.db.Profile;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +26,10 @@ public class HomeScreenUITest {
     public void startButtonPressWithStopFirstTimeTest() {
         ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);
         homeScreen.onActivity(activity -> {
-            Button startButton = activity.findViewById(R.id.startButton);
-            TextView findingMatchesView = activity.findViewById(R.id.textView6);
+            Button startButton = activity.findViewById(R.id.start_button);
+            TextView findingMatchesView = activity.findViewById(R.id.finding_matches_text);
             TextView matchesFound = activity.findViewById(R.id.matchesFound);
-            Button stopButton = activity.findViewById(R.id.stopButton);
+            Button stopButton = activity.findViewById(R.id.stop_button);
 
             startButton.performClick();
 
@@ -52,10 +43,10 @@ public class HomeScreenUITest {
     @Test
     public void matchesViewAdapterTest() {
         Context context = ApplicationProvider.getApplicationContext();
-        List<Profile> matches = new ArrayList<>();
-        matches.add(new Profile(1, "Bob", "test"));
-        matches.add(new Profile(2, "Sam", "test"));
-        matches.add(new Profile(3, "Paul", "test"));
+        List<Pair<Profile, Integer>> matches = new ArrayList<>();
+        matches.add(new Pair(new Profile(1, "Bob", "test"), 1));
+        matches.add(new Pair(new Profile(2, "Sam", "test"), 1));
+        matches.add(new Pair(new Profile(3, "Paul", "test"), 1));
 
         MatchesViewAdapter adapter = new MatchesViewAdapter(matches, context);
 

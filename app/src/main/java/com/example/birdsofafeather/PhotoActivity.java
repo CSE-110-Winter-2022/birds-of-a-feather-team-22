@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.TextView;
 
+// Refers to the screen where the user can enter and submit their profile photo URL
 public class PhotoActivity extends AppCompatActivity {
 
     private TextView photo_view;
@@ -22,21 +22,24 @@ public class PhotoActivity extends AppCompatActivity {
         this.setTitle("Setup: Add Photo");
     }
 
+    // When the submit button is clicked
     public void onSubmitClicked(View view) {
 
+        // Retrieve name from previous activity and photo URL and pass along to the add courses activity
         String photo = this.photo_view.getText().toString().trim();
-            String name = getIntent().getStringExtra("name");
+        String name = getIntent().getStringExtra("name");
 
-            Context context = view.getContext();
-            Intent intent = new Intent(context, CourseActivity.class);
+        Context context = view.getContext();
+        Intent intent = new Intent(context, CourseActivity.class);
 
-            intent.putExtra("photo", photo);
-            intent.putExtra("name", name);
+        intent.putExtra("photo", photo);
+        intent.putExtra("name", name);
 
-            context.startActivity(intent);
-            finish();
+        context.startActivity(intent);
+        finish();
     }
 
+    // Overrides back button to clearing all fields
     @Override
     public void onBackPressed() {
         clearFields();

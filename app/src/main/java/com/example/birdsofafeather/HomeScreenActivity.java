@@ -166,10 +166,13 @@ public class HomeScreenActivity extends AppCompatActivity {
                     List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
 
                     int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
-                    db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
 
-                    this.matches.add(new Pair(match, numShared));
-                    this.matches.sort(new MatchesComparator());
+                    if (numShared > 0) {
+                        db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
+
+                        this.matches.add(new Pair(match, numShared));
+                        this.matches.sort(new MatchesComparator());
+                    }
                 }
                 return null;
             });

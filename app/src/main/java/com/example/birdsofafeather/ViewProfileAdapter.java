@@ -3,26 +3,12 @@ package com.example.birdsofafeather;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
-import java.util.function.Consumer;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.birdsofafeather.db.Course;
 
-import java.util.List;
-import java.util.function.Consumer;
 
 public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.ViewHolder>{
         private final List<Course> sharedCourses;

@@ -30,7 +30,7 @@ import java.util.List;
 
 @LargeTest
 public class HomeScreenUITest {
-//
+
     @Test
     public void startButtonPressWithStopFirstTimeTest() {
         ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);

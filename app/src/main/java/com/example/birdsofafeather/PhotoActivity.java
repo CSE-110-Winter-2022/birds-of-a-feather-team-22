@@ -25,8 +25,6 @@ public class PhotoActivity extends AppCompatActivity {
     public void onSubmitClicked(View view) {
 
         String photo = this.photo_view.getText().toString().trim();
-
-        if (isValidPhoto(photo)) {
             String name = getIntent().getStringExtra("name");
 
             Context context = view.getContext();
@@ -37,7 +35,6 @@ public class PhotoActivity extends AppCompatActivity {
 
             context.startActivity(intent);
             finish();
-        }
     }
 
     @Override
@@ -47,12 +44,5 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void clearFields() {
         this.photo_view.setText("");
-    }
-
-    // TODO: Check if photo provided is valid photo, otherwise use placeholder photo
-    public boolean isValidPhoto(String photo) {
-        URLUtil.isValidUrl(photo);
-
-        return true;
     }
 }

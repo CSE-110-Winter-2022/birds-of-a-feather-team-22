@@ -67,7 +67,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         Profile dummy7 = new Profile(13, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
         Profile dummy8 = new Profile(154, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
         Profile dummy9 = new Profile(2222, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
-        Profile dummy10 = new Profile(312312, "Paul", "https://i0.wp.com/www.printmag.com/wp-content/uploads/2021/02/4cbe8d_f1ed2800a49649848102c68fc5a66e53mv2.gif?fit=476%2C280&ssl=1");
+        Profile dummy10 = new Profile(312312, "Paul", "");
 
         data.add(dummy1);
         data.add(dummy2);

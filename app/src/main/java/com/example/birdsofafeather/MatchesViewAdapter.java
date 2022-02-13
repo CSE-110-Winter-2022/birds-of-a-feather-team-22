@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,7 +44,6 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
         } catch (IOException exception) {
             ViewHolder.picture.setImageResource(R.drawable.feather_1);
         }
-
     }
 
     @Override
@@ -69,7 +69,15 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
             this.name.setText(profile.getName());
             this.numMatches.setText("Classes matched: " + profile.getProfileId());
             this.userID.setText(new Integer(profile.getProfileId()).toString());
+            checkValidPhoto(profile.getPhoto());
             Glide.with(context).load(profile.getPhoto()).into(picture);
+        }
+        //check if not valid url set picture to default feather images
+        public void checkValidPhoto(String url) throws IOException {
+            if(!(URLUtil.isValidUrl(url))){
+                throw new IOException();
+            }
+
         }
     }
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
+import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
 
 import java.util.ArrayList;
@@ -24,9 +25,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+// Refers to the screen where the user can see discovered users and search for more discovered users
 public class HomeScreenActivity extends AppCompatActivity {
     private Future<Void> f1;
     private Future<List<Course>> f2;
+    private Future<List<Pair<Profile, Integer>>> f3;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     
     private AppDatabase db;
@@ -67,8 +70,24 @@ public class HomeScreenActivity extends AppCompatActivity {
             return null;
         });
 
-
         this.matches = new ArrayList<>();
+
+        // Grab list of discovered users to display on start
+        f3 = backgroundThreadExecutor.submit(() -> {
+            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsers();
+
+            if (discovered != null) {
+                for (DiscoveredUser u : discovered) {
+
+                    Profile p = db.profileDao().getProfile(u.getProfileId());
+                    this.matches.add(new Pair(p, u.getNumShared()));
+                }
+
+                this.matches.sort(new MatchesComparator());
+            }
+
+            return null;
+        });
 
         // For demo purposes
         fillStack();
@@ -83,6 +102,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         matchesRecyclerView.setLayoutManager(matchesLayoutManager);
         stopButton = findViewById(R.id.stop_button);
         startButton = findViewById(R.id.start_button);
+        matchesRecyclerView.setVisibility(View.VISIBLE);
     }
 
     // Demo purposes, simulate the finding matches service
@@ -128,29 +148,31 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         stopButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
-        matchesRecyclerView.setVisibility(View.VISIBLE);
 
-        // Get the user's courses
-        this.myCourses = db.courseDao().getCoursesByProfileId(1);
+
+
 
         // Demo purposes, calculate the number of shared courses between the user and a match and add to a list to send to the view adapter
-        if (!addedMatches.empty()) {
-            Profile match = addedMatches.pop();
+        if (!addedMatches.isEmpty()) {
+            f1 = backgroundThreadExecutor.submit(() -> {
+                Profile match = addedMatches.pop();
+                while (db.discoveredUserDao().exists(match.getProfileId()) != 0 && !addedMatches.isEmpty()) {
+                    match = addedMatches.pop();
+                }
 
-            f2 = backgroundThreadExecutor.submit( () -> {
-                return db.courseDao().getCoursesByProfileId(match.getProfileId());
+                if (db.discoveredUserDao().exists(match.getProfileId()) == 0) {
+                    // Get the user's courses
+                    this.myCourses = db.courseDao().getCoursesByProfileId(1);
+                    List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
+
+                    int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
+                    db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
+
+                    this.matches.add(new Pair(match, numShared));
+                    this.matches.sort(new MatchesComparator());
+                }
+                return null;
             });
-
-            List<Course> theirCourses = null;
-            try {
-                theirCourses = f2.get();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
-            matches.add(new Pair(match, numShared));
-            matches.sort(new MatchesComparator());
         }
 
         // Initialize view adapter and recycler view

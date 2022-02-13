@@ -27,15 +27,11 @@ public class HomeScreenUITest {
         ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);
         homeScreen.onActivity(activity -> {
             Button startButton = activity.findViewById(R.id.start_button);
-            TextView findingMatchesView = activity.findViewById(R.id.finding_matches_text);
-            TextView matchesFound = activity.findViewById(R.id.matchesFound);
             Button stopButton = activity.findViewById(R.id.stop_button);
 
             startButton.performClick();
 
             assertEquals(View.GONE, startButton.getVisibility());
-            assertEquals(View.VISIBLE, findingMatchesView.getVisibility());
-            assertEquals(View.GONE, matchesFound.getVisibility());
             assertEquals(View.VISIBLE, stopButton.getVisibility());
         });
     }

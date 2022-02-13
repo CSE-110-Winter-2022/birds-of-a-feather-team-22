@@ -15,9 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import androidx.test.espresso.action.*;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
 import androidx.test.*;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -53,7 +50,7 @@ public class TestViewProfileActivity {
 
     @Rule
     public ActivityScenarioRule<ViewProfileActivity> scenarioRule =
-            new ActivityScenarioRule<ViewProfileActivity>(ViewProfileActivity.class);
+            new ActivityScenarioRule<>(ViewProfileActivity.class);
 
     @Before
     public void setupTestDatabase(){
@@ -71,6 +68,7 @@ public class TestViewProfileActivity {
     @Test
     public void testViewProfileActivitySingleMatchDisplayed() {
 
+        /**insert single course1 to database with matching profileId*/
 
         try (ActivityScenario<ViewProfileActivity> scenario = scenarioRule.getScenario()) {
 
@@ -78,8 +76,10 @@ public class TestViewProfileActivity {
                 RecyclerView rv = activity.findViewById(R.id.shared_courses_view);
 
                     RecyclerView.Adapter adapter = rv.getAdapter();
-                    View course1 = rv.getChildAt(0);
+                    adapter.getItemCount();
+                    View course1View = rv.getChildAt(0);
 
+                    //examine and assert that each item is true
 
 
                 });
@@ -89,6 +89,12 @@ public class TestViewProfileActivity {
     @Test
     public void testViewProfileActivityMultipleMatchesDisplayed(){
 
+        ActivityScenario<ViewProfileActivity> scenario = scenarioRule.getScenario()){
+
+            scenario.onActivity(activity -> {
+
+            });
+        }
     }
 
     @Test

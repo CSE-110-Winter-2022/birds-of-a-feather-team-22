@@ -19,15 +19,15 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private DatabaseTracker databaseTracker;
     private TextView nameTextView;
-
+    private int profileId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-        Intent intent = getIntent();
-        int profileId = intent.getIntExtra("profileId", 1);
+        //set profileId
+        setProfileId(false, 0);
 
         //set name
         nameTextView = findViewById(R.id.profile_name_textview);
@@ -42,5 +42,15 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         viewProfileAdapter = new ViewProfileAdapter(sharedCourses, profileId);
         sharedCoursesRecyclerView.setAdapter(viewProfileAdapter);
+    }
+
+    /**testing boolean parameter for unit tests*/
+    public void setProfileId(boolean testing, int profileId){
+        if(!testing) {
+            Intent intent = getIntent();
+            this.profileId = intent.getIntExtra("profileId",1);
+        } else {
+            this.profileId = profileId;
+        }
     }
 }

@@ -19,4 +19,7 @@ public interface ProfileDao {
 
     @Query("SELECT MAX(profile_id) FROM PROFILE")
     int maxId();
+
+    @Query("SELECT COUNT(*) FROM PROFILE")
+    int count();
 }

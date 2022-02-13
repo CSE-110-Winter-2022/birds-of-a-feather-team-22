@@ -89,7 +89,7 @@ public class CourseActivity extends AppCompatActivity {
             this.future = this.backgroundThreadExecutor.submit(() -> {
                 int courseId = this.db.courseDao().getCourseId(1, year, quarter, subject, number);
                 if (!isExistingCourse(courseId)) {
-                    Course course = new Course(1, year, quarter, subject, number);
+                    Course course = new Course(db.courseDao().maxId()+1,1,  year, quarter, subject, number);
                     this.db.courseDao().insert(course);
                 }
                 return null;

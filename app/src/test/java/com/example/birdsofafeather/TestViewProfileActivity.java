@@ -4,32 +4,18 @@ package com.example.birdsofafeather;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import android.content.Intent;
 import org.junit.runner.RunWith;
-
 import androidx.test.core.app.ActivityScenario;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
-
-import android.os.Looper;
 import android.view.View;
-
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.JMock1Matchers.equalTo;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.robolectric.Shadows.shadowOf;
+import android.widget.TextView;
 
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
@@ -38,11 +24,8 @@ import com.example.birdsofafeather.db.Profile;
 import com.example.birdsofafeather.db.ProfileDao;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.robolectric.annotation.LooperMode;
-
-import java.util.Map;
 
 @LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4.class)
@@ -52,7 +35,8 @@ public class TestViewProfileActivity {
     private ProfileDao profileDao;
     private Profile testProfile;
     private Course course1, course2, course3, course4, course5, course6, course7, course8, course9, course10;
-
+    private TextView course_year, course_quarter, course_subject, course_number;
+    private View selectedView;
 
     @Before
     public void setupTestDatabase(){
@@ -78,12 +62,21 @@ public class TestViewProfileActivity {
         profileDao.insert(testProfile);
         profileDao.insert(myProfile);
         courseDao.insert(course1);
+        courseDao.insert(course2);
+        courseDao.insert(course3);
+        courseDao.insert(course4);
+        courseDao.insert(course5);
+        courseDao.insert(course6);
+        courseDao.insert(course7);
+        courseDao.insert(course8);
+        courseDao.insert(course9);
+        courseDao.insert(course10);
 
     }
 
 
     @Test
-    public void testViewProfileActivitySingleMatchDisplayed() {
+    public void testSharedCoursesDisplayed() {
 
         /**insert single course1 to database with matching profileId*/
 
@@ -91,39 +84,75 @@ public class TestViewProfileActivity {
 
 
         viewProfile.onActivity(activity -> {
-
+            /*check match name*/
             onView(withId(R.id.viewprofiile_name)).check(matches(withText("John")));
-            //onView(withText("CSE")).check(matches(isDisplayed()));
 
             RecyclerView recyclerView = activity.findViewById(R.id.viewprofile_shared_courses);
-            View v = recyclerView.getLayoutManager().findViewByPosition(0);
-            assertEquals(v, null);
+
+            /*test course1*/
+            selectedView = recyclerView.getChildAt(0);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2019");
+            assertEquals(course_quarter.getText(), "Fall");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "11");
+
+            /*test course2*/
+            selectedView = recyclerView.getChildAt(1);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2021");
+            assertEquals(course_quarter.getText(), "Fall");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "100");
+
+            /*test third course*/
+            selectedView = recyclerView.getChildAt(2);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2020");
+            assertEquals(course_quarter.getText(), "Winter");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "30");
+
+            /*test fourth course*/
+            selectedView = recyclerView.getChildAt(3);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2020");
+            assertEquals(course_quarter.getText(), "Winter");
+            assertEquals(course_subject.getText(), "MATH");
+            assertEquals(course_number.getText(), "20D");
+
+            /*test fifth course*/
+            selectedView = recyclerView.getChildAt(4);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2019");
+            assertEquals(course_quarter.getText(), "Spring");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "20");
+
         });
     }
 
 
 }
-//
-//    @Test
-//    public void testViewProfileActivityMultipleMatchesDisplayed(){
-//
-//        ActivityScenario<ViewProfileActivity> scenario = scenarioRule.getScenario()) {
-//
-//            scenario.onActivity(activity -> {
-//
-//            });
-//        }
-//    }
-//
-//    @Test
-//    public void testCoursesExistInDatabase(){
-//
-//    }
-//
-//    @Test
-//   public void testCoursesScroll(){
-
-//    }
-
 
 

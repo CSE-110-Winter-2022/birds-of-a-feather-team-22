@@ -3,6 +3,7 @@ package com.example.birdsofafeather;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,4 +61,6 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
                 this.courseYearTextView.setText(course.getYear());
             }
         }
+
+
 }

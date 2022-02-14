@@ -166,10 +166,13 @@ public class HomeScreenActivity extends AppCompatActivity {
                     List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
 
                     int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
-                    db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
 
-                    this.matches.add(new Pair(match, numShared));
-                    this.matches.sort(new MatchesComparator());
+                    if (numShared > 0) {
+                        db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
+
+                        this.matches.add(new Pair(match, numShared));
+                        this.matches.sort(new MatchesComparator());
+                    }
                 }
                 return null;
             });
@@ -207,8 +210,12 @@ public class HomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        f1.cancel(true);
-        f2.cancel(true);
+        if (f1 != null) {
+            f1.cancel(true);
+        }
+        if (f2 != null) {
+            f2.cancel(true);
+        }
     }
 
 }

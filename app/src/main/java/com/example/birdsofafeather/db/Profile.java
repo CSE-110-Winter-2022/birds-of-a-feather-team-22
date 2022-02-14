@@ -26,7 +26,7 @@ public class Profile {
         this.profileId = profileId;
         this.name = name;
         if (!URLUtil.isValidUrl(photo)) {
-            this.photo = "https://imgur/.com/a/vgBKZMN";
+            this.photo = "https://imgur.com/a/vgBKZMN";
         }
         else {
             this.photo = photo;

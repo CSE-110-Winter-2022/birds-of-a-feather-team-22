@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import java.util.List;
+
 // Dao used to access profiles in the PROFILE table
 @Dao
 public interface ProfileDao {
@@ -13,6 +15,10 @@ public interface ProfileDao {
     // Retrieves the profile with matching profile id
     @Query("SELECT * FROM PROFILE WHERE profileId=:profileId")
     Profile getProfile(int profileId);
+
+    // Retrieves list of profiles
+    @Query("SELECT * FROM PROFILE")
+    List<Profile> getListOfProfiles();
 
     // Retrieves the maximum profile id among all profile objects
     @Query("SELECT MAX(profileId) FROM PROFILE")
@@ -29,4 +35,5 @@ public interface ProfileDao {
     // Deletes a profile object
     @Delete
     void delete(Profile profile);
+
 }

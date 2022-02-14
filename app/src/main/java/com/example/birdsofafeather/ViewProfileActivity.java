@@ -98,7 +98,11 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        f1.cancel(true);
-        f2.cancel(true);
+        if (f1 != null) {
+            f1.cancel(true);
+        }
+        if (f2 != null) {
+            f2.cancel(true);
+        }
     }
 }

@@ -138,7 +138,9 @@ public class CourseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        f1.cancel(true);
+        if (f1 != null) {
+            f1.cancel(true);
+        }
     }
 
     // Checks if course information is formatted and inputted correctly

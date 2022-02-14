@@ -16,17 +16,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
-import com.google.common.io.Closer;
 
-import org.junit.After;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.List;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 @RunWith(AndroidJUnit4.class)
 public class TestCourseActivity {
@@ -36,10 +32,12 @@ public class TestCourseActivity {
     public Context context = ApplicationProvider.getApplicationContext();
     public AppDatabase db = AppDatabase.useTestSingleton(context);
 
+    //Test UI input courses
     @Test
-    public void testCourseActivity() throws IOException {
+    public void testCourseActivity() {
         ActivityScenario<CourseActivity> scenario = CourseScenarioRule.getScenario();
 
+        //Scenario of inputting courses on the UI
         scenario.onActivity(activity -> {
             EditText subject = activity.findViewById(R.id.subject_view);
             EditText number = activity.findViewById(R.id.number_view);
@@ -47,6 +45,7 @@ public class TestCourseActivity {
             Spinner year = activity.findViewById(R.id.year_spinner);
             Button enterButton = activity.findViewById(R.id.enter_button);
 
+            //setting fields
             subject.setText("CSE");
             number.setText("100");
             quarter.setSelection(1);
@@ -62,15 +61,57 @@ public class TestCourseActivity {
             db.profileDao().insert(p1);
             db.courseDao().insert(c1);
 
-            assertEquals(db.profileDao().count(), 1);
-            assertEquals(db.courseDao().count(), 1);
+            assertEquals(1, db.profileDao().count());
+            assertEquals(1, db.courseDao().count());
 
+            subject.setText("MATH");
+            number.setText("183");
+            quarter.setSelection(6);
+            year.setSelection(10);
+
+            //enterButton.performClick();
+
+            Course c2 = new Course(2, p1.getProfileId(), year.getSelectedItem().toString(),
+                    quarter.getSelectedItem().toString(), subject.getText().toString(),number.getText().toString());
+
+            db.courseDao().insert(c2);
+
+            assertEquals(2, db.courseDao().count());
+
+            subject.setText("COGS");
+            number.setText("108");
+            quarter.setSelection(3);
+            year.setSelection(3);
+
+            //enterButton.performClick();
+
+            Course c3 = new Course(3, p1.getProfileId(), year.getSelectedItem().toString(),
+                    quarter.getSelectedItem().toString(), subject.getText().toString(),number.getText().toString());
+
+            db.courseDao().insert(c3);
+
+            assertEquals(db.courseDao().count(), 3);
+
+            //get courses by profile id
             List<Course> courses = db.courseDao().getCoursesByProfileId(1);
 
-            assertEquals("CSE", courses.get(0).getSubject());
-            assertEquals("100", courses.get(0).getNumber());
-            assertEquals("Fall", courses.get(0).getQuarter());
-            assertEquals("2022", courses.get(0).getYear());
+            assertEquals(courses.get(0).getSubject(), "CSE");
+            assertEquals(courses.get(0).getNumber(), "100");
+            assertEquals(courses.get(0).getQuarter(), "Fall");
+            assertEquals(courses.get(0).getYear(), "2022");
+
+
+            assertEquals(courses.get(1).getSubject(), "MATH");
+            assertEquals(courses.get(1).getNumber(), "183");
+            assertEquals(courses.get(1).getQuarter(), "Special Summer Session");
+            assertEquals(courses.get(1).getYear(), "2013");
+
+            assertEquals(courses.get(2).getSubject(), "COGS");
+            assertEquals(courses.get(2).getNumber(), "108");
+            assertEquals(courses.get(2).getQuarter(), "Spring");
+            assertEquals(courses.get(2).getYear(), "2020");
+
+
             scenario.close();
         });
 

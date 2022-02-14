@@ -198,6 +198,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         startButton.setVisibility(View.VISIBLE);
         stopButton.setVisibility(View.GONE);
         matchesRecyclerView.setVisibility(View.VISIBLE);
+        Log.d("<Home>", "Stop searching");
     }
 
     // When a match in the recycler view is clicked

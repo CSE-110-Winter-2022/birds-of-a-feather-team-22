@@ -11,6 +11,8 @@ import java.util.List;
 // A collection of static method for general use
 public class Utilities {
 
+    public static AlertDialog mostRecentDialog = null;
+
     // Show an alert message
     public static void showAlert(Activity activity, String message){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
@@ -22,7 +24,10 @@ public class Utilities {
                 .setCancelable(true);
 
         AlertDialog alertDialog = alertBuilder.create();
+
         alertDialog.show();
+
+        mostRecentDialog = alertDialog;
     }
 
     // Show an error message
@@ -37,7 +42,10 @@ public class Utilities {
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+        mostRecentDialog = alertDialog;
         return alertDialog;
+
+
     }
 
     // Get the number of shared courses between two lists of courses

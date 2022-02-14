@@ -6,19 +6,13 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.content.Intent;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
-import androidx.test.espresso.*;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -48,20 +42,22 @@ public class TestViewProfileActivity {
     private CourseDao courseDao;
     private ProfileDao profileDao;
     private Profile testProfile;
-    private Course course1, course2, course3, course4, course5;
+    private Course course1, course2, course3, course4, course5, course6, course7, course8, course9, course10;
 
-    //@Rule
-    //public ActivityScenarioRule<ViewProfileActivity> scenarioRule =
-           //new ActivityScenarioRule<>(ViewProfileActivity.class);
-//
+
     @Before
     public void setupTestDatabase(){
-        course1 = new Course(10, 2,"2019","Fall","CSE","11");
-        course2 = new Course(20, 2,"2021","Fall","CSE","100");
-        course3 = new Course(30, 2,"2020","Winter","CSE","30");
-        course4 = new Course(40, 2,"2020","Winter","MATH","20D");
-        course5 = new Course(50, 2,"2019","Spring","CSE","20");
-        testProfile = new Profile(2,"John","valid_url");
+        course1 = new Course(10, 0,"2019","Fall","CSE","11");
+        course2 = new Course(20, 0,"2021","Fall","CSE","100");
+        course3 = new Course(30, 0,"2020","Winter","CSE","30");
+        course4 = new Course(40, 0,"2020","Winter","MATH","20D");
+        course5 = new Course(50, 0,"2019","Spring","CSE","20");
+        course6 = new Course(10, 1,"2019","Fall","CSE","11");
+        course7 = new Course(20, 1,"2021","Fall","CSE","100");
+        course8 = new Course(30, 1,"2020","Winter","CSE","30");
+        course9 = new Course(40, 1,"2020","Winter","MATH","20D");
+        course10 = new Course(50, 1,"2019","Spring","CSE","20");
+        testProfile = new Profile(0,"John","valid_url");
         Profile myProfile = new Profile(1, "Drake", "Valid");
 
         Context context = ApplicationProvider.getApplicationContext();
@@ -74,33 +70,28 @@ public class TestViewProfileActivity {
         profileDao.insert(myProfile);
         courseDao.insert(course1);
 
-        //Intent intent = new Intent()
     }
-//
+
+
     @Test
     public void testViewProfileActivitySingleMatchDisplayed() {
 
         /**insert single course1 to database with matching profileId*/
 
-        /*
-        try (ActivityScenario<ViewProfileActivity> scenario = scenarioRule.getScenario()) {
+        ActivityScenario<ViewProfileActivity> viewProfile = ActivityScenario.launch(ViewProfileActivity.class);
 
-            scenario.onActivity(activity -> {
 
-                shadowOf(Looper.getMainLooper()).idle();
-                //RecyclerView rv = activity.findViewById(R.id.viewprofile_shared_courses);
+        viewProfile.onActivity(activity -> {
 
-                    //RecyclerView.Adapter adapter = rv.getAdapter();
-                    //adapter.getItemCount();
-                    //View course1View = rv.getChildAt(0);
+            onView(withId(R.id.viewprofiile_name)).check(matches(withText("John")));
+            onView(withText("CSE")).check(matches(isDisplayed()));
 
-                    //examine and assert that each item is true
-                    onView(withId(R.id.name_view)).check(matches(withText("drake")));
-            });
-        }
 
-         */
+        });
     }
+
+
+}
 //
 //    @Test
 //    public void testViewProfileActivityMultipleMatchesDisplayed(){
@@ -124,4 +115,4 @@ public class TestViewProfileActivity {
 //    }
 
 
-}
+

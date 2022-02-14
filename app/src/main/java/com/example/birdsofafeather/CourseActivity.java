@@ -141,7 +141,7 @@ public class CourseActivity extends AppCompatActivity {
         f1.cancel(true);
     }
 
-    // Checks if course information is valid
+    // Checks if course information is formatted and inputted correctly
     public boolean isValidCourse(String year, String quarter, String subject, String number) {
 
         if (subject.trim().length() <= 0) {

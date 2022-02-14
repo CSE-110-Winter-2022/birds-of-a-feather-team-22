@@ -35,6 +35,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
         }
 
         @Override
+        //return number of profiles in course
         public int getItemCount(){
             return this.sharedCourses.size();
         }

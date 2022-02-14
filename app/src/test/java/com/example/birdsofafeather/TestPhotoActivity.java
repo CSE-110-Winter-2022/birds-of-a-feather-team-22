@@ -15,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
+import com.example.birdsofafeather.db.ProfileDao_Impl;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,8 +29,9 @@ public class TestPhotoActivity {
     @Rule
     public ActivityScenarioRule<PhotoActivity> scenarioRule = new ActivityScenarioRule<>(PhotoActivity.class);
 
+    //Test if photo input is being received
     @Test
-    public void testPhotoActivity() {
+    public void testPhotoActivityInput() {
         ActivityScenario<PhotoActivity> scenario = scenarioRule.getScenario();
 
         scenario.onActivity(activity -> {
@@ -37,12 +39,18 @@ public class TestPhotoActivity {
             Button submitButton = activity.findViewById(R.id.submit_button);
 
             photo.setText("test_photo.png");
+            assertEquals("test_photo.png", photo.getText().toString());
+
+            photo.setText("another_test_photo.png");
+            assertEquals("another_test_photo.png", photo.getText().toString());
+
             submitButton.performClick();
 
-            assertEquals("test_photo.png", photo.getText().toString());
+            scenario.close();
         });
     }
 
+    //test if photo will go to default photo if url not valid
     @Test
     public void testInvalidPhotos() {
         ActivityScenario<PhotoActivity> scenario = scenarioRule.getScenario();
@@ -50,11 +58,35 @@ public class TestPhotoActivity {
             EditText photo = activity.findViewById(R.id.photo_view);
             Button submitButton = activity.findViewById(R.id.submit_button);
 
-            photo.setText("test_photo.png");
+            photo.setText("not_valid_test_photo.png");
             submitButton.performClick();
 
-            assertEquals("test_photo.png", photo.getText().toString());
-        });
+            Profile p = new Profile(1, "name", photo.getText().toString());
 
+            //default photo if photo not valid: https://imgur.com/a/vgBKZMN
+            assertEquals("https://imgur.com/a/vgBKZMN", p.getPhoto());
+
+            scenario.close();
+        });
+    }
+
+    //test if photo will be input photo if url is valid
+    @Test
+    public void testValidPhoto() {
+        ActivityScenario<PhotoActivity> scenario = scenarioRule.getScenario();
+        scenario.onActivity(activity -> {
+            EditText photo = activity.findViewById(R.id.photo_view);
+            Button submitButton = activity.findViewById(R.id.submit_button);
+
+            photo.setText("https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/griswold17-115x150.jpg");
+            submitButton.performClick();
+
+            Profile p = new Profile(1, "name", photo.getText().toString());
+
+            //default photo if photo not valid: https://imgur.com/a/vgBKZMN
+            assertEquals("https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/griswold17-115x150.jpg", p.getPhoto());
+
+            scenario.close();
+        });
     }
 }

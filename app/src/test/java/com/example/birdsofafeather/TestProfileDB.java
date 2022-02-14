@@ -13,6 +13,8 @@ import com.example.birdsofafeather.db.Profile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 @RunWith(AndroidJUnit4.class)
 public class TestProfileDB {
 
@@ -20,34 +22,44 @@ public class TestProfileDB {
     public AppDatabase db = AppDatabase.useTestSingleton(context);
     private String default_photo = "https://imgur.com/a/vgBKZMN";
 
+    //Testing if profiles are inserted into DB
     @Test
     public void testProfileInDB() {
         Profile p1 = new Profile(1, "Name1", "invalid_url");
         db.profileDao().insert(p1);
 
-        assertEquals(db.profileDao().count(), 1);
+        assertEquals(1, db.profileDao().count());
 
         Profile grabP1 = db.profileDao().getProfile(1);
 
-        assertEquals(grabP1.getProfileId(), 1);
-        assertEquals(grabP1.getName(), "Name1");
-        assertEquals(grabP1.getPhoto(), default_photo);
+        //check if p1 fields are correct
+        assertEquals(1, grabP1.getProfileId());
+        assertEquals("Name1", grabP1.getName());
+        assertEquals(default_photo, grabP1.getPhoto());
 
         String gary_meme_photo = "https://i.redd.it/2j60p7c3nt301.png";
         Profile p2 = new Profile(db.profileDao().maxId()+1, "Name2", gary_meme_photo);
         db.profileDao().insert(p2);
 
-        assertEquals(db.profileDao().count(), 2);
+        assertEquals(2, db.profileDao().count());
 
         Profile grabP2 = db.profileDao().getProfile(2);
 
-        assertEquals(grabP2.getProfileId(), 2);
-        assertEquals(grabP2.getName(), "Name2");
-        assertEquals(grabP2.getPhoto(), gary_meme_photo);
+        //check if p2 fields are correct
+        assertEquals(2, grabP2.getProfileId());
+        assertEquals("Name2", grabP2.getName());
+        assertEquals(gary_meme_photo, grabP2.getPhoto());
 
-        db.close();
+        //check if max id is correct
+        assertEquals(2, db.profileDao().maxId());
+
+        //check if profile dao methods are functional
+        List<Profile> profileList = db.profileDao().getListOfProfiles();
+        assertEquals(2, profileList.size());
+
     }
 
+    //Testing if courses are deleted from DB (used to check if status of course is correct in db)
     @Test
     public void deleteProfileInDB(){
         Profile p1 = new Profile(1, "Name1", "test_photo.png");
@@ -55,15 +67,13 @@ public class TestProfileDB {
         db.profileDao().insert(p1);
         db.profileDao().insert(p2);
 
-        assertEquals(db.profileDao().count(), 2);
+        assertEquals(2, db.profileDao().count());
 
         db.profileDao().delete(p1);
 
-        assertEquals(db.profileDao().count(), 1);
+        assertEquals(1, db.profileDao().count());
 
         db.profileDao().delete(p2);
-        assertEquals(db.profileDao().count(), 0);
-
-        db.close();
+        assertEquals(0, db.profileDao().count());
     }
 }

@@ -64,7 +64,7 @@ public class TestPhotoActivity {
             Profile p = new Profile(1, "name", photo.getText().toString());
 
             //default photo if photo not valid: https://imgur.com/a/vgBKZMN
-            assertEquals("https://imgur.com/a/vgBKZMN", p.getPhoto());
+            assertEquals("https://i.imgur.com/MZH5yxZ.png", p.getPhoto());
 
             scenario.close();
         });

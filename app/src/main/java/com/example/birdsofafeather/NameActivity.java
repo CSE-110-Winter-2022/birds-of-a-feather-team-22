@@ -14,18 +14,15 @@ public class NameActivity extends AppCompatActivity {
 
     private TextView name_view;
     private AlertDialog mostRecentDialog = null;
+    private String autofillName = "John";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name);
         this.name_view = findViewById(R.id.name_view);
-
+        this.name_view.setText(this.autofillName);
         this.setTitle("Setup: Add Name");
-
-        /**TESTING PURPOSES ONLY-- REMOVE ONCE FINISHED*/
-        //Intent intent = new Intent(this, ViewProfileActivity.class);
-        //startActivity(intent);
     }
 
     // When the confirm button is clicked

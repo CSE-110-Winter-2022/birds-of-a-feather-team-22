@@ -1,31 +1,33 @@
-
 package com.example.birdsofafeather;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import org.junit.runner.RunWith;
-import androidx.test.core.app.ActivityScenario;
+        import androidx.recyclerview.widget.RecyclerView;
+        import androidx.test.core.app.ApplicationProvider;
+        import androidx.test.ext.junit.runners.AndroidJUnit4;
+        import org.junit.runner.RunWith;
+        import androidx.test.core.app.ActivityScenario;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.junit.Assert.assertEquals;
+        import static androidx.test.espresso.Espresso.onView;
+        import static androidx.test.espresso.assertion.ViewAssertions.matches;
+        import static androidx.test.espresso.matcher.ViewMatchers.withId;
+        import static androidx.test.espresso.matcher.ViewMatchers.withText;
+        import static org.junit.Assert.assertEquals;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.TextView;
+        import android.content.Context;
+        import android.view.View;
+        import android.widget.TextView;
 
-import com.example.birdsofafeather.db.AppDatabase;
-import com.example.birdsofafeather.db.Course;
-import com.example.birdsofafeather.db.CourseDao;
-import com.example.birdsofafeather.db.Profile;
-import com.example.birdsofafeather.db.ProfileDao;
+        import com.example.birdsofafeather.db.AppDatabase;
+        import com.example.birdsofafeather.db.Course;
+        import com.example.birdsofafeather.db.CourseDao;
+        import com.example.birdsofafeather.db.Profile;
+        import com.example.birdsofafeather.db.ProfileDao;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.robolectric.annotation.LooperMode;
+        import org.junit.Before;
+        import org.junit.Test;
+        import org.robolectric.annotation.LooperMode;
+
+        import java.util.ArrayList;
+        import java.util.List;
 
 @LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4.class)
@@ -76,7 +78,7 @@ public class TestViewProfileActivity {
 
 
     @Test
-    public void testSharedCoursesDisplayed() {
+    public void testMatchesDisplayed() {
 
         /**insert single course1 to database with matching profileId*/
 
@@ -85,7 +87,7 @@ public class TestViewProfileActivity {
 
         viewProfile.onActivity(activity -> {
             /*check match name*/
-            onView(withId(R.id.viewprofiile_name)).check(matches(withText("John")));
+            onView(withId(R.id.viewprofile_name)).check(matches(withText("John")));
 
             RecyclerView recyclerView = activity.findViewById(R.id.viewprofile_shared_courses);
 
@@ -152,7 +154,16 @@ public class TestViewProfileActivity {
         });
     }
 
+    @Test
+    public void matchesViewAdapterTest() {
+        List<Course> sharedCourses = new ArrayList<>();
+        sharedCourses.add(new Course(1, 1, "2020", "Fall", "CSE", "110"));
+        sharedCourses.add(new Course(2, 2, "2020", "Fall", "CSE", "110"));
+        sharedCourses.add(new Course(3, 3, "2020", "Fall", "CSE", "110"));
+
+        ViewProfileAdapter adapter = new ViewProfileAdapter(sharedCourses);
+        assertEquals(3, adapter.getItemCount());
+    }
+
 
 }
-
-

@@ -39,7 +39,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     private RecyclerView matchesRecyclerView;
     private RecyclerView.LayoutManager matchesLayoutManager;
     private MatchesViewAdapter matchesViewAdapter;
-    private List<Course> myCourses;
     private Button startButton;
     private Button stopButton;
 
@@ -56,16 +55,17 @@ public class HomeScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
         setTitle("Birds of a Feather");
 
-        db = AppDatabase.singleton(this);
+        this.db = AppDatabase.singleton(this);
 
         // Check if the user's profile needs to be setup
-        f1 = backgroundThreadExecutor.submit(() -> {
-            Profile p = db.profileDao().getProfile(1);
+        this.f1 = backgroundThreadExecutor.submit(() -> {
+            Profile p = this.db.profileDao().getProfile(1);
             if (p == null) {
                 runOnUiThread(() -> {
                     Intent intent = new Intent(this, NameActivity.class);
                     startActivity(intent);
                 });
+
             }
             return null;
         });
@@ -73,13 +73,13 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matches = new ArrayList<>();
 
         // Grab list of discovered users to display on start
-        f3 = backgroundThreadExecutor.submit(() -> {
-            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsers();
+        this.f3 = backgroundThreadExecutor.submit(() -> {
+            List<DiscoveredUser> discovered = this.db.discoveredUserDao().getDiscoveredUsers();
 
             if (discovered != null) {
                 for (DiscoveredUser u : discovered) {
 
-                    Profile p = db.profileDao().getProfile(u.getProfileId());
+                    Profile p = this.db.profileDao().getProfile(u.getProfileId());
                     this.matches.add(new Pair(p, u.getNumShared()));
                 }
 
@@ -92,38 +92,37 @@ public class HomeScreenActivity extends AppCompatActivity {
         // For demo purposes
         fillStack();
         addCoursesToDB();
-        this.myCourses = null;
 
         // Grab all view elements
-        matchesRecyclerView = findViewById(R.id.matches_view);
-        matchesViewAdapter = new MatchesViewAdapter(matches,this);
-        matchesRecyclerView.setAdapter(matchesViewAdapter);
-        matchesLayoutManager = new LinearLayoutManager(this);
-        matchesRecyclerView.setLayoutManager(matchesLayoutManager);
-        stopButton = findViewById(R.id.stop_button);
-        startButton = findViewById(R.id.start_button);
-        matchesRecyclerView.setVisibility(View.VISIBLE);
+        this.matchesRecyclerView = findViewById(R.id.matches_view);
+        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
+        this.matchesLayoutManager = new LinearLayoutManager(this);
+        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
+        this.stopButton = findViewById(R.id.stop_button);
+        this.startButton = findViewById(R.id.start_button);
+        this.matchesRecyclerView.setVisibility(View.VISIBLE);
     }
 
     // Demo purposes, simulate the finding matches service
     public void fillStack() {
-        f1 = backgroundThreadExecutor.submit(() -> {
-            addedMatches = new Stack<>();
-            addedMatches.push(this.bill_profile);
-            addedMatches.push(this.gary_profile);
-            addedMatches.push(this.john_profile);
-            addedMatches.push(this.daniel_profile);
-            db.profileDao().insert(this.bill_profile);
-            db.profileDao().insert(this.gary_profile);
-            db.profileDao().insert(this.john_profile);
-            db.profileDao().insert(this.daniel_profile);
+        this.f1 = backgroundThreadExecutor.submit(() -> {
+            this.addedMatches = new Stack<>();
+            this.addedMatches.push(this.bill_profile);
+            this.addedMatches.push(this.gary_profile);
+            this.addedMatches.push(this.john_profile);
+            this.addedMatches.push(this.daniel_profile);
+            this.db.profileDao().insert(this.bill_profile);
+            this.db.profileDao().insert(this.gary_profile);
+            this.db.profileDao().insert(this.john_profile);
+            this.db.profileDao().insert(this.daniel_profile);
             return null;
         });
     }
 
     // Demo purposes, create and add courses for the test dummies to the DB
     public void addCoursesToDB() {
-        f1 = backgroundThreadExecutor.submit(() -> {
+        this.f1 = backgroundThreadExecutor.submit(() -> {
             Course course1 = new Course(11, this.bill_profile.getProfileId(), "2020", "Fall", "CSE", "110");
             Course course2 = new Course(12, this.bill_profile.getProfileId(), "2020", "Winter", "MATH", "20C");
             Course course7 = new Course(17, this.bill_profile.getProfileId(), "2020", "Spring", "MATH", "183");
@@ -131,13 +130,13 @@ public class HomeScreenActivity extends AppCompatActivity {
             Course course4 = new Course(14, this.john_profile.getProfileId(), "2020", "Fall", "CSE", "110");
             Course course6 = new Course(16, this.john_profile.getProfileId(), "2020", "Spring", "MATH", "183");
             Course course5 = new Course(15, this.daniel_profile.getProfileId(), "2020", "Fall", "CSE", "110");
-            db.courseDao().insert(course1);
-            db.courseDao().insert(course2);
-            db.courseDao().insert(course3);
-            db.courseDao().insert(course4);
-            db.courseDao().insert(course5);
-            db.courseDao().insert(course6);
-            db.courseDao().insert(course7);
+            this.db.courseDao().insert(course1);
+            this.db.courseDao().insert(course2);
+            this.db.courseDao().insert(course3);
+            this.db.courseDao().insert(course4);
+            this.db.courseDao().insert(course5);
+            this.db.courseDao().insert(course6);
+            this.db.courseDao().insert(course7);
 
             return null;
         });
@@ -146,29 +145,25 @@ public class HomeScreenActivity extends AppCompatActivity {
     // When the start button is clicked
     public void onClickStart(View view) {
 
-        stopButton.setVisibility(View.VISIBLE);
-        startButton.setVisibility(View.GONE);
-
-
-
+        this.stopButton.setVisibility(View.VISIBLE);
+        this.startButton.setVisibility(View.GONE);
 
         // Demo purposes, calculate the number of shared courses between the user and a match and add to a list to send to the view adapter
-        if (!addedMatches.isEmpty()) {
-            f1 = backgroundThreadExecutor.submit(() -> {
-                Profile match = addedMatches.pop();
-                while (db.discoveredUserDao().exists(match.getProfileId()) != 0 && !addedMatches.isEmpty()) {
-                    match = addedMatches.pop();
+        if (!this.addedMatches.isEmpty()) {
+            this.f1 = this.backgroundThreadExecutor.submit(() -> {
+                Profile match = this.addedMatches.pop();
+                while (this.db.discoveredUserDao().exists(match.getProfileId()) != 0 && !this.addedMatches.isEmpty()) {
+                    match = this.addedMatches.pop();
                 }
 
-                if (db.discoveredUserDao().exists(match.getProfileId()) == 0) {
+                if (this.db.discoveredUserDao().exists(match.getProfileId()) == 0) {
                     // Get the user's courses
-                    this.myCourses = db.courseDao().getCoursesByProfileId(1);
-                    List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
+                    List<Course> myCourses = this.db.courseDao().getCoursesByProfileId(1);
+                    List<Course> theirCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
 
-                    int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
-
+                    int numShared = Utilities.getNumSharedCourses(myCourses, theirCourses);
                     if (numShared > 0) {
-                        db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
+                        this.db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
 
                         this.matches.add(new Pair(match, numShared));
                         this.matches.sort(new MatchesComparator());
@@ -179,17 +174,17 @@ public class HomeScreenActivity extends AppCompatActivity {
         }
 
         // Initialize view adapter and recycler view
-        matchesViewAdapter = new MatchesViewAdapter(matches,this);
-        matchesRecyclerView.setAdapter(matchesViewAdapter);
-        matchesLayoutManager = new LinearLayoutManager(this);
-        matchesRecyclerView.setLayoutManager(matchesLayoutManager);
+        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
+        this.matchesLayoutManager = new LinearLayoutManager(this);
+        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
     }
 
     // When the stop button is clicked
     public void onClickStop(View view) {
-        startButton.setVisibility(View.VISIBLE);
-        stopButton.setVisibility(View.GONE);
-        matchesRecyclerView.setVisibility(View.VISIBLE);
+        this.startButton.setVisibility(View.VISIBLE);
+        this.stopButton.setVisibility(View.GONE);
+        this.matchesRecyclerView.setVisibility(View.VISIBLE);
     }
 
     // When a match in the recycler view is clicked
@@ -204,17 +199,17 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     // For testing purposes, visibility is set to gone for demoing and actual use
     public void onDeleteDBClicked(View view) {
-        db.clearAllTables();
+        this.db.clearAllTables();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (f1 != null) {
-            f1.cancel(true);
+        if (this.f1 != null) {
+            this.f1.cancel(true);
         }
-        if (f2 != null) {
-            f2.cancel(true);
+        if (this.f2 != null) {
+            this.f2.cancel(true);
         }
     }
 
@@ -223,6 +218,11 @@ public class HomeScreenActivity extends AppCompatActivity {
 // Comparator used to sort matches by their number of shared courses in decreasing order
 class MatchesComparator implements Comparator<Pair<Profile, Integer>> {
     public int compare(Pair<Profile, Integer> p1, Pair<Profile, Integer> p2) {
-        return p2.second - p1.second;
+        if (p2.second == p1.second) {
+            return p1.first.getName().compareTo(p2.first.getName());
+        }
+        else {
+            return p2.second - p1.second;
+        }
     }
 }

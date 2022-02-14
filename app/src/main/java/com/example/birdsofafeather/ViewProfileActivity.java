@@ -55,7 +55,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
 
         // Get the name and photo Views and set them
-        nameTextView = findViewById(R.id.viewprofiile_name);
+        nameTextView = findViewById(R.id.viewprofile_name);
         nameTextView.setText(match.getName());
         ImageView viewProfilePhoto = findViewById(R.id.viewprofile_photo);
         Profile finalMatch = match;

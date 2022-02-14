@@ -20,7 +20,7 @@ public class TestProfileDB {
 
     public Context context = ApplicationProvider.getApplicationContext();
     public AppDatabase db = AppDatabase.useTestSingleton(context);
-    private String default_photo = "https://imgur.com/a/vgBKZMN";
+    private String default_photo = "https://i.imgur.com/MZH5yxZ.png";
 
     //Testing if profiles are inserted into DB
     @Test

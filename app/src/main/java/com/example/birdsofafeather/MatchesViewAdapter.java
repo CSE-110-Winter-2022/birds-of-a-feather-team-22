@@ -42,6 +42,7 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
         holder.setMatch(this.matches.get(position), this.context);
     }
 
+    //Matches List length
     @Override
     public int getItemCount() {
         return this.matches.size();
@@ -53,7 +54,7 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
         private final TextView matchNum;
         private final TextView matchId;
 
-
+        //assign profile ids
         ViewHolder(View view) {
             super(view);
             this.matchPhoto = view.findViewById(R.id.match_photo_view);
@@ -61,7 +62,7 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
             this.matchNum = view.findViewById(R.id.match_num_courses_view);
             this.matchId = view.findViewById(R.id.match_profile_id_view);
         }
-
+        //assign matches information to correct view Ids
         public void setMatch(Pair<Profile, Integer> match, Context context) {
             this.matchName.setText(match.first.getName());
             if (match.second == 1) {

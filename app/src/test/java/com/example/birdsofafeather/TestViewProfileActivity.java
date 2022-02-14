@@ -9,7 +9,9 @@ import org.junit.runner.RunWith;
 
 import androidx.test.core.app.ActivityScenario;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -21,7 +23,12 @@ import android.content.Context;
 
 import android.os.Looper;
 import android.view.View;
+
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.JMock1Matchers.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.robolectric.Shadows.shadowOf;
 
 import com.example.birdsofafeather.db.AppDatabase;
@@ -35,6 +42,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.robolectric.annotation.LooperMode;
 
+import java.util.Map;
+
 @LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4.class)
 public class TestViewProfileActivity {
@@ -47,18 +56,18 @@ public class TestViewProfileActivity {
 
     @Before
     public void setupTestDatabase(){
-        course1 = new Course(10, 0,"2019","Fall","CSE","11");
-        course2 = new Course(20, 0,"2021","Fall","CSE","100");
-        course3 = new Course(30, 0,"2020","Winter","CSE","30");
-        course4 = new Course(40, 0,"2020","Winter","MATH","20D");
-        course5 = new Course(50, 0,"2019","Spring","CSE","20");
+        course1 = new Course(10, 2,"2019","Fall","CSE","11");
+        course2 = new Course(20, 2,"2021","Fall","CSE","100");
+        course3 = new Course(30, 2,"2020","Winter","CSE","30");
+        course4 = new Course(40, 2,"2020","Winter","MATH","20D");
+        course5 = new Course(50, 2,"2019","Spring","CSE","20");
         course6 = new Course(10, 1,"2019","Fall","CSE","11");
         course7 = new Course(20, 1,"2021","Fall","CSE","100");
         course8 = new Course(30, 1,"2020","Winter","CSE","30");
         course9 = new Course(40, 1,"2020","Winter","MATH","20D");
         course10 = new Course(50, 1,"2019","Spring","CSE","20");
-        testProfile = new Profile(0,"John","valid_url");
-        Profile myProfile = new Profile(1, "Drake", "Valid");
+        testProfile = new Profile(1,"John","valid_url");
+        Profile myProfile = new Profile(2, "Drake", "Valid");
 
         Context context = ApplicationProvider.getApplicationContext();
         db = AppDatabase.useTestSingleton(context);
@@ -84,9 +93,11 @@ public class TestViewProfileActivity {
         viewProfile.onActivity(activity -> {
 
             onView(withId(R.id.viewprofiile_name)).check(matches(withText("John")));
-            onView(withText("CSE")).check(matches(isDisplayed()));
+            //onView(withText("CSE")).check(matches(isDisplayed()));
 
-
+            RecyclerView recyclerView = activity.findViewById(R.id.viewprofile_shared_courses);
+            View v = recyclerView.getLayoutManager().findViewByPosition(0);
+            assertEquals(v, null);
         });
     }
 

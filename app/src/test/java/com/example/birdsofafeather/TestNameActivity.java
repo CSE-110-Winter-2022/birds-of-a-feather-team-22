@@ -65,6 +65,7 @@ public class TestNameActivity {
         });
     }
 
+    /*
     @Test
     public void testPassedIntent(){
         ActivityScenario<NameActivity> scenario = scenarioRule.getScenario();
@@ -84,7 +85,7 @@ public class TestNameActivity {
             //onView(withId(R.id.imagebutton_tag)).perform(click());
         });
 
-    }
+    }*/
 }
 
 

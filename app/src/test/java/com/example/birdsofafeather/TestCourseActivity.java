@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;

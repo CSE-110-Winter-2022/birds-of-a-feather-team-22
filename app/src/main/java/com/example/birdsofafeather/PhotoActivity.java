@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ public class PhotoActivity extends AppCompatActivity {
 
     // When the submit button is clicked
     public void onSubmitClicked(View view) {
-
+        Log.d("<Photo>", "Submit photo");
         // Retrieve name from previous activity and photo URL and pass along to the add courses activity
         String photo = this.photo_view.getText().toString().trim();
         String name = getIntent().getStringExtra("name");

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,8 +50,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         // Retrieve the match's profile from Future
         Profile match = null;
         try {
+            Log.d("<VProfile>", "Match received");
             match = f1.get();
         } catch (ExecutionException | InterruptedException e) {
+            Log.e("<VProfile>", "Could not get match");
             e.printStackTrace();
         }
 
@@ -72,8 +75,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         // Retrieve shared courses between user and match from Future
         List<Course> sharedCourses = null;
         try {
+            Log.d("<VProfile>", "Got shared courses");
             sharedCourses = f2.get();
         } catch (ExecutionException | InterruptedException e) {
+            Log.e("<VProfile>", "Could not get shared courses");
             e.printStackTrace();
         }
 

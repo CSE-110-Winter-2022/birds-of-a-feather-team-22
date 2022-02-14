@@ -3,6 +3,7 @@ package com.example.birdsofafeather;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,6 +52,7 @@ public class CourseActivity extends AppCompatActivity {
 
         this.db = AppDatabase.singleton(this);
 
+        Log.d("<Course>", "Setting up Course screen");
         // Set quarter spinner
         ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array, android.R.layout.simple_spinner_dropdown_item);
         quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -77,6 +79,7 @@ public class CourseActivity extends AppCompatActivity {
         String subject = this.subject_view.getText().toString().trim().toUpperCase();
         String number = this.number_view.getText().toString().trim().toUpperCase();
 
+
         // If the course information is valid
         if (isValidCourse(year, quarter, subject, number)) {
 
@@ -101,13 +104,16 @@ public class CourseActivity extends AppCompatActivity {
             f1 = this.backgroundThreadExecutor.submit(() -> {
                 int courseId = this.db.courseDao().getCourseId(1, year, quarter, subject, number);
                 if (!isExistingCourse(courseId)) {
+                    Log.d("<Course", "Adding in course");
                     Course course = new Course(db.courseDao().maxId()+1,1,  year, quarter, subject, number);
                     this.db.courseDao().insert(course);
                     this.numCourses++;
                 }
+                else Log.e("<Course", "Duplicate courses, will not be added");
                 return null;
             });
 
+            Log.d("<Course>", "Autofilling courses");
             // Autofill year field for the next screen
             for (int i = 0; i < this.year_spinner.getCount(); i++) {
                 if (this.year_spinner.getItemAtPosition(i).equals(year)) {

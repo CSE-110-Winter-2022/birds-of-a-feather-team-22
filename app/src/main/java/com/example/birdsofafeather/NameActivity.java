@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ public class NameActivity extends AppCompatActivity {
 
     // When the confirm button is clicked
     public void onConfirmClicked(View view) {
+        Log.d("<Name>", "Confirm Name");
         String name = this.name_view.getText().toString().trim();
 
         // Check if name is valid
@@ -39,6 +41,7 @@ public class NameActivity extends AppCompatActivity {
             context.startActivity(intent);
             finish();
         }
+        else Log.e("<Name>", "Name is not valid");
     }
 
     // Checks if a name is valid, otherwise, shows an error

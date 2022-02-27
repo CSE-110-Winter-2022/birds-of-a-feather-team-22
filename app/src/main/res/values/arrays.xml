@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="year_array">
-        <item>Year</item>
-        <item>2022</item>
-        <item>2021</item>
-        <item>2020</item>
-        <item>2019</item>
-        <item>2018</item>
-        <item>2017</item>
-        <item>2016</item>
-        <item>2015</item>
-        <item>2014</item>
-        <item>2013</item>
-        <item>2012</item>
-        <item>2011</item>
-        <item>2010</item>
-    </string-array>
     <string-array name="quarter_array">
         <item>Quarter</item>
         <item>Fall</item>
@@ -23,5 +7,16 @@
         <item>Spring</item>
         <item>Summer Session 1</item>
         <item>Summer Session 2</item>
+        <item>Special Summer Session</item>
+    </string-array>
+
+    <string-array name="class_size_array">
+        <item>Class Size</item>
+        <item>Tiny (&lt;40)</item>
+        <item>Small (40-75)</item>
+        <item>Medium (75-150)</item>
+        <item>Large (150-250)</item>
+        <item>Huge (250-400)</item>
+        <item>Gigantic (400+)</item>
     </string-array>
 </resources>

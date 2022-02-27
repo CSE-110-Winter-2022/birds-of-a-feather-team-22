@@ -5,52 +5,110 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
+import com.example.birdsofafeather.db.Profile;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+// Refers to the screen where the user can see a match's enlarged photo, name, and list of shared courses
 public class ViewProfileActivity extends AppCompatActivity {
     protected RecyclerView sharedCoursesRecyclerView;
     protected RecyclerView.LayoutManager sharedCoursesLayoutManager;
-    protected  ViewProfileAdapter viewProfileAdapter;
+    protected ViewProfileAdapter viewProfileAdapter;
 
-    private DatabaseTracker databaseTracker;
+    private AppDatabase db;
     private TextView nameTextView;
-    private int profileId;
+    private String profileId;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Future<Profile> f1;
+    private Future<List<Course>> f2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
+        this.db = AppDatabase.singleton(this);
 
-        //set profileId
-        setProfileId(false, 0);
+        // Get match's profile id from intent
+        this.profileId = getIntent().getStringExtra("profileId");
 
-        //set name
-        nameTextView = findViewById(R.id.profile_name_textview);
-        nameTextView.setText(databaseTracker.getUserProfile(profileId).getName());
+        // Get the match's profile from DB
+        f1 = backgroundThreadExecutor.submit(() -> {
+            return db.profileDao().getProfile(this.profileId);
+        });
 
-        List<Course> sharedCourses = databaseTracker.getSharedCourses(profileId);
+        // Retrieve the match's profile from Future
+        Profile match = null;
+        try {
+            Log.d("<VProfile>", "Match received");
+            match = f1.get();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e("<VProfile>", "Could not get match");
+            e.printStackTrace();
+        }
 
-        sharedCoursesRecyclerView = findViewById(R.id.shared_courses_view);
+        // Get the name and photo Views and set them
+        nameTextView = findViewById(R.id.viewprofile_name);
+        nameTextView.setText(match.getName());
+        ImageView viewProfilePhoto = findViewById(R.id.viewprofile_photo);
+        Profile finalMatch = match;
+        Glide.with(this).load(finalMatch.getPhoto()).into(viewProfilePhoto);
 
+        // Get shared courses between user and match
+        f2 = backgroundThreadExecutor.submit(() -> {
+            Profile user = db.profileDao().getUserProfile(true);
+            List<Course> myCourses = db.courseDao().getCoursesByProfileId(user.getProfileId());
+            List<Course> theirCourses = db.courseDao().getCoursesByProfileId(this.profileId);
+
+            return Utilities.getSharedCourses(myCourses, theirCourses);
+        });
+
+        // Retrieve shared courses between user and match from Future
+        List<Course> sharedCourses = null;
+        try {
+            Log.d("<VProfile>", "Got shared courses");
+            sharedCourses = f2.get();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e("<VProfile>", "Could not get shared courses");
+            e.printStackTrace();
+        }
+
+        // Set the shared courses using a view adapter and recycler view
+        sharedCoursesRecyclerView = findViewById(R.id.viewprofile_shared_courses);
         sharedCoursesLayoutManager = new LinearLayoutManager(this);
         sharedCoursesRecyclerView.setLayoutManager(sharedCoursesLayoutManager);
-
-        viewProfileAdapter = new ViewProfileAdapter(sharedCourses, profileId);
+        viewProfileAdapter = new ViewProfileAdapter(sharedCourses);
         sharedCoursesRecyclerView.setAdapter(viewProfileAdapter);
     }
 
-    /**testing boolean parameter for unit tests*/
-    public void setProfileId(boolean testing, int profileId){
-        if(!testing) {
-            Intent intent = getIntent();
-            this.profileId = intent.getIntExtra("profileId",1);
-        } else {
-            this.profileId = profileId;
+//    // For testing use
+//    public void setProfileId(boolean testing, int profileId){
+//        if(!testing) {
+//            Intent intent = getIntent();
+//            this.profileId = intent.getIntExtra("profileId",1);
+//        } else {
+//            this.profileId = profileId;
+//        }
+//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (f1 != null) {
+            f1.cancel(true);
+        }
+        if (f2 != null) {
+            f2.cancel(true);
         }
     }
 }

@@ -1,110 +1,168 @@
 package com.example.birdsofafeather;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+        import androidx.recyclerview.widget.RecyclerView;
+        import androidx.test.core.app.ApplicationProvider;
+        import androidx.test.ext.junit.runners.AndroidJUnit4;
+        import org.junit.runner.RunWith;
+        import androidx.test.core.app.ActivityScenario;
 
-import org.junit.runner.RunWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
-import androidx.test.espresso.*;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
+        import static androidx.test.espresso.Espresso.onView;
+        import static androidx.test.espresso.assertion.ViewAssertions.matches;
+        import static androidx.test.espresso.matcher.ViewMatchers.withId;
+        import static androidx.test.espresso.matcher.ViewMatchers.withText;
+        import static org.junit.Assert.assertEquals;
 
-import androidx.test.*;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
+        import android.content.Context;
+        import android.view.View;
+        import android.widget.TextView;
 
-import android.content.Context;
-import android.os.Bundle;
+        import com.example.birdsofafeather.db.AppDatabase;
+        import com.example.birdsofafeather.db.Course;
+        import com.example.birdsofafeather.db.CourseDao;
+        import com.example.birdsofafeather.db.Profile;
+        import com.example.birdsofafeather.db.ProfileDao;
 
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+        import org.junit.Before;
+        import org.junit.Test;
+        import org.robolectric.annotation.LooperMode;
 
-import com.example.birdsofafeather.db.AppDatabase;
-import com.example.birdsofafeather.db.Course;
-import com.example.birdsofafeather.db.CourseDao;
-import com.example.birdsofafeather.db.Profile;
-import com.example.birdsofafeather.db.ProfileDao;
+        import java.util.ArrayList;
+        import java.util.List;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
+@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4.class)
 public class TestViewProfileActivity {
     private AppDatabase db;
-    private DatabaseTracker dbTracker;
     private CourseDao courseDao;
     private ProfileDao profileDao;
     private Profile testProfile;
-    private Course course1, course2, course3, course4, course5;
-
-    @Rule
-    public ActivityScenarioRule<ViewProfileActivity> scenarioRule =
-            new ActivityScenarioRule<>(ViewProfileActivity.class);
+    private Course course1, course2, course3, course4, course5, course6, course7, course8, course9, course10;
+    private TextView course_year, course_quarter, course_subject, course_number;
+    private View selectedView;
 
     @Before
     public void setupTestDatabase(){
         course1 = new Course(10, 2,"2019","Fall","CSE","11");
-        course1 = new Course(20, 2,"2021","Fall","CSE","100");
-        course1 = new Course(30, 2,"2020","Winter","CSE","30");
-        course1 = new Course(40, 2,"2020","Winter","MATH","20D");
-        course1 = new Course(50, 2,"2019","Spring","CSE","20");
-        testProfile = new Profile(2,"John","valid_url");
+        course2 = new Course(20, 2,"2021","Fall","CSE","100");
+        course3 = new Course(30, 2,"2020","Winter","CSE","30");
+        course4 = new Course(40, 2,"2020","Winter","MATH","20D");
+        course5 = new Course(50, 2,"2019","Spring","CSE","20");
+        course6 = new Course(10, 1,"2019","Fall","CSE","11");
+        course7 = new Course(20, 1,"2021","Fall","CSE","100");
+        course8 = new Course(30, 1,"2020","Winter","CSE","30");
+        course9 = new Course(40, 1,"2020","Winter","MATH","20D");
+        course10 = new Course(50, 1,"2019","Spring","CSE","20");
+        testProfile = new Profile(1,"John","valid_url");
+        Profile myProfile = new Profile(2, "Drake", "Valid");
 
         Context context = ApplicationProvider.getApplicationContext();
         db = AppDatabase.useTestSingleton(context);
+
+        profileDao = db.profileDao();
+        courseDao = db.courseDao();
+
+        profileDao.insert(testProfile);
+        profileDao.insert(myProfile);
+        courseDao.insert(course1);
+        courseDao.insert(course2);
+        courseDao.insert(course3);
+        courseDao.insert(course4);
+        courseDao.insert(course5);
+        courseDao.insert(course6);
+        courseDao.insert(course7);
+        courseDao.insert(course8);
+        courseDao.insert(course9);
+        courseDao.insert(course10);
+
     }
 
+
     @Test
-    public void testViewProfileActivitySingleMatchDisplayed() {
+    public void testMatchesDisplayed() {
 
         /**insert single course1 to database with matching profileId*/
 
-        try (ActivityScenario<ViewProfileActivity> scenario = scenarioRule.getScenario()) {
-
-            scenario.onActivity(activity -> {
-                RecyclerView rv = activity.findViewById(R.id.shared_courses_view);
-
-                    RecyclerView.Adapter adapter = rv.getAdapter();
-                    adapter.getItemCount();
-                    View course1View = rv.getChildAt(0);
-
-                    //examine and assert that each item is true
+        ActivityScenario<ViewProfileActivity> viewProfile = ActivityScenario.launch(ViewProfileActivity.class);
 
 
-                });
-        }
+        viewProfile.onActivity(activity -> {
+            /*check match name*/
+            onView(withId(R.id.viewprofile_name)).check(matches(withText("John")));
+
+            RecyclerView recyclerView = activity.findViewById(R.id.viewprofile_shared_courses);
+
+            /*test course1*/
+            selectedView = recyclerView.getChildAt(0);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2019");
+            assertEquals(course_quarter.getText(), "Fall");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "11");
+
+            /*test course2*/
+            selectedView = recyclerView.getChildAt(1);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2021");
+            assertEquals(course_quarter.getText(), "Fall");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "100");
+
+            /*test third course*/
+            selectedView = recyclerView.getChildAt(2);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2020");
+            assertEquals(course_quarter.getText(), "Winter");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "30");
+
+            /*test fourth course*/
+            selectedView = recyclerView.getChildAt(3);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2020");
+            assertEquals(course_quarter.getText(), "Winter");
+            assertEquals(course_subject.getText(), "MATH");
+            assertEquals(course_number.getText(), "20D");
+
+            /*test fifth course*/
+            selectedView = recyclerView.getChildAt(4);
+            course_year = (TextView) selectedView.findViewById(R.id.course_year_row_textview);
+            course_quarter = (TextView) selectedView.findViewById(R.id.course_quarter_row_textview);
+            course_subject = (TextView) selectedView.findViewById(R.id.course_subject_row_textview);
+            course_number = (TextView) selectedView.findViewById(R.id.course_number_row_textview);
+
+            assertEquals(course_year.getText(), "2019");
+            assertEquals(course_quarter.getText(), "Spring");
+            assertEquals(course_subject.getText(), "CSE");
+            assertEquals(course_number.getText(), "20");
+
+        });
     }
 
     @Test
-    public void testViewProfileActivityMultipleMatchesDisplayed(){
+    public void matchesViewAdapterTest() {
+        List<Course> sharedCourses = new ArrayList<>();
+        sharedCourses.add(new Course(1, 1, "2020", "Fall", "CSE", "110"));
+        sharedCourses.add(new Course(2, 2, "2020", "Fall", "CSE", "110"));
+        sharedCourses.add(new Course(3, 3, "2020", "Fall", "CSE", "110"));
 
-        ActivityScenario<ViewProfileActivity> scenario = scenarioRule.getScenario()){
-
-            scenario.onActivity(activity -> {
-
-            });
-        }
-    }
-
-    @Test
-    public void testCoursesExistInDatabase(){
-
-    }
-
-    @Test
-    public void testCoursesScroll(){
-
+        ViewProfileAdapter adapter = new ViewProfileAdapter(sharedCourses);
+        assertEquals(3, adapter.getItemCount());
     }
 
 

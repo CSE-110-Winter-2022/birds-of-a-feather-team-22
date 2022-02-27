@@ -1,10 +1,10 @@
 package com.example.birdsofafeather;
 
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,14 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.birdsofafeather.db.Profile;
 
-import java.io.IOException;
 import java.util.List;
 
+// View adapter for HomeScreenActivity
 public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.ViewHolder> {
-    private final List<Profile> matches;
+    private final List<Pair<Profile, Integer>> matches;
     private Context context;
 
-    public MatchesViewAdapter(List<Profile> matches, Context context) {
+    public MatchesViewAdapter(List<Pair<Profile, Integer>> matches, Context context) {
         super();
         this.matches = matches;
         this.context = context;
@@ -39,45 +39,40 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        try {
-            holder.setMatch(this.matches.get(position), this.context);
-        } catch (IOException exception) {
-            ViewHolder.picture.setImageResource(R.drawable.feather_1);
-        }
+        holder.setMatch(this.matches.get(position), this.context);
     }
 
+    //Matches List length
     @Override
     public int getItemCount() {
         return this.matches.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private static ImageView picture;
-        private final TextView name;
-        private final TextView numMatches;
-        private final TextView userID;
+        private final ImageView matchPhoto;
+        private final TextView matchName;
+        private final TextView matchNum;
+        private final TextView matchId;
 
+        //assign profile ids
         ViewHolder(View view) {
             super(view);
-            this.picture = view.findViewById(R.id.match_userPicture);
-            this.name = view.findViewById(R.id.match_name);
-            this.numMatches = view.findViewById(R.id.match_classesMatched);
-            this.userID = view.findViewById(R.id.match_userID);
+            this.matchPhoto = view.findViewById(R.id.match_photo_view);
+            this.matchName = view.findViewById(R.id.match_name_view);
+            this.matchNum = view.findViewById(R.id.match_num_courses_view);
+            this.matchId = view.findViewById(R.id.match_profile_id_view);
         }
-
-        public void setMatch(Profile profile, Context context) throws IOException {
-            this.name.setText(profile.getName());
-            this.numMatches.setText("Classes matched: " + profile.getProfileId());
-            this.userID.setText(new Integer(profile.getProfileId()).toString());
-            checkValidPhoto(profile.getPhoto());
-            Glide.with(context).load(profile.getPhoto()).into(picture);
-        }
-        //check if not valid url set picture to default feather images
-        public void checkValidPhoto(String url) throws IOException {
-            if(!(URLUtil.isValidUrl(url))){
-                throw new IOException();
+        //assign matches information to correct view Ids
+        public void setMatch(Pair<Profile, Integer> match, Context context) {
+            this.matchName.setText(match.first.getName());
+            if (match.second == 1) {
+                this.matchNum.setText(match.second + " Shared Course");
             }
-
+            else {
+                this.matchNum.setText(match.second + " Shared Courses");
+            }
+            this.matchId.setText(new Integer(match.first.getProfileId()).toString());
+            Glide.with(context).load(match.first.getPhoto()).into(this.matchPhoto);
         }
     }
 }

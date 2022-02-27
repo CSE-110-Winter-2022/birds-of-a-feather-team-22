@@ -12,4 +12,10 @@
     <string name="done">Done</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="photo_url">Photo URL</string>
+    <string name="course_subject">Course Subject</string>
+    <string name="course_number">Course Number</string>
+    <string name="delete_db">Delete DB</string>
+    <string name="shared_courses">Shared Courses</string>
+    <string name="profile_picture">profile picture</string>
 </resources>

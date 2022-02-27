@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="seafoam">#69BF9E</color>
+    <color name="dark_seafoam">#427A64</color>
 </resources>

@@ -1,19 +1,23 @@
 package com.example.birdsofafeather.db;
-import java.util.*;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.Relation;
 
+import java.util.UUID;
+
+// Course class used to store course information
 @Entity (tableName = "COURSE")
 public class Course {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "course_id")
-    private int courseId;
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "courseId")
+    private String courseId;
 
-    @ColumnInfo(name = "profile_id")
-    private int profileId;
+    @ColumnInfo(name = "profileId")
+    private String profileId;
 
     @ColumnInfo(name = "year")
     private String year;
@@ -27,28 +31,32 @@ public class Course {
     @ColumnInfo(name = "number")
     private String number;
 
-    public Course(int courseId, int profileId,String year, String quarter, String subject, String number) {
-        this.courseId = courseId;
+    @ColumnInfo(name = "classSize")
+    private String classSize;
+
+    public Course (String profileId, String year, String quarter, String subject, String number, String classSize) {
+        this.courseId = UUID.randomUUID().toString();
         this.profileId = profileId;
         this.year = year;
         this.quarter = quarter;
         this.subject = subject;
         this.number = number;
+        this.classSize = classSize;
     }
 
-    public int getCourseId() {
+    public String getCourseId() {
         return this.courseId;
     }
 
-    public void setCourseId(int courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
-    public int getProfileId() {
+    public String getProfileId() {
         return this.profileId;
     }
 
-    public void setProfileId(int profileId) {
+    public void setProfileId(String profileId) {
         this.profileId = profileId;
     }
 
@@ -84,11 +92,18 @@ public class Course {
         this.number = number;
     }
 
-    public void addUserId(int id) {
-        // this.students.getStudentIds().add(id);
+    public String getClassSize() {
+        return this.classSize;
     }
 
-    public int getId() {
-        return this.courseId;
+    public void setClassSize(String classSize) {
+        this.classSize = classSize;
     }
+
+    // For testing purposes
+    @Override
+    public String toString() {
+        return "" + this.courseId + " " + this.profileId + " " +  this.year + " " + this.quarter + " " + this.subject + " " + this.number;
+    }
+
 }

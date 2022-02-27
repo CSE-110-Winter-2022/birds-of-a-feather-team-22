@@ -7,49 +7,43 @@
     tools:context=".ViewProfileActivity">
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="139dp"
-        android:layout_height="141dp"
-        android:layout_marginTop="92dp"
+        android:id="@+id/viewprofile_photo"
+        android:layout_width="350dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/profile_picture"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/feather_1" />
+        app:srcCompat="@drawable/feather_1"
+        tools:ignore="ImageContrastCheck" />
 
     <TextView
-        android:id="@+id/profile_name_textview"
+        android:id="@+id/viewprofile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Name"
-        android:textSize="24sp"
+        android:layout_marginTop="12dp"
+        android:text="@string/name"
+        android:textAlignment="center"
+        android:textColor="@color/dark_seafoam"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <TextView
-        android:id="@+id/shared_courses_title_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Shared Classes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name_textview" />
+        app:layout_constraintTop_toBottomOf="@+id/viewprofile_photo" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/shared_courses_view"
-        android:layout_width="405dp"
-        android:layout_height="339dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/viewprofile_shared_courses"
+        android:layout_width="380dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shared_courses_title_textview"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/viewprofile_name"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,19 +1,23 @@
 package com.example.birdsofafeather.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import java.util.UUID;
 
 // Course class used to store course information
 @Entity (tableName = "COURSE")
 public class Course {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "courseId")
-    private int courseId;
+    private String courseId;
 
     @ColumnInfo(name = "profileId")
-    private int profileId;
+    private String profileId;
 
     @ColumnInfo(name = "year")
     private String year;
@@ -27,28 +31,32 @@ public class Course {
     @ColumnInfo(name = "number")
     private String number;
 
-    public Course(int courseId, int profileId,String year, String quarter, String subject, String number) {
-        this.courseId = courseId;
+    @ColumnInfo(name = "classSize")
+    private String classSize;
+
+    public Course (String profileId, String year, String quarter, String subject, String number, String classSize) {
+        this.courseId = UUID.randomUUID().toString();
         this.profileId = profileId;
         this.year = year;
         this.quarter = quarter;
         this.subject = subject;
         this.number = number;
+        this.classSize = classSize;
     }
 
-    public int getCourseId() {
+    public String getCourseId() {
         return this.courseId;
     }
 
-    public void setCourseId(int courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
-    public int getProfileId() {
+    public String getProfileId() {
         return this.profileId;
     }
 
-    public void setProfileId(int profileId) {
+    public void setProfileId(String profileId) {
         this.profileId = profileId;
     }
 
@@ -82,6 +90,14 @@ public class Course {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getClassSize() {
+        return this.classSize;
+    }
+
+    public void setClassSize(String classSize) {
+        this.classSize = classSize;
     }
 
     // For testing purposes

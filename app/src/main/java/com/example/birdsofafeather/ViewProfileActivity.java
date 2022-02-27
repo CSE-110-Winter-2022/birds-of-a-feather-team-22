@@ -28,7 +28,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private TextView nameTextView;
-    private int profileId;
+    private String profileId;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future<Profile> f1;
     private Future<List<Course>> f2;
@@ -40,7 +40,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         this.db = AppDatabase.singleton(this);
 
         // Get match's profile id from intent
-        this.profileId = getIntent().getIntExtra("profileId",1);
+        this.profileId = getIntent().getStringExtra("profileId");
 
         // Get the match's profile from DB
         f1 = backgroundThreadExecutor.submit(() -> {
@@ -66,7 +66,8 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Get shared courses between user and match
         f2 = backgroundThreadExecutor.submit(() -> {
-            List<Course> myCourses = db.courseDao().getCoursesByProfileId(1);
+            Profile user = db.profileDao().getUserProfile(true);
+            List<Course> myCourses = db.courseDao().getCoursesByProfileId(user.getProfileId());
             List<Course> theirCourses = db.courseDao().getCoursesByProfileId(this.profileId);
 
             return Utilities.getSharedCourses(myCourses, theirCourses);
@@ -90,15 +91,15 @@ public class ViewProfileActivity extends AppCompatActivity {
         sharedCoursesRecyclerView.setAdapter(viewProfileAdapter);
     }
 
-    // For testing use
-    public void setProfileId(boolean testing, int profileId){
-        if(!testing) {
-            Intent intent = getIntent();
-            this.profileId = intent.getIntExtra("profileId",1);
-        } else {
-            this.profileId = profileId;
-        }
-    }
+//    // For testing use
+//    public void setProfileId(boolean testing, int profileId){
+//        if(!testing) {
+//            Intent intent = getIntent();
+//            this.profileId = intent.getIntExtra("profileId",1);
+//        } else {
+//            this.profileId = profileId;
+//        }
+//    }
 
     @Override
     protected void onDestroy() {

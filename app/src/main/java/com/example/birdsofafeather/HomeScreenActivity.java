@@ -45,10 +45,10 @@ public class HomeScreenActivity extends AppCompatActivity {
     private Button stopButton;
 
     // Demo purposes
-    private Profile bill_profile = new Profile(6, "Bill","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/griswold17-115x150.jpg");
-    private Profile gary_profile = new Profile(7, "Gary","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/gillespie17M-115x150.jpg");
-    private Profile john_profile = new Profile(8, "John","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/eldon17-115x150.jpg");
-    private Profile daniel_profile = new Profile(9, "Daniel","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/kane17-115x150.jpg");
+    private Profile bill_profile = new Profile("Bill","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/griswold17-115x150.jpg");
+    private Profile gary_profile = new Profile("Gary","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/gillespie17M-115x150.jpg");
+    private Profile john_profile = new Profile("John","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/eldon17-115x150.jpg");
+    private Profile daniel_profile = new Profile("Daniel","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/kane17-115x150.jpg");
 
 
     @Override
@@ -59,24 +59,10 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         db = AppDatabase.singleton(this);
 
-        // Check if the user's profile needs to be setup
-        f1 = backgroundThreadExecutor.submit(() -> {
-            Profile p = db.profileDao().getProfile(1);
-            if (p == null) {
-                Log.d("<Home>", "User profile not created");
-                runOnUiThread(() -> {
-                    Intent intent = new Intent(this, NameActivity.class);
-                    startActivity(intent);
-                });
-            }
-            Log.d("<Home>", "User profile already created");
-            return null;
-        });
-
         this.matches = new ArrayList<>();
 
         // Grab list of discovered users to display on start
-        f3 = backgroundThreadExecutor.submit(() -> {
+        this.f3 = this.backgroundThreadExecutor.submit(() -> {
             Log.d("<Home>", "Display list of already matched students");
             List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsers();
 
@@ -93,9 +79,6 @@ public class HomeScreenActivity extends AppCompatActivity {
             return null;
         });
 
-        // For demo purposes
-        fillStack();
-        addCoursesToDB();
         this.myCourses = null;
 
         // Grab all view elements
@@ -109,68 +92,25 @@ public class HomeScreenActivity extends AppCompatActivity {
         matchesRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    // Demo purposes, simulate the finding matches service
-    public void fillStack() {
-        Log.d("<Home_Stack>", "Filling stack with users for display");
-        f1 = backgroundThreadExecutor.submit(() -> {
-            addedMatches = new Stack<>();
-            addedMatches.push(this.bill_profile);
-            addedMatches.push(this.gary_profile);
-            addedMatches.push(this.john_profile);
-            addedMatches.push(this.daniel_profile);
-
-            db.profileDao().insert(this.bill_profile);
-            db.profileDao().insert(this.gary_profile);
-            db.profileDao().insert(this.john_profile);
-            db.profileDao().insert(this.daniel_profile);
-            return null;
-        });
-    }
-
-    // Demo purposes, create and add courses for the test dummies to the DB
-    public void addCoursesToDB() {
-        Log.d("<Home>", "Adding demo courses to database");
-        f1 = backgroundThreadExecutor.submit(() -> {
-            Course course1 = new Course(11, this.bill_profile.getProfileId(), "2020", "Fall", "CSE", "110");
-            Course course2 = new Course(12, this.bill_profile.getProfileId(), "2020", "Winter", "MATH", "20C");
-            Course course7 = new Course(17, this.bill_profile.getProfileId(), "2020", "Spring", "MATH", "183");
-            Course course3 = new Course(13, this.gary_profile.getProfileId(), "2020", "Fall", "CSE", "110");
-            Course course4 = new Course(14, this.john_profile.getProfileId(), "2020", "Fall", "CSE", "110");
-            Course course6 = new Course(16, this.john_profile.getProfileId(), "2020", "Spring", "MATH", "183");
-            Course course5 = new Course(15, this.daniel_profile.getProfileId(), "2020", "Fall", "CSE", "110");
-            db.courseDao().insert(course1);
-            db.courseDao().insert(course2);
-            db.courseDao().insert(course3);
-            db.courseDao().insert(course4);
-            db.courseDao().insert(course5);
-            db.courseDao().insert(course6);
-            db.courseDao().insert(course7);
-
-            return null;
-        });
-    }
-
     // When the start button is clicked
     public void onClickStart(View view) {
 
         stopButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
 
-
-
-
         // Demo purposes, calculate the number of shared courses between the user and a match and add to a list to send to the view adapter
         if (!addedMatches.isEmpty()) {
             Log.d("<Home>", "Finding matches and displaying to screen");
             f1 = backgroundThreadExecutor.submit(() -> {
                 Profile match = addedMatches.pop();
-                while (db.discoveredUserDao().exists(match.getProfileId()) != 0 && !addedMatches.isEmpty()) {
+                while (db.discoveredUserDao().getProfileId(match.getProfileId()) != null && !addedMatches.isEmpty()) {
                     match = addedMatches.pop();
                 }
 
-                if (db.discoveredUserDao().exists(match.getProfileId()) == 0) {
+                if (db.discoveredUserDao().getProfileId(match.getProfileId()) == null) {
                     // Get the user's courses
-                    this.myCourses = db.courseDao().getCoursesByProfileId(1);
+                    Profile user = db.profileDao().getUserProfile(true);
+                    this.myCourses = db.courseDao().getCoursesByProfileId(user.getProfileId());
                     List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
 
                     int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
@@ -206,7 +146,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         Log.d("<Home>", "Clicked on profile to display");
         // Send the match's profile id to the activity responsible for showing the profile
         TextView profileIdView = view.findViewById(R.id.match_profile_id_view);
-        int profileId = Integer.parseInt(profileIdView.getText().toString());
+        String profileId = profileIdView.getText().toString();
         Intent intent = new Intent(this, ViewProfileActivity.class);
         intent.putExtra("profileId", profileId);
         startActivity(intent);
@@ -228,7 +168,15 @@ public class HomeScreenActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, CourseActivity.class);
+        startActivity(intent);
+    }
+
 }
+
+
 
 // Comparator used to sort matches by their number of shared courses in decreasing order
 class MatchesComparator implements Comparator<Pair<Profile, Integer>> {

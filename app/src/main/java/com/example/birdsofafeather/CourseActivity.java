@@ -2,6 +2,8 @@ package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,7 @@ import com.example.birdsofafeather.db.Profile;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,6 +28,7 @@ import java.util.concurrent.Future;
 public class CourseActivity extends AppCompatActivity {
     private Spinner year_spinner;
     private Spinner quarter_spinner;
+    private Spinner class_size_spinner;
     private TextView subject_view;
     private TextView number_view;
     private Button done_button;
@@ -35,7 +39,6 @@ public class CourseActivity extends AppCompatActivity {
 
     // Used to keep track of whether the user's profile has been completed or not
     private int numCourses;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,7 @@ public class CourseActivity extends AppCompatActivity {
 
         this.year_spinner = findViewById(R.id.year_spinner);
         this.quarter_spinner = findViewById(R.id.quarter_spinner);
+        this.class_size_spinner = findViewById(R.id.class_size_spinner);
         this.subject_view = findViewById(R.id.subject_view);
         this.number_view = findViewById(R.id.number_view);
         this.done_button = findViewById(R.id.done_button);
@@ -69,8 +73,20 @@ public class CourseActivity extends AppCompatActivity {
         year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.year_spinner.setAdapter(year_adapter);
 
-        // Set number of courses inputted to 0
-        this.numCourses = 0;
+        // Set class size spinner
+        ArrayAdapter<CharSequence> class_size_adapter = ArrayAdapter.createFromResource(this, R.array.class_size_array, android.R.layout.simple_spinner_dropdown_item);
+        class_size_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.class_size_spinner.setAdapter(class_size_adapter);
+
+        f1 = backgroundThreadExecutor.submit(() -> {
+            Profile user = db.profileDao().getUserProfile(true);
+            if (user != null) {
+                runOnUiThread(() -> {
+                    done_button.setVisibility(View.VISIBLE);
+                });
+            }
+            return null;
+        });
     }
 
     public void onEnterClicked(View view) {
@@ -78,42 +94,44 @@ public class CourseActivity extends AppCompatActivity {
         String quarter = this.quarter_spinner.getSelectedItem().toString().trim();
         String subject = this.subject_view.getText().toString().trim().toUpperCase();
         String number = this.number_view.getText().toString().trim().toUpperCase();
-
+        String classSize = this.class_size_spinner.getSelectedItem().toString().trim();
 
         // If the course information is valid
-        if (isValidCourse(year, quarter, subject, number)) {
+        if (isValidCourse(year, quarter, subject, number, classSize)) {
 
-            // Set and insert profile to DB if this is the first inputted course
-            if (this.numCourses == 0) {
 
-                f1 = backgroundThreadExecutor.submit(() -> {
+            f1 = backgroundThreadExecutor.submit(() -> {
+
+                Profile user = db.profileDao().getUserProfile(true);
+
+                // Set and insert profile to DB if the user's profile has not been made yet
+                if (user == null) {
                     String name = getIntent().getStringExtra("name");
                     String photo = getIntent().getStringExtra("photo");
 
-                    Profile userProfile = new Profile(1, name, photo);
-                    this.db.profileDao().insert(userProfile);
+                    user = new Profile(UUID.randomUUID().toString(), name, photo);
+                    user.setIsUser(true);
+                    this.db.profileDao().insert(user);
 
-                    return null;
-                });
-
-                done_button.setVisibility(View.VISIBLE);
-                this.numCourses++;
-            }
-
-            // Insert course to DB if it is not already there (avoid duplicates)
-            f1 = this.backgroundThreadExecutor.submit(() -> {
-                int courseId = this.db.courseDao().getCourseId(1, year, quarter, subject, number);
+                    runOnUiThread(() -> {
+                        done_button.setVisibility(View.VISIBLE);
+                    });
+                }
+                // Insert course to DB if it is not already there (avoid duplicates)
+                String userId = this.db.profileDao().getUserProfile(true).getProfileId();
+                String courseId = this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSize);
                 if (!isExistingCourse(courseId)) {
                     Log.d("<Course", "Adding in course");
-                    Course course = new Course(db.courseDao().maxId()+1,1,  year, quarter, subject, number);
+                    Course course = new Course(userId, year, quarter, subject, number, classSize);
                     this.db.courseDao().insert(course);
-                    this.numCourses++;
                 }
                 else Log.e("<Course", "Duplicate courses, will not be added");
+
                 return null;
             });
 
-            Log.d("<Course>", "Autofilling courses");
+            Log.d("<Course>", "Autofilling course information");
+
             // Autofill year field for the next screen
             for (int i = 0; i < this.year_spinner.getCount(); i++) {
                 if (this.year_spinner.getItemAtPosition(i).equals(year)) {
@@ -128,17 +146,28 @@ public class CourseActivity extends AppCompatActivity {
                 }
             }
 
+            // Autofill class size field for the next screen
+            for (int i = 0; i < this.class_size_spinner.getCount(); i++) {
+                if (this.class_size_spinner.getItemAtPosition(i).equals(classSize)) {
+                    this.class_size_spinner.setSelection(i);
+                }
+            }
+
             // Autofill subject and number fields for the next screen
             this.subject_view.setText(subject);
             this.number_view.setText(number);
         }
-
-
+        f1 = this.backgroundThreadExecutor.submit(() -> {
+            System.out.println("Profile count: " + this.db.profileDao().count());
+            System.out.println("Course count: " + this.db.courseDao().count());
+            return null;
+        });
     }
 
     // When the done button is clicked
     public void onDoneClicked(View view) {
-        finish();
+        Intent intent = new Intent(this, HomeScreenActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -150,7 +179,7 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     // Checks if course information is formatted and inputted correctly
-    public boolean isValidCourse(String year, String quarter, String subject, String number) {
+    public boolean isValidCourse(String year, String quarter, String subject, String number, String classSize) {
 
         if (subject.trim().length() <= 0) {
             Utilities.showError(this, "Error: Invalid Input", "Please enter a valid subject for your course.");
@@ -193,12 +222,17 @@ public class CourseActivity extends AppCompatActivity {
             return false;
         }
 
+        if (classSize.equals("Class Size")) {
+            Utilities.showError(this, "Error: Invalid Selection", "Please select a class size for your course.");
+            return false;
+        }
+
         return true;
     }
 
     // Checks if a course already exists in the DB
-    public boolean isExistingCourse(int courseId) {
-        return courseId != 0;
+    public boolean isExistingCourse(String courseId) {
+        return courseId != null;
     }
 
     // Overrides back button to clearing all fields
@@ -210,6 +244,7 @@ public class CourseActivity extends AppCompatActivity {
     public void clearFields() {
         this.year_spinner.setSelection(0);
         this.quarter_spinner.setSelection(0);
+        this.class_size_spinner.setSelection(0);
         this.subject_view.setText("");
         this.number_view.setText("");
     }

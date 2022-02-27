@@ -16,15 +16,11 @@ public interface CourseDao {
     // Retrieves a list of courses with matching profile id
     @Transaction
     @Query("SELECT * FROM COURSE WHERE profileId=:profileId")
-    List<Course> getCoursesByProfileId(int profileId);
+    List<Course> getCoursesByProfileId(String profileId);
 
     // Retrieves the course id of a course object with specific course information and profile id
-    @Query("SELECT courseId FROM COURSE WHERE profileId=:profileId AND year=:year AND quarter=:quarter AND subject=:subject AND number=:number")
-    int getCourseId(int profileId, String year, String quarter, String subject, String number);
-
-    // Retrieves the maximum course id among all course objects
-    @Query("SELECT MAX(courseId) FROM COURSE")
-    int maxId();
+    @Query("SELECT courseId FROM COURSE WHERE profileId=:profileId AND year=:year AND quarter=:quarter AND subject=:subject AND number=:number AND classSize=:classSize")
+    String getCourseId(String profileId, String year, String quarter, String subject, String number, String classSize);
 
     // Retrieves the number of course objects
     @Query("SELECT COUNT(*) FROM COURSE")

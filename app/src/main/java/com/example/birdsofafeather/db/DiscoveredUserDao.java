@@ -19,7 +19,7 @@ public interface DiscoveredUserDao {
 
     // Checks if a user has already been discovered
     @Query("SELECT profileId FROM DISCOVEREDUSER where profileId=:profileId")
-    int exists(int profileId);
+    String getProfileId(String profileId);
 
     // Retrieves the number of DiscoveredUsers objects
     @Query("SELECT COUNT(*) FROM DISCOVEREDUSER")

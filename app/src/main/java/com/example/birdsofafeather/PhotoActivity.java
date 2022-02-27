@@ -30,13 +30,12 @@ public class PhotoActivity extends AppCompatActivity {
         String photo = this.photo_view.getText().toString().trim();
         String name = getIntent().getStringExtra("name");
 
-        Context context = view.getContext();
-        Intent intent = new Intent(context, CourseActivity.class);
+        Intent intent = new Intent(this, CourseActivity.class);
 
         intent.putExtra("photo", photo);
         intent.putExtra("name", name);
 
-        context.startActivity(intent);
+        startActivity(intent);
         finish();
     }
 

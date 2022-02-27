@@ -10,8 +10,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.birdsofafeather.db.AppDatabase;
+import com.example.birdsofafeather.db.Profile;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 // Refers to the screen where the user can enter and confirm their name
 public class NameActivity extends AppCompatActivity {
+    private Future<Void> f1;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private AppDatabase db;
 
     private TextView name_view;
     private AlertDialog mostRecentDialog = null;
@@ -20,6 +30,24 @@ public class NameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.db = AppDatabase.singleton(this);
+
+        this.f1 = this.backgroundThreadExecutor.submit(() -> {
+            System.out.println(db.profileDao().count());
+            Profile user = this.db.profileDao().getUserProfile(true);
+            System.out.println(user);
+            if (user != null) {
+                Log.d("<Home>", "User profile created");
+                runOnUiThread(() -> {
+                    Intent intent = new Intent(this, HomeScreenActivity.class);
+                    startActivity(intent);
+                });
+            }
+            Log.d("<Home>", "User profile not created");
+            return null;
+        });
+
         setContentView(R.layout.activity_name);
         this.name_view = findViewById(R.id.name_view);
         this.name_view.setText(this.autofillName);
@@ -33,12 +61,11 @@ public class NameActivity extends AppCompatActivity {
 
         // Check if name is valid
         if (isValidName(name)) {
-            Context context = view.getContext();
-            Intent intent = new Intent(context, PhotoActivity.class);
+            Intent intent = new Intent(this, PhotoActivity.class);
 
             // Pass on name to the set profile photo activity
             intent.putExtra("name", name);
-            context.startActivity(intent);
+            startActivity(intent);
             finish();
         }
         else Log.e("<Name>", "Name is not valid");

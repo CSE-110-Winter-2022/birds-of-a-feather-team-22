@@ -14,15 +14,11 @@ public interface ProfileDao {
 
     // Retrieves the profile with matching profile id
     @Query("SELECT * FROM PROFILE WHERE profileId=:profileId")
-    Profile getProfile(int profileId);
+    Profile getProfile(String profileId);
 
     // Retrieves list of profiles
     @Query("SELECT * FROM PROFILE")
     List<Profile> getListOfProfiles();
-
-    // Retrieves the maximum profile id among all profile objects
-    @Query("SELECT MAX(profileId) FROM PROFILE")
-    int maxId();
 
     // Retrieves the number of profile objects
     @Query("SELECT COUNT(*) FROM PROFILE")
@@ -35,5 +31,8 @@ public interface ProfileDao {
     // Deletes a profile object
     @Delete
     void delete(Profile profile);
+
+    @Query("SELECT * FROM PROFILE WHERE isUser=:isUser")
+    Profile getUserProfile(boolean isUser);
 
 }

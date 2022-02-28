@@ -32,7 +32,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
 
         @Override
         public void onBindViewHolder(@NonNull ViewProfileAdapter.ViewHolder holder, int position){
-            holder.setCourse(sharedCourses.get(position));
+            holder.setCourse(this.sharedCourses.get(position));
         }
 
         @Override

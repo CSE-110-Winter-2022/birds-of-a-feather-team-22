@@ -12,10 +12,20 @@ import java.util.List;
 // Dao used to access discovered users in the DISCOVEREDUSER table
 @Dao
 public interface DiscoveredUserDao {
-    // Retrieves a list of DiscoveredUsers
+    // Retrieves a list of DiscoveredUser objects with a matching profile id
+    @Query("SELECT * FROM DISCOVEREDUSER WHERE profileId=:profileId")
+    List<DiscoveredUser> getDiscoveredUser(String profileId);
+
+    // Retrieves a list of all DiscoveredUser objects
     @Transaction
     @Query("SELECT profileId, numShared FROM DISCOVEREDUSER")
-    List<DiscoveredUser> getDiscoveredUsers();
+    List<DiscoveredUser> getAllDiscoveredUsers();
+
+    // Retrieves all DiscoveredUser objects with a matching session id
+    @Transaction
+    @Query("SELECT * FROM DISCOVEREDUSER WHERE sessionId=:sessionId")
+    List<DiscoveredUser> getDiscoveredUsersFromSession(String sessionId);
+
 
     // Checks if a user has already been discovered
     @Query("SELECT profileId FROM DISCOVEREDUSER where profileId=:profileId")

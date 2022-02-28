@@ -11,21 +11,25 @@ import android.widget.TextView;
 
 // Refers to the screen where the user can enter and submit their profile photo URL
 public class PhotoActivity extends AppCompatActivity {
-
+    // UI/View fields
     private TextView photo_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
-        this.photo_view = findViewById(R.id.photo_view);
-
         this.setTitle("Setup: Add Photo");
+
+        Log.d("<Photo>", "Setting up Photo Screen");
+
+        // View initialization
+        this.photo_view = findViewById(R.id.photo_view);
     }
 
     // When the submit button is clicked
     public void onSubmitClicked(View view) {
-        Log.d("<Photo>", "Submit photo");
+        Log.d("<Photo>", "Submit button pressed");
+        Log.d("<Photo>", "Saving photo");
         // Retrieve name from previous activity and photo URL and pass along to the add courses activity
         String photo = this.photo_view.getText().toString().trim();
         String name = getIntent().getStringExtra("name");
@@ -46,6 +50,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     private void clearFields() {
+        Log.d("<Photo>", "Back button pressed, clearing fields");
         this.photo_view.setText("");
     }
 }

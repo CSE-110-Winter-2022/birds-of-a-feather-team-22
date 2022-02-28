@@ -118,7 +118,7 @@ public class TestMimicBluetooth {
 
         //check if profile id's have conflict
         assertEquals(3, db.profileDao().count());
-        List<Profile> profileList = db.profileDao().getListOfProfiles();
+        List<Profile> profileList = db.profileDao().getAllProfiles();
 
         //check if profile id's were updated
        assertEquals(1, profileList.get(0).getProfileId());

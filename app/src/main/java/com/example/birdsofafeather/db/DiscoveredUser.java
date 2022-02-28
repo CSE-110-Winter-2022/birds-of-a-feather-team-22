@@ -14,12 +14,15 @@ public class DiscoveredUser {
     @ColumnInfo(name = "profileId")
     private String profileId;
 
+    @ColumnInfo(name = "sessionId")
+    private String sessionId;
+
     @ColumnInfo(name = "numShared")
     private int numShared;
 
-
-    public DiscoveredUser(String profileId, int numShared) {
+    public DiscoveredUser(String profileId, String sessionId, int numShared) {
         this.profileId = profileId;
+        this.sessionId = sessionId;
         this.numShared = numShared;
     }
 
@@ -29,6 +32,14 @@ public class DiscoveredUser {
 
     public void setProfileId(String profileId) {
         this.profileId = profileId;
+    }
+
+    public String getSessionId() {
+        return this.sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public int getNumShared() {

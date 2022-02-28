@@ -54,7 +54,7 @@ public class TestProfileDB {
         assertEquals(2, db.profileDao().maxId());
 
         //check if profile dao methods are functional
-        List<Profile> profileList = db.profileDao().getListOfProfiles();
+        List<Profile> profileList = db.profileDao().getAllProfiles();
         assertEquals(2, profileList.size());
 
     }

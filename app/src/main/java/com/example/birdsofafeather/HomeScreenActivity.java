@@ -16,11 +16,16 @@ import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
+import com.example.birdsofafeather.db.Session;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,28 +33,21 @@ import java.util.concurrent.Future;
 
 // Refers to the screen where the user can see discovered users and search for more discovered users
 public class HomeScreenActivity extends AppCompatActivity {
+    // DB-related fields
     private Future<Void> f1;
     private Future<List<Course>> f2;
     private Future<List<Pair<Profile, Integer>>> f3;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    
     private AppDatabase db;
     private List<Pair<Profile, Integer>> matches;
-    private Stack<Profile> addedMatches;
-    
+    private Session session;
+
+    // View/UI fields
     private RecyclerView matchesRecyclerView;
     private RecyclerView.LayoutManager matchesLayoutManager;
     private MatchesViewAdapter matchesViewAdapter;
-    private List<Course> myCourses;
     private Button startButton;
     private Button stopButton;
-
-    // Demo purposes
-    private Profile bill_profile = new Profile("Bill","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/griswold17-115x150.jpg");
-    private Profile gary_profile = new Profile("Gary","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/gillespie17M-115x150.jpg");
-    private Profile john_profile = new Profile("John","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/eldon17-115x150.jpg");
-    private Profile daniel_profile = new Profile("Daniel","https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/kane17-115x150.jpg");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,93 +55,139 @@ public class HomeScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
         setTitle("Birds of a Feather");
 
-        db = AppDatabase.singleton(this);
+        Log.d("<Home>", "Setting up Home Screen");
 
+        // DB-related Initializations
+        this.db = AppDatabase.singleton(this);
         this.matches = new ArrayList<>();
+        this.session = null;
 
-        // Grab list of discovered users to display on start
-        this.f3 = this.backgroundThreadExecutor.submit(() -> {
-            Log.d("<Home>", "Display list of already matched students");
-            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsers();
+//        String sessionId = getIntent().getStringExtra("sessionId");
+//        // Grab list of discovered users to display on start
+//        this.f3 = this.backgroundThreadExecutor.submit(() -> {
+//            Log.d("<Home>", "Display list of already matched students");
+//            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsers(sessionId);
+//
+//            if (discovered != null) {
+//                for (DiscoveredUser u : discovered) {
+//
+//                    Profile p = db.profileDao().getProfile(u.getProfileId());
+//                    this.matches.add(new Pair(p, u.getNumShared()));
+//                }
+//
+//                this.matches.sort(new MatchesComparator());
+//            }
+//
+//            return null;
+//        });
 
-            if (discovered != null) {
-                for (DiscoveredUser u : discovered) {
 
-                    Profile p = db.profileDao().getProfile(u.getProfileId());
-                    this.matches.add(new Pair(p, u.getNumShared()));
-                }
+        // View initializations
+        this.matchesRecyclerView = findViewById(R.id.matches_view);
+        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesLayoutManager = new LinearLayoutManager(this);
+        this.stopButton = findViewById(R.id.stop_button);
+        this.startButton = findViewById(R.id.start_button);
 
-                this.matches.sort(new MatchesComparator());
+        // Setup recycler view
+        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
+        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
+        this.matchesRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        this.f1 = this.backgroundThreadExecutor.submit(() -> {
+            Session currentSession = this.db.sessionDao().getSession(this.session.getSessionId());
+            if (currentSession == null) {
+                DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
+                String date = df.format(Calendar.getInstance().getTime());
+                this.session.setName(date);
+                this.db.sessionDao().insert(this.session);
             }
-
             return null;
         });
 
-        this.myCourses = null;
-
-        // Grab all view elements
-        matchesRecyclerView = findViewById(R.id.matches_view);
-        matchesViewAdapter = new MatchesViewAdapter(matches,this);
-        matchesRecyclerView.setAdapter(matchesViewAdapter);
-        matchesLayoutManager = new LinearLayoutManager(this);
-        matchesRecyclerView.setLayoutManager(matchesLayoutManager);
-        stopButton = findViewById(R.id.stop_button);
-        startButton = findViewById(R.id.start_button);
-        matchesRecyclerView.setVisibility(View.VISIBLE);
+        super.onDestroy();
+        if (this.f1 != null) {
+            this.f1.cancel(true);
+        }
+        if (this.f2 != null) {
+            this.f2.cancel(true);
+        }
+        if (this.f3 != null) {
+            this.f3.cancel(true);
+        }
     }
 
     // When the start button is clicked
     public void onClickStart(View view) {
 
-        stopButton.setVisibility(View.VISIBLE);
-        startButton.setVisibility(View.GONE);
+        Log.d("<Home>", "Start button pressed, searching for matches...");
 
-        // Demo purposes, calculate the number of shared courses between the user and a match and add to a list to send to the view adapter
-        if (!addedMatches.isEmpty()) {
-            Log.d("<Home>", "Finding matches and displaying to screen");
-            f1 = backgroundThreadExecutor.submit(() -> {
-                Profile match = addedMatches.pop();
-                while (db.discoveredUserDao().getProfileId(match.getProfileId()) != null && !addedMatches.isEmpty()) {
-                    match = addedMatches.pop();
-                }
+        this.stopButton.setVisibility(View.VISIBLE);
+        this.startButton.setVisibility(View.GONE);
 
-                if (db.discoveredUserDao().getProfileId(match.getProfileId()) == null) {
-                    // Get the user's courses
-                    Profile user = db.profileDao().getUserProfile(true);
-                    this.myCourses = db.courseDao().getCoursesByProfileId(user.getProfileId());
-                    List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
+        // TODO: choose/resume session?
+        String sessionId = UUID.randomUUID().toString();
+        this.session = new Session(sessionId, "");
+        // TODO: get match info via Nearby Messages API
+        // TODO: Create Profile and DiscoveredUser object for match
+        // TODO: Add Profile and DiscoveredUser objects to DB
+        // TODO: Update matches List and sort
 
-                    int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
+//        // Demo purposes, calculate the number of shared courses between the user and a match and add to a list to send to the view adapter
+//        if (!addedMatches.isEmpty()) {
+//            Log.d("<Home>", "Finding matches and displaying to screen");
+//            f1 = backgroundThreadExecutor.submit(() -> {
+//                Profile match = addedMatches.pop();
+//                while (db.discoveredUserDao().getProfileId(match.getProfileId()) != null && !addedMatches.isEmpty()) {
+//                    match = addedMatches.pop();
+//                }
+//
+//                if (db.discoveredUserDao().getProfileId(match.getProfileId()) == null) {
+//                    // Get the user's courses
+//                    Profile user = db.profileDao().getUserProfile(true);
+//                    this.myCourses = db.courseDao().getCoursesByProfileId(user.getProfileId());
+//                    List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
+//
+//                    int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
+//
+//                    if (numShared > 0) {
+//                        db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
+//
+//                        this.matches.add(new Pair(match, numShared));
+//                        this.matches.sort(new MatchesComparator());
+//                    }
+//                }
+//                return null;
+//            });
+//        }
 
-                    if (numShared > 0) {
-                        db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
-
-                        this.matches.add(new Pair(match, numShared));
-                        this.matches.sort(new MatchesComparator());
-                    }
-                }
-                return null;
-            });
-        }
-
-        // Initialize view adapter and recycler view
-        matchesViewAdapter = new MatchesViewAdapter(matches,this);
-        matchesRecyclerView.setAdapter(matchesViewAdapter);
-        matchesLayoutManager = new LinearLayoutManager(this);
-        matchesRecyclerView.setLayoutManager(matchesLayoutManager);
+        // Refresh recycler view
+        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesLayoutManager = new LinearLayoutManager(this);
+        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
+        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
     }
 
     // When the stop button is clicked
     public void onClickStop(View view) {
-        startButton.setVisibility(View.VISIBLE);
-        stopButton.setVisibility(View.GONE);
-        matchesRecyclerView.setVisibility(View.VISIBLE);
-        Log.d("<Home>", "Stop searching");
+        Log.d("<Home>", "Stop button pressed, stopping search for matches...");
+
+        this.startButton.setVisibility(View.VISIBLE);
+        this.stopButton.setVisibility(View.GONE);
+
+        // TODO: Prompt user to save current session under a current course or other course name
+        // String sessionName = getUserSavedName();
+        // TODO: Update session name and add session to DB
+        // this.session.setName(sessionName);
     }
 
     // When a match in the recycler view is clicked
     public void onClickMatch(View view) {
-        Log.d("<Home>", "Clicked on profile to display");
+        Log.d("<Home>", "Match selected, displaying match profile and course information");
+
         // Send the match's profile id to the activity responsible for showing the profile
         TextView profileIdView = view.findViewById(R.id.match_profile_id_view);
         String profileId = profileIdView.getText().toString();
@@ -152,28 +196,16 @@ public class HomeScreenActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // For testing purposes, visibility is set to gone for demoing and actual use
-    public void onDeleteDBClicked(View view) {
-        db.clearAllTables();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (f1 != null) {
-            f1.cancel(true);
-        }
-        if (f2 != null) {
-            f2.cancel(true);
-        }
-    }
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, CourseActivity.class);
         startActivity(intent);
     }
 
+    // For testing purposes, visibility is set to gone for demoing and actual use
+    public void onDeleteDBClicked(View view) {
+        this.db.clearAllTables();
+    }
 }
 
 

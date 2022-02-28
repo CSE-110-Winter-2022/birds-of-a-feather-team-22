@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 // Room database for storing courses, profiles, and discovered users
-@Database(entities = {Course.class, Profile.class, DiscoveredUser.class}, version = 1)
+@Database(entities = {Course.class, Profile.class, DiscoveredUser.class, Session.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase singletonInstance;
 
@@ -31,4 +31,5 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CourseDao courseDao();
     public abstract ProfileDao profileDao();
     public abstract DiscoveredUserDao discoveredUserDao();
+    public abstract SessionDao sessionDao();
 }

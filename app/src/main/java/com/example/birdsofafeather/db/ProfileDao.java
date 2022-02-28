@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import java.util.List;
 
@@ -16,9 +17,13 @@ public interface ProfileDao {
     @Query("SELECT * FROM PROFILE WHERE profileId=:profileId")
     Profile getProfile(String profileId);
 
+    @Query("SELECT * FROM PROFILE WHERE isUser=:isUser")
+    Profile getUserProfile(boolean isUser);
+
     // Retrieves list of profiles
+    @Transaction
     @Query("SELECT * FROM PROFILE")
-    List<Profile> getListOfProfiles();
+    List<Profile> getAllProfiles();
 
     // Retrieves the number of profile objects
     @Query("SELECT COUNT(*) FROM PROFILE")
@@ -32,7 +37,5 @@ public interface ProfileDao {
     @Delete
     void delete(Profile profile);
 
-    @Query("SELECT * FROM PROFILE WHERE isUser=:isUser")
-    Profile getUserProfile(boolean isUser);
 
 }

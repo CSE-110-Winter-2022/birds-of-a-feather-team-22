@@ -25,37 +25,40 @@ import java.util.concurrent.Future;
 
 // Refers to the screen where the user can add their previously taken courses
 public class CourseActivity extends AppCompatActivity {
+    // DB-related fields
+    private AppDatabase db;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Future<Void> f1;
+
+    // UI View fields
     private Spinner year_spinner;
     private Spinner quarter_spinner;
     private Spinner class_size_spinner;
     private TextView subject_view;
     private TextView number_view;
-    private Button done_button;
+    private Button doneButton;
 
-    private AppDatabase db;
-    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private Future<Void> f1;
-
-    // Used to keep track of whether the user's profile has been completed or not
-    private int numCourses;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+        this.setTitle("Setup: Add Previous Course");
 
+        Log.d("<Course>", "Setting up Course Screen");
+
+        // DB-related initializations
+        this.db = AppDatabase.singleton(this);
+
+        // View initializations
         this.year_spinner = findViewById(R.id.year_spinner);
         this.quarter_spinner = findViewById(R.id.quarter_spinner);
         this.class_size_spinner = findViewById(R.id.class_size_spinner);
         this.subject_view = findViewById(R.id.subject_view);
         this.number_view = findViewById(R.id.number_view);
-        this.done_button = findViewById(R.id.done_button);
-        this.done_button.setVisibility(View.GONE);
+        this.doneButton = findViewById(R.id.done_button);
 
-        this.setTitle("Setup: Add Previous Course");
+        this.doneButton.setVisibility(View.GONE);
 
-        this.db = AppDatabase.singleton(this);
-
-        Log.d("<Course>", "Setting up Course screen");
         // Set quarter spinner
         ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array, android.R.layout.simple_spinner_dropdown_item);
         quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -65,8 +68,8 @@ public class CourseActivity extends AppCompatActivity {
         List<String> years = new ArrayList<>();
         years.add("Year");
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int year = thisYear; year >= 1960; year--) {
-            years.add(Integer.toString(year));
+        for (int y = thisYear; y >= 1960; y--) {
+            years.add(Integer.toString(y));
         }
         ArrayAdapter<String> year_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
         year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -77,11 +80,12 @@ public class CourseActivity extends AppCompatActivity {
         class_size_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.class_size_spinner.setAdapter(class_size_adapter);
 
-        f1 = backgroundThreadExecutor.submit(() -> {
-            Profile user = db.profileDao().getUserProfile(true);
+        // Check if user is going back to add more courses, and change UI accordingly
+        this.f1 = this.backgroundThreadExecutor.submit(() -> {
+            Profile user = this.db.profileDao().getUserProfile(true);
             if (user != null) {
                 runOnUiThread(() -> {
-                    done_button.setVisibility(View.VISIBLE);
+                    this.doneButton.setVisibility(View.VISIBLE);
                 });
             }
             return null;
@@ -89,6 +93,9 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     public void onEnterClicked(View view) {
+
+        Log.d("<Course>", "Enter button clicked");
+
         String year = this.year_spinner.getSelectedItem().toString().trim();
         String quarter = this.quarter_spinner.getSelectedItem().toString().trim();
         String subject = this.subject_view.getText().toString().trim().toUpperCase();
@@ -98,13 +105,16 @@ public class CourseActivity extends AppCompatActivity {
         // If the course information is valid
         if (isValidCourse(year, quarter, subject, number, classSize)) {
 
+            Log.d("<Course>", "Course information is valid!");
 
-            f1 = backgroundThreadExecutor.submit(() -> {
+            this.f1 = this.backgroundThreadExecutor.submit(() -> {
 
-                Profile user = db.profileDao().getUserProfile(true);
+                Profile user = this.db.profileDao().getUserProfile(true);
 
                 // Set and insert profile to DB if the user's profile has not been made yet
                 if (user == null) {
+                    Log.d("<Course>", "User profile has not been created, creating now");
+
                     String name = getIntent().getStringExtra("name");
                     String photo = getIntent().getStringExtra("photo");
 
@@ -113,23 +123,44 @@ public class CourseActivity extends AppCompatActivity {
                     this.db.profileDao().insert(user);
 
                     runOnUiThread(() -> {
-                        done_button.setVisibility(View.VISIBLE);
+                        this.doneButton.setVisibility(View.VISIBLE);
                     });
                 }
+
                 // Insert course to DB if it is not already there (avoid duplicates)
                 String userId = this.db.profileDao().getUserProfile(true).getProfileId();
                 String courseId = this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSize);
+
                 if (!isExistingCourse(courseId)) {
-                    Log.d("<Course", "Adding in course");
+                    Log.d("<Course>", "Course not already in DB, adding now");
                     Course course = new Course(userId, year, quarter, subject, number, classSize);
                     this.db.courseDao().insert(course);
                 }
-                else Log.e("<Course", "Duplicate courses, will not be added");
+                else Log.e("<Course>", "Duplicate course, will not be added");
 
+                Log.d("<Course>", "Autofilling course information");
                 return null;
             });
 
-            Log.d("<Course>", "Autofilling course information");
+            // Set quarter spinner
+            ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array2, android.R.layout.simple_spinner_dropdown_item);
+            quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            this.quarter_spinner.setAdapter(quarter_adapter);
+
+            // Set dynamic year spinner
+            List<String> years = new ArrayList<>();
+            int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+            for (int y = thisYear; y >= 1960; y--) {
+                years.add(Integer.toString(y));
+            }
+            ArrayAdapter<String> year_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
+            year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            this.year_spinner.setAdapter(year_adapter);
+
+            // Set class size spinner
+            ArrayAdapter<CharSequence> class_size_adapter = ArrayAdapter.createFromResource(this, R.array.class_size_array2, android.R.layout.simple_spinner_dropdown_item);
+            class_size_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            this.class_size_spinner.setAdapter(class_size_adapter);
 
             // Autofill year field for the next screen
             for (int i = 0; i < this.year_spinner.getCount(); i++) {
@@ -156,29 +187,36 @@ public class CourseActivity extends AppCompatActivity {
             this.subject_view.setText(subject);
             this.number_view.setText(number);
         }
+
+        // Logging current Profile and Course object counts in DB
         f1 = this.backgroundThreadExecutor.submit(() -> {
-            System.out.println("Profile count: " + this.db.profileDao().count());
-            System.out.println("Course count: " + this.db.courseDao().count());
+            Log.d("<Course>", "PROFILE Count: " + this.db.profileDao().count());
+            Log.d("<Course>", "COURSE Count: " + this.db.courseDao().count());
             return null;
         });
     }
 
     // When the done button is clicked
     public void onDoneClicked(View view) {
+        Log.d("<Course>", "Done button clicked, moving to Home Screen");
+
         Intent intent = new Intent(this, HomeScreenActivity.class);
         startActivity(intent);
     }
 
     @Override
     protected void onDestroy() {
+        Log.d("<Course>", "CourseActivity being destroyed");
         super.onDestroy();
-        if (f1 != null) {
-            f1.cancel(true);
+        if (this.f1 != null) {
+            this.f1.cancel(true);
         }
     }
 
     // Checks if course information is formatted and inputted correctly
     public boolean isValidCourse(String year, String quarter, String subject, String number, String classSize) {
+
+        Log.d("<Course>", "Checking if course information is valid");
 
         if (subject.trim().length() <= 0) {
             Utilities.showError(this, "Error: Invalid Input", "Please enter a valid subject for your course.");
@@ -231,6 +269,7 @@ public class CourseActivity extends AppCompatActivity {
 
     // Checks if a course already exists in the DB
     public boolean isExistingCourse(String courseId) {
+        Log.d("<Course>", "Checking if course is already in DB");
         return courseId != null;
     }
 
@@ -241,9 +280,33 @@ public class CourseActivity extends AppCompatActivity {
     }
 
     public void clearFields() {
+        Log.d("<Course>", "Back button pressed, clearing fields");
+
+        // Set quarter spinner
+        ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array, android.R.layout.simple_spinner_dropdown_item);
+        quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.quarter_spinner.setAdapter(quarter_adapter);
+
+        // Set dynamic year spinner
+        List<String> years = new ArrayList<>();
+        years.add("Year");
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int y = thisYear; y >= 1960; y--) {
+            years.add(Integer.toString(y));
+        }
+        ArrayAdapter<String> year_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
+        year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.year_spinner.setAdapter(year_adapter);
+
+        // Set class size spinner
+        ArrayAdapter<CharSequence> class_size_adapter = ArrayAdapter.createFromResource(this, R.array.class_size_array, android.R.layout.simple_spinner_dropdown_item);
+        class_size_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.class_size_spinner.setAdapter(class_size_adapter);
+
         this.year_spinner.setSelection(0);
         this.quarter_spinner.setSelection(0);
         this.class_size_spinner.setSelection(0);
+
         this.subject_view.setText("");
         this.number_view.setText("");
     }

@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
         <activity
+            android:name=".Mocking"
+            android:exported="false" />
+        <activity
             android:name=".ViewProfileActivity"
             android:exported="false" />
         <activity

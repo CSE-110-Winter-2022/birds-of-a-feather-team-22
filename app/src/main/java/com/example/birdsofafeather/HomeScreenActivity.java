@@ -179,13 +179,16 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
     }
     public void onClickCourseLabel(View view){
+        //find selected item from recyclerview, grab views for course info
         TextView sessionCourseNameTextView = view.findViewById(R.id.session_course_name_text_view);
         TextView sessionCourseNumberTextView = view.findViewById(R.id.session_course_number_text_view);
         TextView setSessionTextView = this.promptDialog.findViewById(R.id.set_course);
 
+        //
         this.promptDialog.findViewById(R.id.enter_session_button).setVisibility(View.GONE);
         this.promptDialog.findViewById(R.id.submit_session_button).setVisibility(View.VISIBLE);
-        setSessionTextView.setText("   " + sessionCourseNameTextView.getText() + sessionCourseNumberTextView.getText());
+        setSessionTextView.setText(""+sessionCourseNameTextView.getText() +
+                                    sessionCourseNumberTextView.getText());
 
 
     }
@@ -201,7 +204,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         // String sessionName = getUserSavedName();
         // TODO: Update session name and add session to DB
         // this.session.setName(sessionName);
-
 
 
         Profile user = this.db.profileDao().getUserProfile(true);
@@ -221,13 +223,21 @@ public class HomeScreenActivity extends AppCompatActivity {
         SessionsAdapter adapter = new SessionsAdapter(sessionCoursesList);
         sessionsView.setAdapter(adapter);
         promptBuilder.setView(contextView);
-        this.promptDialog = promptBuilder.create();
 
-        promptDialog.show();
+        this.promptDialog = promptBuilder.create();
+        this.promptDialog.show();
 
     }
 
+    public void onClickSubmitSession(View view){
+        TextView selectedCourseName = this.promptDialog.findViewById(R.id.set_course);
+        this.session.setName(selectedCourseName.getText().toString());
+        this.promptDialog.cancel();
+    }
 
+    public void onClickEnterSession(View view) {
+
+    }
 
     // When a match in the recycler view is clicked
     public void onClickMatch(View view) {
@@ -251,6 +261,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     public void onDeleteDBClicked(View view) {
         this.db.clearAllTables();
     }
+
+
 }
 
 

@@ -23,15 +23,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/delete_db_button"
+        android:id="@+id/Nearby"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:background="@color/white"
         android:backgroundTint="@color/white"
-        android:onClick="onDeleteDBClicked"
+        android:onClick="onNearbyClicked"
         android:shadowColor="@color/white"
-        android:text="@string/delete_db"
+        android:text="@string/nearby_button"
         android:textColor="@color/seafoam"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"

@@ -203,8 +203,9 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     // For testing purposes, visibility is set to gone for demoing and actual use
-    public void onDeleteDBClicked(View view) {
-        this.db.clearAllTables();
+    public void onNearbyClicked(View view) {
+        Intent intent = new Intent(this, MockingActivity.class);
+        startActivity(intent);
     }
 }
 

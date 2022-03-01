@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,7 @@ import com.example.birdsofafeather.db.Session;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
@@ -48,6 +51,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     private MatchesViewAdapter matchesViewAdapter;
     private Button startButton;
     private Button stopButton;
+
+    private AlertDialog promptDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +141,9 @@ public class HomeScreenActivity extends AppCompatActivity {
         // TODO: Add Profile and DiscoveredUser objects to DB
         // TODO: Update matches List and sort
 
+
+        //promptDialog.getWindow().setLayout(600,400);
+
 //        // Demo purposes, calculate the number of shared courses between the user and a match and add to a list to send to the view adapter
 //        if (!addedMatches.isEmpty()) {
 //            Log.d("<Home>", "Finding matches and displaying to screen");
@@ -170,6 +178,17 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
     }
+    public void onClickCourseLabel(View view){
+        TextView sessionCourseNameTextView = view.findViewById(R.id.session_course_name_text_view);
+        TextView sessionCourseNumberTextView = view.findViewById(R.id.session_course_number_text_view);
+        TextView setSessionTextView = this.promptDialog.findViewById(R.id.set_course);
+
+        this.promptDialog.findViewById(R.id.enter_session_button).setVisibility(View.GONE);
+        this.promptDialog.findViewById(R.id.submit_session_button).setVisibility(View.VISIBLE);
+        setSessionTextView.setText("   " + sessionCourseNameTextView.getText() + sessionCourseNumberTextView.getText());
+
+
+    }
 
     // When the stop button is clicked
     public void onClickStop(View view) {
@@ -182,7 +201,33 @@ public class HomeScreenActivity extends AppCompatActivity {
         // String sessionName = getUserSavedName();
         // TODO: Update session name and add session to DB
         // this.session.setName(sessionName);
+
+
+
+        Profile user = this.db.profileDao().getUserProfile(true);
+        List<Course> sessionCoursesList = this.db.courseDao().getCoursesByProfileId(user.getProfileId());
+
+        LayoutInflater inflater = getLayoutInflater();
+        View contextView = inflater.inflate(R.layout.activity_home_screen_stop_alert, null);
+
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
+
+
+        RecyclerView sessionsView = contextView.findViewById(R.id.classes_list);
+
+        sessionsView.setLayoutManager(new LinearLayoutManager(this));
+        sessionsView.setHasFixedSize(true);
+
+        SessionsAdapter adapter = new SessionsAdapter(sessionCoursesList);
+        sessionsView.setAdapter(adapter);
+        promptBuilder.setView(contextView);
+        this.promptDialog = promptBuilder.create();
+
+        promptDialog.show();
+
     }
+
+
 
     // When a match in the recycler view is clicked
     public void onClickMatch(View view) {

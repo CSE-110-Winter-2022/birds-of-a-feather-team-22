@@ -19,6 +19,9 @@ public interface SessionDao {
     @Query("SELECT * FROM SESSION WHERE sessionId=:sessionId")
     Session getSession(String sessionId);
 
+    @Query("SELECT * FROM SESSION WHERE isLastSession=:isLastSession")
+    Session getLastSession(boolean isLastSession);
+
     // Retrieves the number of session objects
     @Query("SELECT COUNT(*) FROM SESSION")
     int count();

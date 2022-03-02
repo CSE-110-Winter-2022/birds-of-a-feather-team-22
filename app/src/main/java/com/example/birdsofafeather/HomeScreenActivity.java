@@ -105,9 +105,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.f1 = this.backgroundThreadExecutor.submit(() -> {
             Session currentSession = this.db.sessionDao().getSession(this.session.getSessionId());
             if (currentSession == null) {
-                DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
-                String date = df.format(Calendar.getInstance().getTime());
-                this.session.setName(date);
                 this.db.sessionDao().insert(this.session);
             }
             return null;
@@ -133,9 +130,21 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.stopButton.setVisibility(View.VISIBLE);
         this.startButton.setVisibility(View.GONE);
 
-        // TODO: choose/resume session?
+        // TODO: choose/resume session
+
+        // Update the last session to no longer be the last session
+        Session lastSession = this.db.sessionDao().getLastSession(true);
+        this.db.sessionDao().delete(lastSession);
+        lastSession.setIsLastSession(false);
+        this.db.sessionDao().insert(lastSession);
+
+        DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
+        String timestamp = df.format(Calendar.getInstance().getTime());
+
+        // Make new session
         String sessionId = UUID.randomUUID().toString();
-        this.session = new Session(sessionId, "");
+        this.session = new Session(sessionId, timestamp, true);
+
         // TODO: get match info via Nearby Messages API
         // TODO: Create Profile and DiscoveredUser object for match
         // TODO: Add Profile and DiscoveredUser objects to DB

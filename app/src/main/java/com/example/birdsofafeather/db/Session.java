@@ -16,9 +16,13 @@ public class Session {
     @ColumnInfo(name = "name")
     private String name;
 
-    public Session(String sessionId, String name) {
+    @ColumnInfo(name = "isLastSession")
+    private boolean isLastSession;
+
+    public Session(String sessionId, String name, boolean isLastSession) {
         this.sessionId = sessionId;
         this.name = name;
+        this.isLastSession = isLastSession;
     }
 
     public String getSessionId() {
@@ -35,5 +39,13 @@ public class Session {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean getIsLastSession() {
+        return this.isLastSession;
+    }
+
+    public void setIsLastSession(boolean isLastSession) {
+        this.isLastSession = isLastSession;
     }
 }

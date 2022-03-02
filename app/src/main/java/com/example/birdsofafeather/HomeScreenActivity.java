@@ -99,6 +99,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
         this.matchesRecyclerView.setVisibility(View.VISIBLE);
 
+        //createSessionListPrompt();
         //if previous sessions exist: session list pop-up occurs
         if(this.db.sessionDao().count() != 0){
             createSessionListPrompt();
@@ -106,11 +107,23 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     private void createSessionListPrompt() {
+
+        //populate sessionsList with previously saved sessions
+        List<Session> sessionsList = this.db.sessionDao().getAllSessions();
+
         LayoutInflater inflater = getLayoutInflater();
         View contextView = inflater.inflate(R.layout.activity_home_screen_session_list, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
 
+
+        RecyclerView sessionsView = contextView.findViewById(R.id.sessions_recycler_view);
+
+        sessionsView.setLayoutManager(new LinearLayoutManager(this));
+        sessionsView.setHasFixedSize(true);
+
+        SessionsAdapter adapter = new SessionsAdapter(sessionsList);
+        sessionsView.setAdapter(adapter);
         promptBuilder.setView(contextView);
 
         this.promptDialog = promptBuilder.create();
@@ -163,6 +176,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         // Make new session
         String sessionId = UUID.randomUUID().toString();
         this.session = new Session(sessionId, timestamp, true);
+        this.db.sessionDao().insert(this.session);
 
         // TODO: get match info via Nearby Messages API
         // TODO: Create Profile and DiscoveredUser object for match
@@ -268,7 +282,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         sessionsView.setLayoutManager(new LinearLayoutManager(this));
         sessionsView.setHasFixedSize(true);
 
-        SessionsAdapter adapter = new SessionsAdapter(list);
+        SessionCoursesAdapter adapter = new SessionCoursesAdapter(list);
         sessionsView.setAdapter(adapter);
         promptBuilder.setView(contextView);
 
@@ -295,7 +309,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     //dialog prompt listener
     public void onClickSubmitSession(View view){
         TextView selectedCourseName = this.promptDialog.findViewById(R.id.set_course);
-        this.session.setName(selectedCourseName.getText().toString());
+        this.db.sessionDao().getSession(this.session.getName())
+                .setName(selectedCourseName.getText().toString());
         this.promptDialog.cancel(); //close dialog box pop-up
     }
 
@@ -307,8 +322,8 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void onClickSaveSession(View view) {
         TextView enteredCourseName = this.promptDialog.findViewById(R.id.enterSessionNameEditText);
-        this.session.setName(enteredCourseName.getText().toString());
-
+        this.db.sessionDao().getSession(this.session.getName())
+                .setName(enteredCourseName.getText().toString());
         this.promptDialog.cancel();
     }
 

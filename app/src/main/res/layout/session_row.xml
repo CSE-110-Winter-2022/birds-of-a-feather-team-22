@@ -1,38 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sessionFrameLayout"
     android:layout_width="match_parent"
-    android:layout_height="54sp"
+    android:layout_height="32sp"
     android:layout_marginLeft="16sp"
-    android:layout_marginRight="16sp"
-    android:background="@drawable/custom_ripple"
-    android:clickable="true"
-
-
-    android:gravity="center_vertical"
-    android:onClick="onClickCourseLabel">
+    android:layout_marginRight="16sp">
 
     <TextView
-        android:id="@+id/session_course_name_text_view"
-        android:layout_width="66dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="76dp"
+        android:id="@+id/session_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="154dp"
+        android:layout_marginTop="4dp"
         android:text="TextView"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/session_course_number_text_view"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/session_course_number_text_view"
-        android:layout_width="69dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

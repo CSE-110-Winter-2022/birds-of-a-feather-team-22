@@ -1,26 +1,20 @@
 package com.example.birdsofafeather;
 
-import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
-import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Session;
-import com.example.birdsofafeather.HomeScreenActivity;
 
 public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHolder>{
-    private final List<Course> sessionCourses;
+    private final List<Session> sessions;
 
-    public SessionsAdapter(List<Course> sessionCourses){
+    public SessionsAdapter(List<Session> sessionCourses){
         super();
-        this.sessionCourses = sessionCourses;
+        this.sessions = sessionCourses;
 
     }
 
@@ -36,28 +30,25 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull SessionsAdapter.ViewHolder holder, int position){
-        holder.setSession(sessionCourses.get(position));
+        holder.setSession(sessions.get(position));
     }
 
     @Override
     //return number of profiles in course
     public int getItemCount(){
-        return this.sessionCourses.size();
+        return this.sessions.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-            private final TextView sessionCourseNameTextView;
-            private final TextView sessionCourseNumberTextView;
+            private final TextView sessionNameTextView;
 
         ViewHolder(View itemView){
             super(itemView);
-            this.sessionCourseNameTextView = itemView.findViewById(R.id.session_course_name_text_view);
-            this.sessionCourseNumberTextView = itemView.findViewById(R.id.session_course_number_text_view);
+            this.sessionNameTextView = itemView.findViewById(R.id.session_name_text_view);
 
         }
-        public void setSession(Course sessionCourse){
-            this.sessionCourseNameTextView.setText(sessionCourse.getSubject());
-            this.sessionCourseNumberTextView.setText(sessionCourse.getNumber());
+        public void setSession(Session session){
+            this.sessionNameTextView.setText(session.getName());
 
         }
     }

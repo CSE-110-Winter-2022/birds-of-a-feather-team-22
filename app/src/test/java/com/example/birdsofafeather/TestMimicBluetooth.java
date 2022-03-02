@@ -26,123 +26,76 @@ public class TestMimicBluetooth {
     //Testing bluetooth connectivity functionality
     //(Grabbing data with respect to remote id's and updating accordingly to local db)
     @Test
-    public void bluetoothConnectivity(){
+    public void bluetoothConnectivity() {
         //Local current user profile
-        Profile p1 = new Profile(1, "Name1", "test_photo.png");
+        Profile p1 = new Profile("Name1", "test_photo.png");
         db.profileDao().insert(p1);
 
         assertEquals(1, db.profileDao().count());
 
         //Adding courses for current user
-        Course c1 = new Course(1, 1, "2021", "Fall", "CSE", "11");
-        Course c2 = new Course(2, 1 ,"2020", "Spring", "TDDR", "127");
-        Course c3 = new Course(3, 1, "2024", "Winter", "COGS", "108");
+        Course c1 = new Course(p1.getProfileId(), "2021","Fall", "CSE", "210", "Small (40-75)");
+        Course c2 = new Course(p1.getProfileId(), "2020", "Spring", "TDDR", "127", "Tiny (<40)");
+        Course c3 = new Course(p1.getProfileId(), "2022", "Winter", "CSE", "110", "Large (150-250)");
         db.courseDao().insert(c1);
         db.courseDao().insert(c2);
         db.courseDao().insert(c3);
 
         assertEquals(3, db.courseDao().count());
 
-        //Another remote user profile (matching id because it is in respect to the remote users' local db)
-        Profile p2 = new Profile(1, "Name1", "test_photo.png");
+        //Receive nearby message
+        String message = "a4ca50b6-941b-11ec-b909-0242ac120002,,,,\n" +
+                "Bill,,,,\n" +
+                "https://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,,\n" +
+                "2021,Fall,CSE,210,Small (40-75)\n" +
+                "2022,Winter,CSE,110,Large (150-250)";
+        parseInfo(message);
 
-        List<Course> listPerson2 = new ArrayList<>();
-        Course c11 = new Course(1, 1, "2021", "Fall", "CSE", "11");
-        Course c22 = new Course(2, 1 ,"2020", "Spring", "TDDR", "127");
-        Course c33 = new Course(3, 1, "2024", "Winter", "COGS", "108");
-        Course c44 = new Course(4, 1, "2019", "Fall", "COGS", "108");
+        assertEquals(2, db.profileDao().count());
+        assertEquals(5, db.courseDao().count());
 
-        listPerson2.add(c11);
-        listPerson2.add(c22);
-        listPerson2.add(c33);
-        listPerson2.add(c44);
+        message = "b5zw60b6-941b-11ec-b909-0242ad120062,,,,\n" +
+                "Jeff,,,,\n" +
+                "https://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,,\n" +
+                "2020,Spring,TDDR,127,Tiny (<40)";
 
-        //updates new id for profile and its courses in relation to current DB
-        addUsersToDB(db, p2, listPerson2);
+        parseInfo(message);
 
-        //check if adding other profiles matches with bluetooth implementation methods
-        assertEquals(7, db.courseDao().count());
-        assertEquals(2,db.profileDao().count());
-        assertEquals(2, db.profileDao().maxId());
-
-
-        //Another remote user profile (matching id because it is in respect to the remote users' local db)
-        Profile p3 = new Profile(1, "Name1", "test_photo.png");
-
-        List<Course> listPerson3 = new ArrayList<>();
-        Course c111 = new Course(1, 1, "2021", "Fall", "CSE", "11");
-        Course c222 = new Course(2, 1 ,"2020", "Spring", "CSE", "12");
-
-        listPerson3.add(c111);
-        listPerson3.add(c222);
-
-        //updates new id for profile and its courses in relation to current DB
-
-        addUsersToDB(db, p3, listPerson3);
-
-        //check if new course id correspond to new profile id
-        //current user = p1, remote = p2, p3
-        List<Course> courses_p1 = db.courseDao().getCoursesByProfileId(1);
-        assertEquals(3, courses_p1.size());
-        assertEquals(1, courses_p1.get(0).getCourseId());
-        assertEquals(2, courses_p1.get(1).getCourseId());
-        assertEquals(3, courses_p1.get(2).getCourseId());
-
-        List<Course> courses_p2 = db.courseDao().getCoursesByProfileId(2);
-        assertEquals(4, courses_p2.size());
-        assertEquals(4, courses_p2.get(0).getCourseId());
-        assertEquals(5, courses_p2.get(1).getCourseId());
-        assertEquals(6, courses_p2.get(2).getCourseId());
-        assertEquals(7, courses_p2.get(3).getCourseId());
-
-        List<Course> courses_p3 = db.courseDao().getCoursesByProfileId(3);
-        assertEquals(2, courses_p3.size());
-        assertEquals(8, courses_p3.get(0).getCourseId());
-        assertEquals(9, courses_p3.get(1).getCourseId());
-
-        //check if total course entities is 9
-        assertEquals(9, db.courseDao().count());
-
-        //check if max course id is 9
-        assertEquals(9, db.courseDao().maxId());
-
-        //check the number of profiles
         assertEquals(3, db.profileDao().count());
+        assertEquals(6, db.courseDao().count());
 
-        //check max profile id is 9
-        assertEquals(3, db.profileDao().maxId());
+        String p2 = "a4ca50b6-941b-11ec-b909-0242ac120002";
+        String p3 = "b5zw60b6-941b-11ec-b909-0242ad120062";
+        List<Course> shared_1_2 = getSharedCourses(db, p1.getProfileId(), p2);
+        assertEquals(2, shared_1_2.size());
 
-        //get shared courses between person 1 and person 2
-        List<Course> shared1_2 = getSharedCourses(db, 1, 2);
-        assertEquals(3, shared1_2.size());
+        assertEquals("2021", shared_1_2.get(0).getYear());
+        assertEquals("Fall", shared_1_2.get(0).getQuarter());
+        assertEquals("CSE", shared_1_2.get(0).getSubject());
+        assertEquals("210", shared_1_2.get(0).getNumber());
+        assertEquals("Small (40-75)", shared_1_2.get(0).getClassSize());
 
-        //check if profile id's have conflict
-        assertEquals(3, db.profileDao().count());
-        List<Profile> profileList = db.profileDao().getAllProfiles();
+        assertEquals("2022", shared_1_2.get(1).getYear());
+        assertEquals("Winter", shared_1_2.get(1).getQuarter());
+        assertEquals("CSE", shared_1_2.get(1).getSubject());
+        assertEquals("110", shared_1_2.get(1).getNumber());
+        assertEquals("Large (150-250)", shared_1_2.get(1).getClassSize());
 
-        //check if profile id's were updated
-       assertEquals(1, profileList.get(0).getProfileId());
-       assertEquals(2, profileList.get(1).getProfileId());
-       assertEquals(3, profileList.get(2).getProfileId());
+
+        List<Course> shared_1_3 = getSharedCourses(db, p1.getProfileId(), p3);
+        assertEquals(1, shared_1_3.size());
+
+        assertEquals("2020", shared_1_3.get(0).getYear());
+        assertEquals("Spring", shared_1_3.get(0).getQuarter());
+        assertEquals("TDDR", shared_1_3.get(0).getSubject());
+        assertEquals("127", shared_1_3.get(0).getNumber());
+        assertEquals("Tiny (<40)", shared_1_3.get(0).getClassSize());
     }
 
 /******************* Wrapper class to be used with Bluetooth ************************************/
-    //update each profile id and their courses to avoid id conflict
-    public void addUsersToDB(AppDatabase db, Profile profile, List<Course> courses) {
-        int newProfileId = db.profileDao().maxId() + 1;
-        profile.setProfileId(newProfileId);
-        db.profileDao().insert(profile);
-
-        for (int i = 0; i < courses.size(); i++) {
-            Course c = courses.get(i);
-            c.setCourseId(db.courseDao().maxId() + 1);
-            c.setProfileId(newProfileId);
-            db.courseDao().insert(c);
-        }
-    }
 
     //get the list of shared courses
-    public List<Course> getSharedCourses(AppDatabase db, int myProfileId, int otherProfileId) {
+    public List<Course> getSharedCourses(AppDatabase db, String myProfileId, String otherProfileId) {
         List<Course> myCourses = db.courseDao().getCoursesByProfileId(myProfileId);
         List<Course> theirCourses = db.courseDao().getCoursesByProfileId(otherProfileId);
 
@@ -162,7 +115,39 @@ public class TestMimicBluetooth {
     //comparator function for courses
     public boolean compareCourses(Course c1, Course c2) {
         return c1.getYear().equals(c2.getYear()) && c1.getQuarter().equals(c2.getQuarter()) &&
-                c1.getSubject().equals(c2.getSubject()) && c1.getNumber().equals(c2.getNumber());
+                c1.getSubject().equals(c2.getSubject()) && c1.getNumber().equals(c2.getNumber())
+                && c1.getClassSize().equals(c2.getClassSize());
+    }
+
+    protected void parseInfo(String info) {
+        String[] textBoxSeparated = info.split(",,,,");
+
+        String UUID = textBoxSeparated[0];
+        String userName = textBoxSeparated[1];
+        String userThumbnail = textBoxSeparated[2];
+
+        Profile profile = new Profile(UUID, userName, userThumbnail);
+        db.profileDao().insert(profile);
+
+        String[] classInfo = textBoxSeparated[3].split("\n");
+        for (int i = 1; i < classInfo.length; i++) {
+            String[] classInfoSeparated = classInfo[i].split(",");
+
+            if (classInfoSeparated[1].equals("wave")) {
+                String UUID_self = classInfoSeparated[0];
+                String filter = classInfoSeparated[1];
+                continue;
+            }
+
+            String year = classInfoSeparated[0];
+            String quarter = classInfoSeparated[1];
+            String subject = classInfoSeparated[2];
+            String number = classInfoSeparated[3];
+            String size = classInfoSeparated[4];
+
+            Course course = new Course(UUID, year, quarter, subject, number, size);
+            db.courseDao().insert(course);
+        }
     }
 }
-/******************* Wrapper class to be used with Bluetooth ************************************/
+///******************* Wrapper class to be used with Bluetooth ************************************/

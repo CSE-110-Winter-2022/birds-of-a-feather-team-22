@@ -44,19 +44,18 @@ public class MockMessageListener extends MessageListener {
         Profile profile = new Profile(UUID, userName, userThumbnail);
         db.profileDao().insert(profile);
 
-        String[] classInfo = userThumbnail.split("\n");
-
-        for (int i = 0; i < classInfo.length; i++) {
+        String[] classInfo = textBoxSeparated[3].split("\n");
+        for (int i = 1; i < classInfo.length; i++) {
             String[] classInfoSeparated = classInfo[i].split(",");
 
-            if (classInfoSeparated[2].equals("")) {
+            if (classInfoSeparated[1].equals("wave")) {
                 String UUID_self = classInfoSeparated[0];
                 String filter = classInfoSeparated[1];
                 continue;
             }
 
             String year = classInfoSeparated[0];
-            String quarter  = classInfoSeparated[1];
+            String quarter = classInfoSeparated[1];
             String subject = classInfoSeparated[2];
             String number = classInfoSeparated[3];
             String size = classInfoSeparated[4];

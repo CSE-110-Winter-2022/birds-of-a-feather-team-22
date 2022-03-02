@@ -111,6 +111,16 @@ public class SetupProfileEspressoTestOneClass {
                         isDisplayed()));
         appCompatSpinner.perform(click());
 
+        ViewInteraction appCompatSpinner1 = onView(
+                allOf(withId(R.id.class_size_spinner),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatSpinner.perform(click());
+
         DataInteraction appCompatCheckedTextView = onData(anything())
                 .inAdapterView(childAtPosition(
                         withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),

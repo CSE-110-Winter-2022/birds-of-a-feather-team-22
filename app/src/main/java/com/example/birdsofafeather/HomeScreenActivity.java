@@ -178,20 +178,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
     }
-    public void onClickCourseLabel(View view){
-        //find selected item from recyclerview, grab views for course info
-        TextView sessionCourseNameTextView = view.findViewById(R.id.session_course_name_text_view);
-        TextView sessionCourseNumberTextView = view.findViewById(R.id.session_course_number_text_view);
-        TextView setSessionTextView = this.promptDialog.findViewById(R.id.set_course);
 
-        //
-        this.promptDialog.findViewById(R.id.enter_session_button).setVisibility(View.GONE);
-        this.promptDialog.findViewById(R.id.submit_session_button).setVisibility(View.VISIBLE);
-        setSessionTextView.setText(""+sessionCourseNameTextView.getText() +
-                                    sessionCourseNumberTextView.getText());
-
-
-    }
 
     // When the stop button is clicked
     public void onClickStop(View view) {
@@ -229,14 +216,34 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
+    //dialog prompt listener
+    public void onClickCourseLabel(View view){
+        //find selected item from recyclerview, grab views for course info
+        TextView sessionCourseNameTextView = view.findViewById(R.id.session_course_name_text_view);
+        TextView sessionCourseNumberTextView = view.findViewById(R.id.session_course_number_text_view);
+        TextView setSessionTextView = this.promptDialog.findViewById(R.id.set_course);
+
+        //adjust view elements of UI accordingly
+        this.promptDialog.findViewById(R.id.enter_session_button).setVisibility(View.GONE);
+        this.promptDialog.findViewById(R.id.submit_session_button).setVisibility(View.VISIBLE);
+        setSessionTextView.setText(""+sessionCourseNameTextView.getText() +
+                sessionCourseNumberTextView.getText());
+
+
+    }
+
+    //dialog prompt listener
     public void onClickSubmitSession(View view){
         TextView selectedCourseName = this.promptDialog.findViewById(R.id.set_course);
         this.session.setName(selectedCourseName.getText().toString());
-        this.promptDialog.cancel();
+        this.promptDialog.cancel(); //close dialog box pop-up
     }
 
+    //dialog prompt listener
     public void onClickEnterSession(View view) {
-
+        TextView enteredCourseName = this.promptDialog.findViewById(R.id.course_view);
+        this.session.setName(enteredCourseName.getText().toString());
+        this.promptDialog.cancel(); //close dialog box pop-up
     }
 
     // When a match in the recycler view is clicked

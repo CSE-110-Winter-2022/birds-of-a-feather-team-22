@@ -106,29 +106,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void createSessionListPrompt() {
 
-        //populate sessionsList with previously saved sessions
-        List<Session> sessionsList = this.db.sessionDao().getAllSessions();
-
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.activity_home_screen_session_list, null);
-
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-
-        RecyclerView sessionsView = contextView.findViewById(R.id.sessions_recycler_view);
-
-        sessionsView.setLayoutManager(new LinearLayoutManager(this));
-        sessionsView.setHasFixedSize(true);
-
-        SessionsAdapter adapter = new SessionsAdapter(sessionsList);
-        sessionsView.setAdapter(adapter);
-        promptBuilder.setView(contextView);
-
-        this.promptDialog = promptBuilder.create();
-        this.promptDialog.show();
-    }
 
     @Override
     protected void onDestroy() {
@@ -256,41 +234,11 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
-    public void createFirstStopPrompt(Boolean isOnly){
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.activity_home_screen_enter_name, null);
-
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-        promptBuilder.setView(contextView);
-
-        if(!isOnly){ this.promptDialog.cancel(); }
-
-        this.promptDialog = promptBuilder.create();
-        this.promptDialog.show();
-    }
-
-    public void createSecondStopPrompt(List<Course> list){
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.activity_home_screen_stop_alert, null);
-
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-
-        RecyclerView sessionsView = contextView.findViewById(R.id.classes_list);
-
-        sessionsView.setLayoutManager(new LinearLayoutManager(this));
-        sessionsView.setHasFixedSize(true);
-
-        SessionCoursesAdapter adapter = new SessionCoursesAdapter(list);
-        sessionsView.setAdapter(adapter);
-        promptBuilder.setView(contextView);
-
-        this.promptDialog = promptBuilder.create();
-        this.promptDialog.show();
-    }
-
+    //onClick listener for Session items within the recyclerview of the
     public void onClickSessionLabel(View view){
+        Log.d("<Home>", "Previous session selected, " +
+                "displaying matches in HomeScreenActivity");
+
         //selected session object
         TextView selectedSessionId = view.findViewById(R.id.session_id_text_view);
 
@@ -305,6 +253,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         List<Course> theirCourses = new ArrayList<Course>();
 
+        //populate appropriate matches from selected session
         for(DiscoveredUser discoveredUser : sessionDiscoveredUsers){
             Profile foundProfile = this.db.profileDao().getProfile(discoveredUser.getProfileId());
             matches.add(new Pair(foundProfile, Utilities.getNumSharedCourses(myCourses, theirCourses)));
@@ -324,6 +273,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
 
     }
+
     //dialog prompt listener
     public void onClickCourseLabel(View view){
         //find selected item from recyclerview, grab views for course info
@@ -343,6 +293,9 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     //dialog prompt listener
     public void onClickSubmitSession(View view){
+        Log.d("<Home>", "Save Session Name Button pressed on second stop prompt," +
+                " saving session with name selected...");
+
         TextView selectedCourseName = this.promptDialog.findViewById(R.id.set_course);
         this.db.sessionDao().delete(this.session);
         this.session.setName(selectedCourseName.getText().toString());
@@ -352,11 +305,17 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     //dialog prompt listener
     public void onClickEnterSession(View view) {
+        Log.d("<Home>", "Enter Session Name Button pressed," +
+                " creating first stop prompt to enter name");
+
         createFirstStopPrompt(false);
     }
 
 
     public void onClickSaveSession(View view) {
+        Log.d("<Home>", "Save Session Name button pressed on first stop prompt," +
+                " saving session with name given...");
+
         TextView enteredCourseName = this.promptDialog.findViewById(R.id.enterSessionNameEditText);
         this.db.sessionDao().delete(this.session);
         this.session.setName(enteredCourseName.getText().toString());
@@ -387,6 +346,72 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.db.clearAllTables();
     }
 
+    //helper function to create session list dialog box with previous sessions
+    private void createSessionListPrompt() {
+        Log.d("<Home>", "creating session list prompt AlertDialog");
+
+        //populate sessionsList with previously saved sessions
+        List<Session> sessionsList = this.db.sessionDao().getAllSessions();
+
+        LayoutInflater inflater = getLayoutInflater();
+        View contextView = inflater.inflate(R.layout.activity_home_screen_session_list, null);
+
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
+
+
+        RecyclerView sessionsView = contextView.findViewById(R.id.sessions_recycler_view);
+
+        sessionsView.setLayoutManager(new LinearLayoutManager(this));
+        sessionsView.setHasFixedSize(true);
+
+        SessionsAdapter adapter = new SessionsAdapter(sessionsList);
+        sessionsView.setAdapter(adapter);
+        promptBuilder.setView(contextView);
+
+        this.promptDialog = promptBuilder.create();
+        this.promptDialog.show();
+    }
+
+    //helper function to create first possible stop prompt to enter a name for a created session
+    //and it is also the "default" stop prompt
+    public void createFirstStopPrompt(Boolean isOnly){
+        Log.d("<Home>", "creating first stop prompt AlertDialog");
+
+        LayoutInflater inflater = getLayoutInflater();
+        View contextView = inflater.inflate(R.layout.activity_home_screen_enter_name, null);
+
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
+
+        promptBuilder.setView(contextView);
+
+        if(!isOnly){ this.promptDialog.cancel(); } //if deployed from second stop prompt, close
+        //second prompt
+
+        this.promptDialog = promptBuilder.create();
+        this.promptDialog.show();
+    }
+
+    public void createSecondStopPrompt(List<Course> list){
+        Log.d("<Home>", "creating second stop prompt AlertDialog");
+
+        LayoutInflater inflater = getLayoutInflater();
+        View contextView = inflater.inflate(R.layout.activity_home_screen_stop_alert, null);
+
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
+
+
+        RecyclerView sessionsView = contextView.findViewById(R.id.classes_list);
+
+        sessionsView.setLayoutManager(new LinearLayoutManager(this));
+        sessionsView.setHasFixedSize(true);
+
+        SessionCoursesAdapter adapter = new SessionCoursesAdapter(list);
+        sessionsView.setAdapter(adapter);
+        promptBuilder.setView(contextView);
+
+        this.promptDialog = promptBuilder.create();
+        this.promptDialog.show();
+    }
 
 }
 

@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="32sp"
+    android:layout_marginLeft="16sp"
+    android:layout_marginRight="16sp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="1sp"
+    app:cardElevation="1sp"
+    app:cardMaxElevation="1sp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+    <androidx.constraintlayout.widget.ConstraintLayout
+
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sessionFrameLayout"
     android:layout_width="match_parent"
-    android:layout_height="32sp"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="16sp"
     android:layout_marginRight="16sp"
     android:background="@drawable/custom_ripple"
@@ -34,4 +46,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -41,15 +41,16 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
             private final TextView sessionNameTextView;
+            private final TextView sessionIdTextView;
 
         ViewHolder(View itemView){
             super(itemView);
             this.sessionNameTextView = itemView.findViewById(R.id.session_name_text_view);
-
+            this.sessionIdTextView = itemView.findViewById(R.id.session_id_text_view);
         }
         public void setSession(Session session){
             this.sessionNameTextView.setText(session.getName());
-
+            this.sessionIdTextView.setText(session.getSessionId());
         }
     }
 

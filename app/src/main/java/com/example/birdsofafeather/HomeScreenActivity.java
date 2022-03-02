@@ -289,6 +289,41 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.promptDialog = promptBuilder.create();
         this.promptDialog.show();
     }
+
+    public void onClickSessionLabel(View view){
+        //selected session object
+        TextView selectedSessionId = view.findViewById(R.id.session_id_text_view);
+
+        //get list of discovered users from selected session
+        List<DiscoveredUser> sessionDiscoveredUsers = this.db.discoveredUserDao()
+                .getDiscoveredUsersFromSession(selectedSessionId.getText().toString());
+
+        //get list of the user's courses after retrieving this user's profile Id
+        List<Course> myCourses = this.db.courseDao()
+                .getCoursesByProfileId
+                        (this.db.profileDao().getUserProfile(true).getProfileId());
+
+        List<Course> theirCourses = new ArrayList<Course>();
+
+        for(DiscoveredUser discoveredUser : sessionDiscoveredUsers){
+            Profile foundProfile = this.db.profileDao().getProfile(discoveredUser.getProfileId());
+            matches.add(new Pair(foundProfile, Utilities.getNumSharedCourses(myCourses, theirCourses)));
+        }
+
+        /**testing purposes only -- start **/
+        Profile testProfile = new Profile("2", "hello", "hello");
+        matches.add(new Pair(testProfile, 1));
+        /**testing purposes only -- end **/
+        this.promptDialog.cancel();
+
+
+        //load main recyclerview with matches from selected session
+        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesLayoutManager = new LinearLayoutManager(this);
+        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
+        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
+
+    }
     //dialog prompt listener
     public void onClickCourseLabel(View view){
         //find selected item from recyclerview, grab views for course info
@@ -309,8 +344,9 @@ public class HomeScreenActivity extends AppCompatActivity {
     //dialog prompt listener
     public void onClickSubmitSession(View view){
         TextView selectedCourseName = this.promptDialog.findViewById(R.id.set_course);
-        this.db.sessionDao().getSession(this.session.getName())
-                .setName(selectedCourseName.getText().toString());
+        this.db.sessionDao().delete(this.session);
+        this.session.setName(selectedCourseName.getText().toString());
+        this.db.sessionDao().insert(this.session);
         this.promptDialog.cancel(); //close dialog box pop-up
     }
 
@@ -322,8 +358,9 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void onClickSaveSession(View view) {
         TextView enteredCourseName = this.promptDialog.findViewById(R.id.enterSessionNameEditText);
-        this.db.sessionDao().getSession(this.session.getName())
-                .setName(enteredCourseName.getText().toString());
+        this.db.sessionDao().delete(this.session);
+        this.session.setName(enteredCourseName.getText().toString());
+        this.db.sessionDao().insert(this.session);
         this.promptDialog.cancel();
     }
 

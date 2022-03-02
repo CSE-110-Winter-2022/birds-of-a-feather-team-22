@@ -42,7 +42,7 @@
         <entry key="app/src/main/res/drawable-anydpi/next_arrow_1.xml" value="0.22760416666666666" />
         <entry key="app/src/main/res/drawable/custom_ripple.xml" value="0.281" />
         <entry key="app/src/main/res/layout/activity_course.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_home_screen.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_home_screen.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_home_screen_enter_name.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_home_screen_session_list.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_home_screen_stop_alert.xml" value="0.5" />

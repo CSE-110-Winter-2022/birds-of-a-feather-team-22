@@ -241,7 +241,15 @@ public class HomeScreenActivity extends AppCompatActivity {
                 "displaying matches in HomeScreenActivity");
 
         //selected session object
+        TextView selectedSessionName = view.findViewById(R.id.session_name_text_view);
         TextView selectedSessionId = view.findViewById(R.id.session_id_text_view);
+
+        if(Character.isDigit(selectedSessionName.getText().charAt(0))){
+            this.session =
+                    new Session(selectedSessionId.getText().toString(), "", false);
+            createFirstStopPrompt(false);
+            return;
+        }
 
         //get list of discovered users from selected session
         List<DiscoveredUser> sessionDiscoveredUsers = this.db.discoveredUserDao()
@@ -277,6 +285,9 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     //dialog prompt listener
     public void onClickCourseLabel(View view){
+        Log.d("<Home>", "Course selected from second stop prompt's course items," +
+                "item becomes selected");
+
         //find selected item from recyclerview, grab views for course info
         TextView sessionCourseNameTextView = view.findViewById(R.id.session_course_name_text_view);
         TextView sessionCourseNumberTextView = view.findViewById(R.id.session_course_number_text_view);
@@ -292,7 +303,26 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
-    //dialog prompt listener
+    //dialog prompt listener for save button on first stop prompt
+    public void onClickSaveSession(View view) {
+        Log.d("<Home>", "Save Session Name button pressed on first stop prompt," +
+                " saving session with name given...");
+
+        TextView enteredCourseName = this.promptDialog.findViewById(R.id.enterSessionNameEditText);
+
+
+        this.db.sessionDao().delete(this.session);
+        this.session.setName(enteredCourseName.getText().toString());
+        this.db.sessionDao().insert(this.session);
+
+
+
+
+        this.promptDialog.cancel();
+        this.promptDialog = null;
+    }
+
+    //dialog prompt listener for save button on second stop prompt
     public void onClickSubmitSession(View view){
         Log.d("<Home>", "Save Session Name Button pressed on second stop prompt," +
                 " saving session with name selected...");
@@ -315,19 +345,6 @@ public class HomeScreenActivity extends AppCompatActivity {
                 " creating first stop prompt to enter name");
 
         createFirstStopPrompt(false); //deployed from second prompt
-    }
-
-
-    public void onClickSaveSession(View view) {
-        Log.d("<Home>", "Save Session Name button pressed on first stop prompt," +
-                " saving session with name given...");
-
-        TextView enteredCourseName = this.promptDialog.findViewById(R.id.enterSessionNameEditText);
-        this.db.sessionDao().delete(this.session);
-        this.session.setName(enteredCourseName.getText().toString());
-        this.db.sessionDao().insert(this.session);
-        this.promptDialog.cancel();
-        this.promptDialog = null;
     }
 
     // When a match in the recycler view is clicked

@@ -98,6 +98,23 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
         this.matchesRecyclerView.setVisibility(View.VISIBLE);
+
+        //if previous sessions exist: session list pop-up occurs
+        if(this.db.sessionDao().count() != 0){
+            createSessionListPrompt();
+        }
+    }
+
+    private void createSessionListPrompt() {
+        LayoutInflater inflater = getLayoutInflater();
+        View contextView = inflater.inflate(R.layout.activity_home_screen_session_list, null);
+
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
+
+        promptBuilder.setView(contextView);
+
+        this.promptDialog = promptBuilder.create();
+        this.promptDialog.show();
     }
 
     @Override
@@ -273,7 +290,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         setSessionTextView.setText(""+sessionCourseNameTextView.getText() +
                 sessionCourseNumberTextView.getText());
 
-
     }
 
     //dialog prompt listener
@@ -286,10 +302,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     //dialog prompt listener
     public void onClickEnterSession(View view) {
         createFirstStopPrompt(false);
-        //TextView enteredCourseName = this.promptDialog.findViewById(R.id.course_view);
-        //this.session.setName(enteredCourseName.getText().toString());
-        //this.promptDialog.cancel(); //close dialog box pop-up
     }
+
 
     public void onClickSaveSession(View view) {
         TextView enteredCourseName = this.promptDialog.findViewById(R.id.enterSessionNameEditText);

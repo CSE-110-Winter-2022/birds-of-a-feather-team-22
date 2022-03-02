@@ -155,7 +155,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         // Make new session
         String sessionId = UUID.randomUUID().toString();
         this.session = new Session(sessionId, timestamp, true);
-
+        this.db.sessionDao().insert(this.session);
 
         // TODO: get match info via Nearby Messages API
         // TODO: Create Profile and DiscoveredUser object for match

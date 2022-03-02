@@ -52,6 +52,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     private Button startButton;
     private Button stopButton;
 
+    // currently open prompt
     private AlertDialog promptDialog;
 
     @Override
@@ -296,11 +297,16 @@ public class HomeScreenActivity extends AppCompatActivity {
         Log.d("<Home>", "Save Session Name Button pressed on second stop prompt," +
                 " saving session with name selected...");
 
-        TextView selectedCourseName = this.promptDialog.findViewById(R.id.set_course);
+        TextView selectedCourseName = this.promptDialog.findViewById(R.id.set_course); //grab name
+
+        //update database
         this.db.sessionDao().delete(this.session);
         this.session.setName(selectedCourseName.getText().toString());
         this.db.sessionDao().insert(this.session);
-        this.promptDialog.cancel(); //close dialog box pop-up
+
+        //close up prompt
+        this.promptDialog.cancel();
+        this.promptDialog = null;
     }
 
     //dialog prompt listener
@@ -308,7 +314,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         Log.d("<Home>", "Enter Session Name Button pressed," +
                 " creating first stop prompt to enter name");
 
-        createFirstStopPrompt(false);
+        createFirstStopPrompt(false); //deployed from second prompt
     }
 
 
@@ -321,6 +327,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.session.setName(enteredCourseName.getText().toString());
         this.db.sessionDao().insert(this.session);
         this.promptDialog.cancel();
+        this.promptDialog = null;
     }
 
     // When a match in the recycler view is clicked

@@ -360,7 +360,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CourseActivity.class);
         startActivity(intent);
     }
-    //
+
     // For testing purposes, visibility is set to gone for demoing and actual use
     public void onNearbyClicked(View view) {
         Intent intent = new Intent(this, Mocking.class);

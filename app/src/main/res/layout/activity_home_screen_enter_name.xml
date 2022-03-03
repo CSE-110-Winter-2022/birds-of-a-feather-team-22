@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/save_entered_name_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="252dp"
-        android:onClick="onClickSaveSession"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
+        android:shadowColor="@color/white"
+        android:textColor="@color/seafoam"
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

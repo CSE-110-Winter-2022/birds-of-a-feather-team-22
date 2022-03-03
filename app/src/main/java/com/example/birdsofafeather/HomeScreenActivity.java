@@ -100,11 +100,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
         this.matchesRecyclerView.setVisibility(View.VISIBLE);
 
-        // createSessionListPrompt();
-        // if previous sessions exist: session list pop-up occurs
-        if (this.db.sessionDao().count() != 0){
-            createSessionListPrompt();
-        }
+
     }
 
 
@@ -130,7 +126,6 @@ public class HomeScreenActivity extends AppCompatActivity {
             this.f3.cancel(true);
         }
 
-
     }
 
     // When the start button is clicked
@@ -142,7 +137,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.startButton.setVisibility(View.GONE);
 
         // TODO: choose/resume session
-
+        //if previous sessions exist: session list pop-up occurs
+        createSessionListPrompt();
         // Update the last session to no longer be the last session
         Session lastSession = this.db.sessionDao().getLastSession(true);
         if( lastSession != null) {this.db.sessionDao().delete(lastSession);
@@ -229,7 +225,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         //check if user has entered courses from this current quarter
         if(currentCoursesList.isEmpty()){
             createFirstStopPrompt(true);
-        } else{
+        }else{
             createSecondStopPrompt(currentCoursesList);
         }
 
@@ -438,6 +434,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
 }
+
+
 
 // Comparator used to sort matches by their number of shared courses in decreasing order
 class MatchesComparator implements Comparator<Pair<Profile, Integer>> {

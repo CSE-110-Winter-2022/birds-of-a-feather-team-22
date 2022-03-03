@@ -44,6 +44,7 @@ public class Mocking extends AppCompatActivity {
                 }
             };
             MockMessageListener listener = new MockMessageListener(realListener, textBox.getText().toString(), this.getApplicationContext(),this.sessionId);
+            textBox.setText("INPUT TEXT");
             //TODO: Adding to home screen
     }
 

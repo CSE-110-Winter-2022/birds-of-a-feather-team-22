@@ -29,7 +29,7 @@ public class Mocking extends AppCompatActivity {
     }
 
     public void onEnterClicked(View view) {
-            EditText textBox = findViewById(R.id.editTextTextPersonName);
+            EditText textBox = findViewById(R.id.inputBox);
 
             MessageListener realListener = new MessageListener() {
                // @Override

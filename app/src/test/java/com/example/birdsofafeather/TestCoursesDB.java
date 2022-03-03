@@ -34,7 +34,7 @@ public class TestCoursesDB {
 
         //insert 6 courses
         Course c1 = new Course(p1.getProfileId(), "2021", "Fall", "CSE", "11", "Tiny (<40)");
-        Course c2 = new Course(p1.getProfileId(), "2020", "Spring", "TDDR", "127", "(40-75)");
+        Course c2 = new Course(p1.getProfileId(), "2020", "Spring", "TDDR", "127", "Small (40-75)");
         Course c3 = new Course(p1.getProfileId(), "2024", "Winter", "COGS", "108", "Medium (75-150)");
         Course c4 = new Course(p1.getProfileId(), "1999", "Special Summer Session", "MATH", "20C", "Large (150-250)");
         Course c5 = new Course(p1.getProfileId(), "1971", "Summer Session 1", "CSE", "110", "Huge (250-400)");

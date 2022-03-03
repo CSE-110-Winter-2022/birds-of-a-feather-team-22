@@ -119,7 +119,7 @@ public class SetupProfileEspressoTestOneClass {
                                         0),
                                 2),
                         isDisplayed()));
-        appCompatSpinner.perform(click());
+        appCompatSpinner1.perform(click());
 
         DataInteraction appCompatCheckedTextView = onData(anything())
                 .inAdapterView(childAtPosition(

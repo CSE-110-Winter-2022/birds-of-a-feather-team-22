@@ -68,24 +68,24 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matches = new ArrayList<>();
         this.session = null;
 
-//        String sessionId = getIntent().getStringExtra("sessionId");
-//        // Grab list of discovered users to display on start
-//        this.f3 = this.backgroundThreadExecutor.submit(() -> {
-//            Log.d("<Home>", "Display list of already matched students");
-//            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsers(sessionId);
-//
-//            if (discovered != null) {
-//                for (DiscoveredUser u : discovered) {
-//
-//                    Profile p = db.profileDao().getProfile(u.getProfileId());
-//                    this.matches.add(new Pair(p, u.getNumShared()));
-//                }
-//
-//                this.matches.sort(new MatchesComparator());
-//            }
-//
-//            return null;
-//        });
+        String sessionId = getIntent().getStringExtra("sessionId");
+        // Grab list of discovered users to display on start
+        this.f3 = this.backgroundThreadExecutor.submit(() -> {
+            Log.d("<Home>", "Display list of already matched students");
+            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsersFromSession(sessionId);
+
+            if (discovered != null) {
+                for (DiscoveredUser u : discovered) {
+
+                    Profile p = db.profileDao().getProfile(u.getProfileId());
+                    this.matches.add(new Pair(p, u.getNumShared()));
+                }
+
+                this.matches.sort(new MatchesComparator());
+            }
+
+            return null;
+        });
 
 
         // View initializations
@@ -364,10 +364,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CourseActivity.class);
         startActivity(intent);
     }
-
+    //
     // For testing purposes, visibility is set to gone for demoing and actual use
     public void onNearbyClicked(View view) {
         Intent intent = new Intent(this, Mocking.class);
+        intent.putExtra("session_id", this.session.getSessionId());
         startActivity(intent);
     }
 

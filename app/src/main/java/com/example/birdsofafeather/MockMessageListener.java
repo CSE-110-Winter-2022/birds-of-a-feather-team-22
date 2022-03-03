@@ -5,9 +5,12 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.util.Util;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
+import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
+import com.example.birdsofafeather.db.Session;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 
@@ -19,12 +22,14 @@ public class MockMessageListener extends MessageListener {
     private static final String TAG = "Message";
     private final MessageListener messageListener;
     private final ScheduledExecutorService executor;
+    private String sessionId;
     private AppDatabase db;
 
-    public MockMessageListener(MessageListener realMessageListener, String messageStr, Context context) {
+    public MockMessageListener(MessageListener realMessageListener, String messageStr, Context context, String sessionId) {
         this.messageListener = realMessageListener;
         this.executor = Executors.newSingleThreadScheduledExecutor();
         this.db = AppDatabase.singleton(context);
+        this.sessionId = sessionId;
 
         executor.execute(() -> {
             Message message = new Message(messageStr.getBytes(StandardCharsets.UTF_8));
@@ -63,5 +68,12 @@ public class MockMessageListener extends MessageListener {
             Course course = new Course(UUID, year, quarter, subject, number, size);
             db.courseDao().insert(course);
         }
+
+        int numSharedCourses = Utilities.getNumSharedCourses(db.courseDao().getCoursesByProfileId("1"),
+                db.courseDao().getCoursesByProfileId(profile.getProfileId()));
+
+        DiscoveredUser discovered = new DiscoveredUser(profile.getProfileId(), this.sessionId, numSharedCourses);
+        db.discoveredUserDao().insert(discovered);
+
     }
 }

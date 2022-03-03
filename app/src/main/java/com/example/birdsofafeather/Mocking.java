@@ -18,11 +18,13 @@ public class Mocking extends AppCompatActivity {
     private static final String TAG = "Message";
     private MessageListener messageListener;
     private AppDatabase db;
+    private String sessionId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mocking);
+        this.sessionId = getIntent().getExtras().getString("session_id");
         this.db = AppDatabase.singleton(this);
     }
 
@@ -41,8 +43,7 @@ public class Mocking extends AppCompatActivity {
 
                 }
             };
-            MockMessageListener listener = new MockMessageListener(realListener, textBox.getText().toString(), this.getApplicationContext());
-            //TODO: Adding to home screen
+            MockMessageListener listener = new MockMessageListener(realListener, textBox.getText().toString(), this.getApplicationContext(), this.sessionId);
     }
 
     @Override

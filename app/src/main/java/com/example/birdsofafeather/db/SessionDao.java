@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import java.util.List;
 
@@ -18,6 +19,14 @@ public interface SessionDao {
 
     @Query("SELECT * FROM SESSION WHERE sessionId=:sessionId")
     Session getSession(String sessionId);
+
+    @Query("SELECT * FROM SESSION WHERE isLastSession=:isLastSession")
+    Session getLastSession(boolean isLastSession);
+
+    // Retrieves list of sessions
+    @Transaction
+    @Query("SELECT * FROM SESSION")
+    List<Session> getAllSessions();
 
     // Retrieves the number of session objects
     @Query("SELECT COUNT(*) FROM SESSION")

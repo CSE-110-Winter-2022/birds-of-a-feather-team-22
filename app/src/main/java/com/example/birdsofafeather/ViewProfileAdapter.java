@@ -53,6 +53,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
                 this.courseIdTextView = itemView.findViewById(R.id.course_number_row_textview);
                 this.courseYearTextView = itemView.findViewById(R.id.course_year_row_textview);
                 this.courseQuarterTextView = itemView.findViewById(R.id.course_quarter_row_textview);
+
             }
             public void setCourse(Course course){
                 this.courseSubjectTextView.setText(course.getSubject());

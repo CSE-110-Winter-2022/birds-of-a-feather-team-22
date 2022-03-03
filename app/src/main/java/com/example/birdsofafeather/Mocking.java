@@ -43,7 +43,7 @@ public class Mocking extends AppCompatActivity {
 
                 }
             };
-            MockMessageListener listener = new MockMessageListener(realListener, textBox.getText().toString(), this.getApplicationContext());
+            MockMessageListener listener = new MockMessageListener(realListener, textBox.getText().toString(), this.getApplicationContext(),this.sessionId);
             //TODO: Adding to home screen
     }
 

@@ -20,10 +20,14 @@ public class DiscoveredUser {
     @ColumnInfo(name = "numShared")
     private int numShared;
 
-    public DiscoveredUser(String profileId, String sessionId, int numShared) {
+    @ColumnInfo(name = "isFavorite")
+    private boolean isFavorite;
+
+    public DiscoveredUser(String profileId, String sessionId, int numShared, boolean isFavorite) {
         this.profileId = profileId;
         this.sessionId = sessionId;
         this.numShared = numShared;
+        this.isFavorite = isFavorite;
     }
 
     public String getProfileId() {
@@ -48,6 +52,14 @@ public class DiscoveredUser {
 
     public void setNumShared(int numShared) {
         this.numShared = numShared;
+    }
+
+    public boolean getIsFavorite() {
+        return this.isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
 
 }

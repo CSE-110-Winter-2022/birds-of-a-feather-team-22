@@ -102,6 +102,7 @@ public class CourseActivity extends AppCompatActivity {
         String subject = this.subject_view.getText().toString().trim().toUpperCase();
         String number = this.number_view.getText().toString().trim().toUpperCase();
         String classSize = this.class_size_spinner.getSelectedItem().toString().trim();
+        String classSizeType = this.class_size_spinner.getSelectedItem().toString().trim().split(" ")[0];
 
         // If the course information is valid
         if (isValidCourse(year, quarter, subject, number, classSize)) {
@@ -130,11 +131,11 @@ public class CourseActivity extends AppCompatActivity {
 
                 // Insert course to DB if it is not already there (avoid duplicates)
                 String userId = this.db.profileDao().getUserProfile(true).getProfileId();
-                String courseId = this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSize);
+                String courseId = this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSizeType);
 
                 if (!isExistingCourse(courseId)) {
                     Log.d("<Course>", "Course not already in DB, adding now");
-                    Course course = new Course(userId, year, quarter, subject, number, classSize);
+                    Course course = new Course(userId, year, quarter, subject, number, classSizeType);
                     this.db.courseDao().insert(course);
                 }
                 else Log.e("<Course>", "Duplicate course, will not be added");
@@ -264,6 +265,18 @@ public class CourseActivity extends AppCompatActivity {
             Utilities.showError(this, "Error: Invalid Selection", "Please select a class size for your course.");
             return false;
         }
+
+        // Check if entered course is later than the current quarter and year
+        int currentQuarter = Utilities.enumerateQuarter(Utilities.getCurrentQuarter());
+        int inputQuarter = Utilities.enumerateQuarter(quarter);
+        int currentYear = Integer.parseInt(Utilities.getCurrentYear());
+        int inputYear = Integer.parseInt(year);
+        if (currentYear < inputYear ||
+            (currentYear == inputYear && currentQuarter < inputQuarter)) {
+            Utilities.showError(this, "Error: Invalid Input", "Please input a present or past course.");
+            return false;
+        }
+
 
         return true;
     }

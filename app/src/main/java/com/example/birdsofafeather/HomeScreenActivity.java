@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.birdsofafeather.Sorter.MatchesComparator;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.DiscoveredUser;
@@ -23,13 +24,9 @@ import com.example.birdsofafeather.db.Session;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Stack;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -209,7 +206,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         // TODO: Update session name and add session to DB
         // this.session.setName(sessionName);
 
-        List<String> currentQuarter = Utilities.getCurrentQuarter();
+        String currentQuarter = Utilities.getCurrentQuarter();
+        String currentYear = Utilities.getCurrentYear();
 
         //get profile of current user
         Profile user = this.db.profileDao().getUserProfile(true);
@@ -217,7 +215,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         List<Course> currentCoursesList = new ArrayList<Course>();
 
         for(Course c : sessionCoursesList){
-            if(c.getQuarter().equals(currentQuarter.get(0)) && c.getYear().equals(currentQuarter.get(1))){
+            if(c.getQuarter().equals(currentQuarter) && c.getYear().equals(currentYear)){
                 currentCoursesList.add(c);
             }
         }
@@ -439,9 +437,3 @@ public class HomeScreenActivity extends AppCompatActivity {
 
 
 
-// Comparator used to sort matches by their number of shared courses in decreasing order
-class MatchesComparator implements Comparator<Pair<Profile, Integer>> {
-    public int compare(Pair<Profile, Integer> p1, Pair<Profile, Integer> p2) {
-        return p2.second - p1.second;
-    }
-}

@@ -3,14 +3,10 @@ package com.example.birdsofafeather;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.bumptech.glide.util.Util;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
-import com.example.birdsofafeather.db.Session;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 
@@ -72,7 +68,7 @@ public class MockMessageListener extends MessageListener {
         int numSharedCourses = Utilities.getNumSharedCourses(db.courseDao().getCoursesByProfileId("1"),
                 db.courseDao().getCoursesByProfileId(profile.getProfileId()));
 
-        DiscoveredUser discovered = new DiscoveredUser(profile.getProfileId(), this.sessionId, numSharedCourses);
+        DiscoveredUser discovered = new DiscoveredUser(profile.getProfileId(), this.sessionId, numSharedCourses, false);
         db.discoveredUserDao().insert(discovered);
 
     }

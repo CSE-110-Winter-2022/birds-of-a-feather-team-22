@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.birdsofafeather.db.AppDatabase;
+import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.MessageListener;
 
 
@@ -31,6 +32,7 @@ public class Mocking extends AppCompatActivity {
     public void onEnterClicked(View view) {
             EditText textBox = findViewById(R.id.inputBox);
 
+
             MessageListener realListener = new MessageListener() {
                // @Override
                 public void onFound(@NonNull Message message) {
@@ -44,6 +46,17 @@ public class Mocking extends AppCompatActivity {
                 }
             };
             MockMessageListener listener = new MockMessageListener(realListener, textBox.getText().toString(), this.getApplicationContext(), this.sessionId);
+
+            this.messageListener = listener;
+            Nearby.getMessagesClient(this).subscribe(this.messageListener);
+
+            listener.parseInfo(textBox.getText().toString());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Nearby.getMessagesClient(this).unsubscribe(this.messageListener);
     }
 
     @Override

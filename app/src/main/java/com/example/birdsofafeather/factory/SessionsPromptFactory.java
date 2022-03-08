@@ -44,14 +44,9 @@ public class SessionsPromptFactory<listType> extends PromptFactory{
         return promptBuilder.create();
     }
 
-    /*
-    public void setListeners(View button, Activity activity){
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
+    public void setListeners(View button, Activity activity){
+
     }
-    */
+
 }

@@ -102,7 +102,7 @@
         android:layout_marginTop="32dp"
         android:text="TextView"
         android:textAlignment="center"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/start_button"
         app:layout_constraintStart_toStartOf="parent"

@@ -64,7 +64,7 @@
         android:shadowColor="@color/white"
         android:text="Create New Session"
         android:textColor="@color/seafoam"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"

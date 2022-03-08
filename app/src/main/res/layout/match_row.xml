@@ -27,6 +27,13 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:progressDrawable="@android:drawable/btn_star" />
+
         <TextView
             android:id="@+id/forappearance"
             android:layout_width="match_parent"
@@ -55,6 +62,7 @@
             android:layout_height="20dp"
             android:text=""
             android:visibility="invisible" />
+
     </LinearLayout>
 
 </LinearLayout>

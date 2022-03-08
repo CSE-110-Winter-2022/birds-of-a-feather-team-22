@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutMatch"
     android:clickable="true"
-    android:onClick="onClickMatch"
+    android:onClick="onMatchesSelectMatchRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

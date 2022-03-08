@@ -1,4 +1,4 @@
-package com.example.birdsofafeather.Sorter;
+package com.example.birdsofafeather.Mutator.Sorter;
 
 import android.content.Context;
 import android.util.Log;
@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 // Specialized sorting algorithm that sorts matches based upon the size of shared courses
-public class SizeSorter implements Sorter {
+public class SizeSorter extends Sorter {
     private Future<List<Pair<Profile, Integer>>> f;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
@@ -26,7 +26,7 @@ public class SizeSorter implements Sorter {
     }
 
     @Override
-    public List<Pair<Profile, Integer>> sort(List<Profile> matches) {
+    public List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f = backgroundThreadExecutor.submit(() -> {
             List<Pair<Profile, Integer>> matchScorePairs = new ArrayList<>();
             for (Profile match : matches) {

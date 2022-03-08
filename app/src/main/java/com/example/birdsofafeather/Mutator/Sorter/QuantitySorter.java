@@ -1,4 +1,4 @@
-package com.example.birdsofafeather.Sorter;
+package com.example.birdsofafeather.Mutator.Sorter;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,13 +11,12 @@ import com.example.birdsofafeather.db.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 // Default sorting algorithm that sorts matches based upon the quantity of shared courses
-public class QuantitySorter implements Sorter {
+public class QuantitySorter extends Sorter {
     private Future<List<Pair<Profile, Integer>>> f1;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
@@ -27,7 +26,7 @@ public class QuantitySorter implements Sorter {
     }
 
     @Override
-    public List<Pair<Profile, Integer>> sort(List<Profile> matches) {
+    public List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f1 = backgroundThreadExecutor.submit(() -> {
             List<Pair<Profile, Integer>> matchQuantityPairs = new ArrayList<>();
             for (Profile match : matches) {

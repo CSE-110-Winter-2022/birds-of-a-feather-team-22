@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ public interface SessionDao {
     @Query("SELECT * FROM SESSION")
     List<Session> getAllSessions();
 
+
+
     // Retrieves the number of session objects
     @Query("SELECT COUNT(*) FROM SESSION")
     int count();
@@ -39,4 +42,7 @@ public interface SessionDao {
     // Deletes a session object
     @Delete
     void delete(Session session);
+
+    @Update
+    void update(Session session);
 }

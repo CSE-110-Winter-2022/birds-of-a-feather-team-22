@@ -1,4 +1,4 @@
-package com.example.birdsofafeather.Sorter;
+package com.example.birdsofafeather.Mutator.Sorter;
 
 import android.util.Pair;
 

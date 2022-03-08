@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
         <activity
-            android:name=".Mocking"
+            android:name=".MockingActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewProfileActivity"
+            android:name=".ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".CourseActivity"
@@ -24,7 +24,7 @@
             android:name=".PhotoActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeScreenActivity"
+            android:name=".MatchActivity"
             android:exported="false" />
         <activity
             android:name=".NameActivity"

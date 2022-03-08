@@ -17,7 +17,7 @@ public class HomeScreenUITest {
 
     @Test
     public void startButtonPressWithStopFirstTimeTest() {
-        ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);
+        ActivityScenario<MatchActivity> homeScreen = ActivityScenario.launch(MatchActivity.class);
         homeScreen.onActivity(activity -> {
             Button startButton = activity.findViewById(R.id.start_button);
             Button stopButton = activity.findViewById(R.id.stop_button);
@@ -30,7 +30,7 @@ public class HomeScreenUITest {
     }
     @Test
     public void stopButtonPressAfterStartTest() {
-        ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);
+        ActivityScenario<MatchActivity> homeScreen = ActivityScenario.launch(MatchActivity.class);
         homeScreen.onActivity(activity -> {
             RecyclerView matchesList = activity.findViewById(R.id.matches_view);
             Button startButton = activity.findViewById(R.id.start_button);
@@ -46,7 +46,7 @@ public class HomeScreenUITest {
 
     @Test
     public void FirstLaunchViewTest() {
-        ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);
+        ActivityScenario<MatchActivity> homeScreen = ActivityScenario.launch(MatchActivity.class);
         homeScreen.onActivity(activity -> {
             RecyclerView matchesView = activity.findViewById(R.id.matches_view);
             Button startButton = activity.findViewById(R.id.start_button);

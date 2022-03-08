@@ -1,13 +1,9 @@
 package com.example.birdsofafeather;
 
-        import androidx.recyclerview.widget.RecyclerView;
         import androidx.test.core.app.ApplicationProvider;
         import androidx.test.ext.junit.runners.AndroidJUnit4;
         import org.junit.runner.RunWith;
-        import androidx.test.core.app.ActivityScenario;
 
-        import static androidx.test.espresso.Espresso.onView;
-        import static androidx.test.espresso.assertion.ViewAssertions.matches;
         import static androidx.test.espresso.matcher.ViewMatchers.withId;
         import static androidx.test.espresso.matcher.ViewMatchers.withText;
         import static org.junit.Assert.assertEquals;
@@ -164,7 +160,7 @@ public class TestViewProfileActivity {
         sharedCourses.add(new Course("UUID2", "2020", "Fall", "CSE", "110", "Large (150-250)"));
         sharedCourses.add(new Course("UUID3", "2020", "Fall", "CSE", "110", "Large (150-250)"));
 
-        ViewProfileAdapter adapter = new ViewProfileAdapter(sharedCourses);
+        ProfileViewAdapter adapter = new ProfileViewAdapter(sharedCourses);
         assertEquals(3, adapter.getItemCount());
     }
 

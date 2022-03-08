@@ -23,7 +23,7 @@ public class SessionCoursesAdapter extends RecyclerView.Adapter<SessionCoursesAd
     public SessionCoursesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.session_course_row, parent, false);
+                .inflate(R.layout.course_row, parent, false);
 
         return new ViewHolder(view);
     }
@@ -45,8 +45,8 @@ public class SessionCoursesAdapter extends RecyclerView.Adapter<SessionCoursesAd
 
         ViewHolder(View itemView){
             super(itemView);
-            this.sessionCourseNameTextView = itemView.findViewById(R.id.session_course_name_text_view);
-            this.sessionCourseNumberTextView = itemView.findViewById(R.id.session_course_number_text_view);
+            this.sessionCourseNameTextView = itemView.findViewById(R.id.session_course_name_view);
+            this.sessionCourseNumberTextView = itemView.findViewById(R.id.session_course_number_view);
 
         }
         public void setSession(Course sessionCourse){

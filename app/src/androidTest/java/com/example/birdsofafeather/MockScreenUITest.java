@@ -3,23 +3,17 @@ package com.example.birdsofafeather;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import android.app.Application;
-import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
 
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.DiscoveredUser;
-import com.example.birdsofafeather.db.Profile;
 
-import org.junit.Rule;
 import org.junit.Test;
 
 @LargeTest
@@ -49,12 +43,12 @@ public class MockScreenUITest {
 
     @Test
     public void onCreateUIScreenTestFromHomeScreenTest() {
-        ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);
+        ActivityScenario<MatchActivity> homeScreen = ActivityScenario.launch(MatchActivity.class);
         homeScreen.onActivity(activity -> {
             Button startButton = activity.findViewById(R.id.start_button);
             Button nearbyButton = activity.findViewById(R.id.nearby_button);
-            Button enterButton = activity.findViewById(R.id.Enter_Button);
-            EditText textBox = activity.findViewById(R.id.inputBox);
+            Button enterButton = activity.findViewById(R.id.mock_enter_button);
+            EditText textBox = activity.findViewById(R.id.mocking_input_view);
 
             startButton.performClick();
             nearbyButton.performClick();
@@ -67,16 +61,16 @@ public class MockScreenUITest {
 
     @Test
     public void onClickEnterButtonWithSomeTextTest() {
-        ActivityScenario<HomeScreenActivity> homeScreen = ActivityScenario.launch(HomeScreenActivity.class);
+        ActivityScenario<MatchActivity> homeScreen = ActivityScenario.launch(MatchActivity.class);
         homeScreen.onActivity(activity -> {
             Button startButton = activity.findViewById(R.id.start_button);
             startButton.performClick();
         });
 
-        ActivityScenario<Mocking> mockScreen = ActivityScenario.launch(Mocking.class);
+        ActivityScenario<MockingActivity> mockScreen = ActivityScenario.launch(MockingActivity.class);
         mockScreen.onActivity(activity -> {
-            Button enterButton = activity.findViewById(R.id.Enter_Button);
-            EditText textBox = activity.findViewById(R.id.inputBox);
+            Button enterButton = activity.findViewById(R.id.mock_enter_button);
+            EditText textBox = activity.findViewById(R.id.mocking_input_view);
 
             textBox.setText(outputFormattedCSVString());
 

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class SetupProfileEspressoTestOneClass {
 
     @Rule
-    public ActivityTestRule<HomeScreenActivity> mActivityTestRule = new ActivityTestRule<>(HomeScreenActivity.class);
+    public ActivityTestRule<MatchActivity> mActivityTestRule = new ActivityTestRule<>(MatchActivity.class);
 
     @Test
     public void setupProfileEspressoTestOneClass() {

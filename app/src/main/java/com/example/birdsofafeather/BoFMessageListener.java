@@ -15,14 +15,14 @@ import com.google.android.gms.nearby.messages.MessageListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BOFMessageListener extends MessageListener {
+public class BoFMessageListener extends MessageListener {
     private AppDatabase db;
     private String sessionId;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
 
-    public BOFMessageListener(String sessionID, Context context) {
-        this.db = AppDatabase.singleton(context);
+    public BoFMessageListener(String sessionId, Context context) {
         this.sessionId = sessionId;
+        this.db = AppDatabase.singleton(context);
     }
 
     @Override

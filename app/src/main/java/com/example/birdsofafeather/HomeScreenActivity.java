@@ -349,6 +349,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
+    //
     //dialog prompt listener
     public void onClickCourseLabel(View view){
         Log.d("<Home>", "Course selected from second stop prompt's course items," +

@@ -1,5 +1,6 @@
 package com.example.birdsofafeather;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,9 @@ import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
 import com.example.birdsofafeather.db.Session;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +45,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     private AppDatabase db;
     private List<Pair<Profile, Integer>> matches;
     private Session session;
+    private Profile selfProfile;
+    private List<Course> selfCourses;
 
     // View/UI fields
     private RecyclerView matchesRecyclerView;
@@ -51,6 +57,10 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     // currently open prompt
     private AlertDialog promptDialog;
+
+    // Utilities
+    private MessageListener messageListener;
+    private Message selfMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +75,17 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matches = new ArrayList<>();
         this.session = null;
 
+        backgroundThreadExecutor.submit(() -> {
+            this.selfProfile = this.db.profileDao().getUserProfile(true);
+            this.selfCourses = this.db.courseDao().getCoursesByProfileId(this.selfProfile.getProfileId());
+        });
+
         String sessionId = getIntent().getStringExtra("sessionId");
+
+        // Utilities initializations
+        this.messageListener = new BOFMessageListener(sessionId, this);
+        this.selfMessage = new Message(encodeMessage().getBytes());
+
         // Grab list of discovered users to display on start
         this.f3 = this.backgroundThreadExecutor.submit(() -> {
             Log.d("<Home>", "Display list of already matched students");
@@ -100,7 +120,57 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
+    public void startSearchingForMatches() {
+        Nearby.getMessagesClient(this).publish(this.selfMessage);
+        Nearby.getMessagesClient(this).subscribe(this.messageListener);
+    }
 
+    public void stopSearchingForMatches() {
+        Nearby.getMessagesClient(this).unpublish(this.selfMessage);
+        Nearby.getMessagesClient(this).unsubscribe(this.messageListener);
+    }
+
+    public String encodeQuarter(String quarter) {
+        switch(quarter) {
+            case "Fall":
+                return "FA";
+            case "Winter":
+                return "WI";
+            case "Spring":
+                return "SP";
+            case "Summer Session 1":
+                return "S1";
+            case "Summer Session 2":
+                return "S2";
+            case "Special Summer Session":
+                return "SS";
+            default:
+                Log.d("<HomeScreenActivity>", "Quarter cannot be encoded");
+                return null;
+        }
+    }
+
+    public String encodeMessage() {
+        // Look at BDD Scenario for CSV format
+        // Were are encoding our own profile
+        StringBuilder encodedMessage = new StringBuilder();
+        String selfUUID = this.selfProfile.getProfileId();
+        String selfName = this.selfProfile.getName();
+        String selfPhoto = this.selfProfile.getPhoto();
+
+        encodedMessage.append(selfUUID + ",,,,\n");
+        encodedMessage.append(selfName + ",,,,\n");
+        encodedMessage.append(selfPhoto + ",,,,\n");
+        for (Course course : this.selfCourses) {
+            encodedMessage.append(course.getYear() + ",");
+            encodedMessage.append(encodeQuarter(course.getQuarter()) + ",");
+            encodedMessage.append(course.getSubject() + ",");
+            encodedMessage.append(course.getNumber() + ",");
+            encodedMessage.append(course.getClassSize() + "\n");
+        }
+
+        return encodedMessage.toString();
+    }
 
     @Override
     protected void onDestroy() {
@@ -151,6 +221,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.db.sessionDao().insert(this.session);
 
         // TODO: get match info via Nearby Messages API
+        startSearchingForMatches();
         // TODO: Create Profile and DiscoveredUser object for match
         // TODO: Add Profile and DiscoveredUser objects to DB
         // TODO: Update matches List and sort
@@ -227,6 +298,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             createSecondStopPrompt(currentCoursesList);
         }
 
+        stopSearchingForMatches();
     }
 
     //onClick listener for Session items within the recyclerview of the

@@ -36,7 +36,9 @@ public class MockMessageListener extends MessageListener {
     }
 
     protected void parseInfo(String info) {
-        String[] textBoxSeparated = info.split(",,,,");
+        String[] textBoxSeparated = info.split(",,,,\n");
+
+        // TODO: Check if its good
 
         String UUID = textBoxSeparated[0];
         String userName = textBoxSeparated[1];

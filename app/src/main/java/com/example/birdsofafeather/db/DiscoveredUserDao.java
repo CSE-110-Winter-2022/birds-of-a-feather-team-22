@@ -33,6 +33,9 @@ public interface DiscoveredUserDao {
     @Query("SELECT profileId FROM DISCOVEREDUSER where profileId=:profileId")
     String getProfileId(String profileId);
 
+    @Query("SELECT * FROM DISCOVEREDUSER where profileId=:profileId AND sessionId=:sessionId")
+    DiscoveredUser getDiscoveredUserFromSession(String profileId, String sessionId);
+
     // Retrieves the number of DiscoveredUsers objects
     @Query("SELECT COUNT(*) FROM DISCOVEREDUSER")
     int count();

@@ -25,6 +25,9 @@ public interface CourseDao {
     @Query("SELECT * FROM COURSE WHERE quarter=:quarter AND year=:year")
     Course getCourseFromQuarter(String quarter, String year);
 
+    @Query("SELECT * FROM COURSE WHERE profileId=:profileId AND year=:year AND quarter=:quarter AND subject=:subject AND number=:number AND classSize=:classSize")
+    Course getCourse(String profileId, String year, String quarter, String subject, String number, String classSize);
+
     // Retrieves the number of course objects
     @Query("SELECT COUNT(*) FROM COURSE")
     int count();

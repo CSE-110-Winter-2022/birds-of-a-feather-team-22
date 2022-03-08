@@ -55,6 +55,7 @@ public class MatchActivity extends AppCompatActivity {
 
     // Flags
     private boolean isNewSession = false;
+    private boolean isSearching = false;
 
     // Sorting
     private Mutator mutator;
@@ -200,6 +201,7 @@ public class MatchActivity extends AppCompatActivity {
 
     public void startSearchForMatches() {
         Log.d(TAG, "Starting search for matches...");
+        this.isSearching = true;
 
         this.stopButton.setVisibility(View.VISIBLE);
         this.startButton.setVisibility(View.GONE);
@@ -218,6 +220,7 @@ public class MatchActivity extends AppCompatActivity {
 
     public void stopSearchForMatches() {
         Log.d(TAG, "Stopping search for matches...");
+        this.isSearching = false;
 
         this.startButton.setVisibility(View.VISIBLE);
         this.stopButton.setVisibility(View.GONE);
@@ -337,14 +340,17 @@ public class MatchActivity extends AppCompatActivity {
     // For testing purposes, visibility is set to gone for demoing and actual use
     public void onNearbyClicked(View view) {
         Intent intent = new Intent(this, MockingActivity.class);
-        intent.putExtra("session_id", this.sessionId);
         startActivity(intent);
     }
 
     @Override
     public void onBackPressed() {
+        if (this.isSearching) {
+            stopSearchForMatches();
+        }
+
         Intent intent = new Intent(this, CourseActivity.class);
-        intent.putExtra("session_id", this.sessionId);
+        intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         startActivity(intent);
     }
 

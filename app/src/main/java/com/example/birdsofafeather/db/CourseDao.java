@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -39,4 +40,7 @@ public interface CourseDao {
     // Deletes a course object
     @Delete
     void delete(Course course);
+
+    @Update
+    void update(Course course);
 }

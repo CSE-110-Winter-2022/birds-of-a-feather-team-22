@@ -42,8 +42,8 @@ public class CourseActivity extends AppCompatActivity {
     private TextView number_view;
     private Button doneButton;
 
-    // For resuming lastSession
-    private String sessionId;
+    // For mocking
+    private ArrayList<String> mockedMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +100,8 @@ public class CourseActivity extends AppCompatActivity {
             return null;
         });
 
-        // For resuming previous session
-        this.sessionId = getIntent().getStringExtra("session_id");
-        if (this.sessionId == null) {
-            this.sessionId = "";
-        }
+        // For resuming session with mock data
+        this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
     }
 
     public void onEnterClicked(View view) {
@@ -220,7 +217,13 @@ public class CourseActivity extends AppCompatActivity {
         Log.d(TAG, "Done button clicked, moving to Home Screen");
 
         Intent intent = new Intent(this, MatchActivity.class);
-        intent.putExtra("session_id", this.sessionId);
+        if (this.mockedMessages == null) {
+            intent.putExtra("session_id", "");
+        }
+        else {
+            intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
+        }
+
         startActivity(intent);
     }
 

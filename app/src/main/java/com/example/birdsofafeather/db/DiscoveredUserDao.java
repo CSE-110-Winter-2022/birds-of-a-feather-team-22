@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -33,9 +34,6 @@ public interface DiscoveredUserDao {
     @Query("SELECT * FROM DISCOVEREDUSER where profileId=:profileId AND sessionId=:sessionId")
     DiscoveredUser getDiscoveredUserFromSession(String profileId, String sessionId);
 
-    @Query("SELECT isFavorite FROM DISCOVEREDUSER WHERE profileId=:profileId")
-    boolean getFavoriteStatus(String profileId);
-
     // Retrieves the number of DiscoveredUsers objects
     @Query("SELECT COUNT(*) FROM DISCOVEREDUSER")
     int count();
@@ -47,4 +45,7 @@ public interface DiscoveredUserDao {
     // Deletes a DiscoveredUser object
     @Delete
     void delete(DiscoveredUser du);
+
+    @Update
+    void update(DiscoveredUser du);
 }

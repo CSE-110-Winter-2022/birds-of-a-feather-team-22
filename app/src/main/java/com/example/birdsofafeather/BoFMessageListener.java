@@ -47,15 +47,18 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
     private void parseInfo(String info) {
         String[] textBoxSeparated = info.split(",,,,");
 
-        String UUID = textBoxSeparated[0];
+        String userProfileId = textBoxSeparated[0];
         String userName = textBoxSeparated[1];
         String userThumbnail = textBoxSeparated[2];
-
+        Profile user = null;
 //        backgroundThreadExecutor.submit(() -> {
-            if (db.profileDao().getProfile(UUID) == null) {
-                Profile profile = new Profile(UUID, userName, userThumbnail);
-                db.profileDao().insert(profile);
+            if (this.db.profileDao().getProfile(userProfileId) == null) {
+                user = new Profile(userProfileId, userName, userThumbnail);
+                this.db.profileDao().insert(user);
                 Log.d(TAG, "Added Profile");
+            }
+            else {
+                user = this.db.profileDao().getProfile(userProfileId);
             }
 
 //        });
@@ -66,8 +69,12 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
 
             // TODO: Nearby for Waves
             if (classInfoSeparated[1].equals("wave")) {
-                String UUID_self = classInfoSeparated[0];
-                String filter = classInfoSeparated[1];
+                String UUID = classInfoSeparated[0];
+                Profile self = this.db.profileDao().getUserProfile(true);
+                if (UUID.equals(self.getProfileId())) {
+                    user.setIsWaving(true);
+                    this.db.profileDao().update(user);
+                }
                 continue;
             }
 
@@ -78,8 +85,8 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
             String size = classInfoSeparated[4];
 
 //            backgroundThreadExecutor.submit(() -> {
-                if (db.courseDao().getCourse(UUID, year, quarter, subject, number, size) == null) {
-                    Course course = new Course(UUID, year, quarter, subject, number, size);
+                if (db.courseDao().getCourse(userProfileId, year, quarter, subject, number, size) == null) {
+                    Course course = new Course(userProfileId, year, quarter, subject, number, size);
                     db.courseDao().insert(course);
                     Log.d(TAG, "Added Course");
                 }
@@ -88,16 +95,16 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
 
 //        backgroundThreadExecutor.submit(() -> {
             int numSharedCourses = Utilities.getNumSharedCourses(db.courseDao().getCoursesByProfileId(db.profileDao().getUserProfile(true).getProfileId()),
-                    db.courseDao().getCoursesByProfileId(UUID));
+                    db.courseDao().getCoursesByProfileId(userProfileId));
 
-            DiscoveredUser discovered = db.discoveredUserDao().getDiscoveredUserFromSession(UUID, sessionId);
+            DiscoveredUser discovered = db.discoveredUserDao().getDiscoveredUserFromSession(userProfileId, sessionId);
 
             if (discovered != null) {
                 db.discoveredUserDao().delete(discovered);
                 Log.d(TAG, "Deleted DiscoveredUser");
             }
             Log.d(TAG, "Added DiscoveredUser");
-            DiscoveredUser discoveredUser = new DiscoveredUser(UUID, this.sessionId, numSharedCourses, false);
+            DiscoveredUser discoveredUser = new DiscoveredUser(userProfileId, this.sessionId, numSharedCourses);
             db.discoveredUserDao().insert(discoveredUser);
 //        });
     }

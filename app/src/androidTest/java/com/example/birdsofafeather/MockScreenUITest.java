@@ -38,7 +38,7 @@ public class MockScreenUITest {
     }
 
     public DiscoveredUser createTestProfile() {
-        return new DiscoveredUser(UUID_TEST, "Something", 1, false);
+        return new DiscoveredUser(UUID_TEST, "Something", 1);
     }
 
     @Test

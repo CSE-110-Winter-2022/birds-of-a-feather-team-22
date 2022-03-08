@@ -17,7 +17,6 @@ public class MockingActivity extends AppCompatActivity {
     private final String TAG = "<Mocking>";
 
     private AppDatabase db;
-    private String sessionId;
     private ArrayList<String> mockedMessages;
 
     @Override
@@ -28,7 +27,6 @@ public class MockingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mocking);
 
         this.db = AppDatabase.singleton(this);
-        this.sessionId = getIntent().getExtras().getString("session_id");
         this.mockedMessages = new ArrayList<>();
     }
 
@@ -36,14 +34,13 @@ public class MockingActivity extends AppCompatActivity {
         EditText textBox = findViewById(R.id.mocking_input_view);
         this.mockedMessages.add(textBox.getText().toString());
 
-        Log.d(TAG, "Mocked message published!");
+        Log.d(TAG, "Published mocked message: " + textBox.getText().toString());
     }
 
     @Override
     public void onBackPressed() {
         Log.d(TAG, "Returning to previous session...");
         Intent intent = new Intent(this, MatchActivity.class);
-        intent.putExtra("session_id", this.sessionId);
         intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         startActivity(intent);
     }

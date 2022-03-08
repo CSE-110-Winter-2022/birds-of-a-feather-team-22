@@ -51,9 +51,10 @@ public class MatchActivity extends AppCompatActivity {
     private List<Course> selfCourses;
     private ArrayList<String> mockedMessages;
     private List<Session> allSessions;
-    private boolean isResumedSession;
-    private boolean isMocking;
     private BoFObserver nvm;
+
+    // Flags
+    private boolean isNewSession = false;
 
     // Sorting
     private Mutator mutator;
@@ -93,7 +94,6 @@ public class MatchActivity extends AppCompatActivity {
 
         // Get current session
         this.sessionId = getIntent().getStringExtra("session_id");
-        this.isResumedSession = false;
         if (this.sessionId == null) {
             Log.d(TAG, "No sessionId intent extra passed in, opening last saved session!");
             this.backgroundThreadExecutor.submit(() -> {
@@ -110,7 +110,7 @@ public class MatchActivity extends AppCompatActivity {
                 this.db.sessionDao().insert(this.session);
                 setLastSession();
             });
-            this.isResumedSession = true;
+            this.isNewSession = true;
         }
         else {
             Log.d(TAG, "Resuming previous session!");
@@ -119,14 +119,11 @@ public class MatchActivity extends AppCompatActivity {
                 this.sessionId = this.session.getSessionId();
                 setLastSession();
             });
-            this.isResumedSession = true;
         }
 
         // Get mocked messages
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
-        this.isMocking = true;
         if (this.mockedMessages == null) {
-            this.isMocking = false;
             this.mockedMessages = new ArrayList<>();
         }
 
@@ -201,12 +198,30 @@ public class MatchActivity extends AppCompatActivity {
         return null;
     }
 
-    public void startSearchingForMatches() {
+    public void startSearchForMatches() {
+        Log.d(TAG, "Starting search for matches...");
+
+        this.stopButton.setVisibility(View.VISIBLE);
+        this.startButton.setVisibility(View.GONE);
+
         Nearby.getMessagesClient(this).publish(this.selfMessage);
         Nearby.getMessagesClient(this).subscribe(this.messageListener);
+
+        // Discover mocked messages
+        for (String msg : this.mockedMessages) {
+            this.messageListener.onFound(new Message(msg.getBytes()));
+        }
+
+        this.mockedMessages.clear();
+
     }
 
-    public void stopSearchingForMatches() {
+    public void stopSearchForMatches() {
+        Log.d(TAG, "Stopping search for matches...");
+
+        this.startButton.setVisibility(View.VISIBLE);
+        this.stopButton.setVisibility(View.GONE);
+
         Nearby.getMessagesClient(this).unpublish(this.selfMessage);
         Nearby.getMessagesClient(this).unsubscribe(this.messageListener);
     }
@@ -256,26 +271,14 @@ public class MatchActivity extends AppCompatActivity {
     // When the start button is clicked
     public void onStartClicked(View view) {
 
-        Log.d(TAG, "Start button pressed, searching for matches...");
+        Log.d(TAG, "Start button pressed");
 
-        this.stopButton.setVisibility(View.VISIBLE);
-        this.startButton.setVisibility(View.GONE);
-
-        //if previous sessions exist: session list pop-up occurs
-        if (!isResumedSession && !isMocking) {
+        if (!isNewSession) {
             showStartPopup();
         }
-
-        // Discover Bluetooth messages
-        startSearchingForMatches();
-
-        // Discover mocked messages
-        for (String msg : this.mockedMessages) {
-           this.messageListener.onFound(new Message(msg.getBytes()));
+        else {
+            startSearchForMatches();
         }
-
-        this.mockedMessages.clear();
-
 
     }
 
@@ -284,16 +287,30 @@ public class MatchActivity extends AppCompatActivity {
     public void onStopClicked(View view) {
         Log.d(TAG, "Stop button pressed, stopping search for matches...");
 
-        this.startButton.setVisibility(View.VISIBLE);
-        this.stopButton.setVisibility(View.GONE);
+        stopSearchForMatches();
 
-        stopSearchingForMatches();
+        List<Course> currentCourses = getCurrentCourses();
 
+        //check if user has entered courses from this current quarter
+        if (this.isNewSession) {
+            if (currentCourses.isEmpty()){
+                showEnterSessionNameStopPopup(true);
+            }
+            else {
+                showSelectOrEnterSessionNameStopPopup(currentCourses);
+            }
+        }
+
+        this.isNewSession = false;
+
+    }
+
+    public List<Course> getCurrentCourses() {
         String currentQuarter = Utilities.getCurrentQuarter();
         String currentYear = Utilities.getCurrentYear();
 
         //get profile of current user
-        List<Course> currentCourses = new ArrayList<Course>();
+        List<Course> currentCourses = new ArrayList<>();
 
         for (Course course : this.selfCourses){
             if (course.getQuarter().equals(currentQuarter) && course.getYear().equals(currentYear)){
@@ -301,15 +318,7 @@ public class MatchActivity extends AppCompatActivity {
             }
         }
 
-        //check if user has entered courses from this current quarter
-        if (currentCourses.isEmpty()){
-            showEnterSessionNameStopPopup(true);
-        }
-        else {
-            showSelectOrEnterSessionNameStopPopup(currentCourses);
-        }
-
-        this.isResumedSession = false;
+        return currentCourses;
     }
 
     // When a match in the recycler view is clicked
@@ -345,13 +354,23 @@ public class MatchActivity extends AppCompatActivity {
                 "displaying matches in MatchActivity");
 
         //selected session object
-        TextView selectedSessionId = view.findViewById(R.id.session_row_id_view);
+        TextView selectedSessionIdView = view.findViewById(R.id.session_row_id_view);
+        String selectedSessionId = selectedSessionIdView.getText().toString();
+        if (this.sessionId.equals(selectedSessionId)) {
+            // Discover Bluetooth messages
+            this.promptDialog.cancel();
+            this.promptDialog = null;
 
-        unsetLastSession();
+            startSearchForMatches();
 
-        Intent intent = new Intent(this, MatchActivity.class);
-        intent.putExtra("session_id", selectedSessionId.getText().toString());
-        startActivity(intent);
+        }
+        else {
+            unsetLastSession();
+            Intent intent = new Intent(this, MatchActivity.class);
+            intent.putExtra("session_id", selectedSessionId);
+            startActivity(intent);
+        }
+
     }
 
     public void onStartPopupCreateNewSessionClicked(View view) {
@@ -522,6 +541,7 @@ public class MatchActivity extends AppCompatActivity {
             this.allSessions = this.db.sessionDao().getAllSessions();
         });
         this.sessionNameView.setText(newName);
+        this.isNewSession = false;
     }
 
     private String getCurrentTimestamp() {

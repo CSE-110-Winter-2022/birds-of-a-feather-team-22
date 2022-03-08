@@ -3,7 +3,6 @@ package com.example.birdsofafeather;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,10 +10,10 @@ import java.util.List;
 import com.example.birdsofafeather.db.Course;
 
 // View adapter for ViewProfileActivity
-public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.ViewHolder>{
+public class ProfileViewAdapter extends RecyclerView.Adapter<ProfileViewAdapter.ViewHolder>{
         private final List<Course> sharedCourses;
 
-        public ViewProfileAdapter(List<Course> sharedCourses){
+        public ProfileViewAdapter(List<Course> sharedCourses){
             super();
             this.sharedCourses = sharedCourses;
         }
@@ -22,7 +21,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
 
         @NonNull
         @Override
-        public ViewProfileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+        public ProfileViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
             View view = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.shared_course_row, parent, false);
@@ -31,7 +30,7 @@ public class ViewProfileAdapter extends RecyclerView.Adapter<ViewProfileAdapter.
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewProfileAdapter.ViewHolder holder, int position){
+        public void onBindViewHolder(@NonNull ProfileViewAdapter.ViewHolder holder, int position){
             holder.setCourse(this.sharedCourses.get(position));
         }
 

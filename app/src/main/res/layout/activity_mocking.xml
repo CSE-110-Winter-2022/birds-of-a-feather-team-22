@@ -4,31 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Mocking">
+    tools:context=".MockingActivity">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mock_enter_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="600dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
+        android:onClick="onEnterClicked"
+        android:shadowColor="@color/white"
+        android:text="@string/enter"
+        android:textColor="@color/seafoam"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="OnClick,TextContrastCheck" />
 
     <EditText
-        android:id="@+id/inputBox"
-        android:layout_width="262dp"
-        android:layout_height="483dp"
+        android:id="@+id/mocking_input_view"
+        android:layout_width="350dp"
+        android:layout_height="425dp"
         android:layout_marginTop="80dp"
+        android:background="@null"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="UUID,,,,\nName,,,,\nPhoto URL,,,,\n..."
         android:inputType="textMultiLine"
-        android:text="INPUT TEXT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/Enter_Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="166dp"
-        android:layout_marginBottom="78dp"
-        android:text="@string/enter"
-        android:onClick="onEnterClicked"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/DeleteDB"
@@ -49,3 +56,4 @@
         tools:ignore="OnClick,TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

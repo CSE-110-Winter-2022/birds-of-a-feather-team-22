@@ -16,9 +16,9 @@ public interface DiscoveredUserDao {
     @Query("SELECT * FROM DISCOVEREDUSER WHERE profileId=:profileId")
     List<DiscoveredUser> getDiscoveredUser(String profileId);
 
-    // Retrieves a list of all DiscoveredUser objects
+    // Retrieves a list of all DiscoveredUser objects across all sessions (may contain duplicates)
     @Transaction
-    @Query("SELECT profileId, numShared FROM DISCOVEREDUSER")
+    @Query("SELECT * FROM DISCOVEREDUSER")
     List<DiscoveredUser> getAllDiscoveredUsers();
 
     // Retrieves all DiscoveredUser objects with a matching session id
@@ -26,10 +26,15 @@ public interface DiscoveredUserDao {
     @Query("SELECT * FROM DISCOVEREDUSER WHERE sessionId=:sessionId")
     List<DiscoveredUser> getDiscoveredUsersFromSession(String sessionId);
 
+    @Query("SELECT isFavorite FROM DISCOVEREDUSER WHERE profileId=:profileId")
+    boolean getFavoriteStatus(String profileId);
 
     // Checks if a user has already been discovered
     @Query("SELECT profileId FROM DISCOVEREDUSER where profileId=:profileId")
     String getProfileId(String profileId);
+
+    @Query("SELECT * FROM DISCOVEREDUSER where profileId=:profileId AND sessionId=:sessionId")
+    DiscoveredUser getDiscoveredUserFromSession(String profileId, String sessionId);
 
     // Retrieves the number of DiscoveredUsers objects
     @Query("SELECT COUNT(*) FROM DISCOVEREDUSER")

@@ -16,6 +16,7 @@ import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +40,9 @@ public class CourseActivity extends AppCompatActivity {
     private TextView number_view;
     private Button doneButton;
 
+    // For resuming lastSession
+    private String sessionId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +65,8 @@ public class CourseActivity extends AppCompatActivity {
         this.doneButton.setVisibility(View.GONE);
 
         // Set quarter spinner
-        ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array, android.R.layout.simple_spinner_dropdown_item);
+        List<String> quarters = new ArrayList<>(Arrays.asList("Quarter", "Fall", "Winter", "Spring", "Summer Session 1", "Summer Session 2", "Special Summer Session"));
+        ArrayAdapter<String> quarter_adapter = new ArrayAdapter<>(this, R.layout.spinner_item_text, quarters);
         quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.quarter_spinner.setAdapter(quarter_adapter);
 
@@ -72,12 +77,13 @@ public class CourseActivity extends AppCompatActivity {
         for (int y = thisYear; y >= 1960; y--) {
             years.add(Integer.toString(y));
         }
-        ArrayAdapter<String> year_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
+        ArrayAdapter<String> year_adapter = new ArrayAdapter<>(this, R.layout.spinner_item_text, years);
         year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.year_spinner.setAdapter(year_adapter);
 
         // Set class size spinner
-        ArrayAdapter<CharSequence> class_size_adapter = ArrayAdapter.createFromResource(this, R.array.class_size_array, android.R.layout.simple_spinner_dropdown_item);
+        List<String> classSizes = new ArrayList<>(Arrays.asList("Class Size", "Tiny (<40)", "Small (40-75)", "Medium (75-150)", "Large (150-250)", "Huge (250-400)", "Gigantic (400+)"));
+        ArrayAdapter<String> class_size_adapter = new ArrayAdapter<>(this, R.layout.spinner_item_text, classSizes);
         class_size_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.class_size_spinner.setAdapter(class_size_adapter);
 
@@ -91,6 +97,12 @@ public class CourseActivity extends AppCompatActivity {
             }
             return null;
         });
+
+        // For resuming previous session
+        this.sessionId = getIntent().getStringExtra("session_id");
+        if (this.sessionId == null) {
+            this.sessionId = "";
+        }
     }
 
     public void onEnterClicked(View view) {
@@ -102,6 +114,7 @@ public class CourseActivity extends AppCompatActivity {
         String subject = this.subject_view.getText().toString().trim().toUpperCase();
         String number = this.number_view.getText().toString().trim().toUpperCase();
         String classSize = this.class_size_spinner.getSelectedItem().toString().trim();
+        String classSizeType = this.class_size_spinner.getSelectedItem().toString().trim().split(" ")[0];
 
         // If the course information is valid
         if (isValidCourse(year, quarter, subject, number, classSize)) {
@@ -130,11 +143,11 @@ public class CourseActivity extends AppCompatActivity {
 
                 // Insert course to DB if it is not already there (avoid duplicates)
                 String userId = this.db.profileDao().getUserProfile(true).getProfileId();
-                String courseId = this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSize);
+                String courseId = this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSizeType);
 
                 if (!isExistingCourse(courseId)) {
                     Log.d("<Course>", "Course not already in DB, adding now");
-                    Course course = new Course(userId, year, quarter, subject, number, classSize);
+                    Course course = new Course(userId, year, quarter, subject, number, classSizeType);
                     this.db.courseDao().insert(course);
                 }
                 else Log.e("<Course>", "Duplicate course, will not be added");
@@ -144,22 +157,25 @@ public class CourseActivity extends AppCompatActivity {
             });
 
             // Set quarter spinner
-            ArrayAdapter<CharSequence> quarter_adapter = ArrayAdapter.createFromResource(this, R.array.quarter_array2, android.R.layout.simple_spinner_dropdown_item);
+            List<String> quarters = new ArrayList<>(Arrays.asList("Fall", "Winter", "Spring", "Summer Session 1", "Summer Session 2", "Special Summer Session"));
+            ArrayAdapter<String> quarter_adapter = new ArrayAdapter<>(this, R.layout.spinner_item_text, quarters);
             quarter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             this.quarter_spinner.setAdapter(quarter_adapter);
 
             // Set dynamic year spinner
             List<String> years = new ArrayList<>();
+            years.add("Year");
             int thisYear = Calendar.getInstance().get(Calendar.YEAR);
             for (int y = thisYear; y >= 1960; y--) {
                 years.add(Integer.toString(y));
             }
-            ArrayAdapter<String> year_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
+            ArrayAdapter<String> year_adapter = new ArrayAdapter<>(this, R.layout.spinner_item_text, years);
             year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             this.year_spinner.setAdapter(year_adapter);
 
             // Set class size spinner
-            ArrayAdapter<CharSequence> class_size_adapter = ArrayAdapter.createFromResource(this, R.array.class_size_array2, android.R.layout.simple_spinner_dropdown_item);
+            List<String> classSizes = new ArrayList<>(Arrays.asList("Tiny (<40)", "Small (40-75)", "Medium (75-150)", "Large (150-250)", "Huge (250-400)", "Gigantic (400+)"));
+            ArrayAdapter<String> class_size_adapter = new ArrayAdapter<>(this, R.layout.spinner_item_text, classSizes);
             class_size_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             this.class_size_spinner.setAdapter(class_size_adapter);
 
@@ -201,7 +217,8 @@ public class CourseActivity extends AppCompatActivity {
     public void onDoneClicked(View view) {
         Log.d("<Course>", "Done button clicked, moving to Home Screen");
 
-        Intent intent = new Intent(this, HomeScreenActivity.class);
+        Intent intent = new Intent(this, MatchActivity.class);
+        intent.putExtra("session_id", this.sessionId);
         startActivity(intent);
     }
 
@@ -264,6 +281,18 @@ public class CourseActivity extends AppCompatActivity {
             Utilities.showError(this, "Error: Invalid Selection", "Please select a class size for your course.");
             return false;
         }
+
+        // Check if entered course is later than the current quarter and year
+        int currentQuarter = Utilities.enumerateQuarter(Utilities.getCurrentQuarter());
+        int inputQuarter = Utilities.enumerateQuarter(quarter);
+        int currentYear = Integer.parseInt(Utilities.getCurrentYear());
+        int inputYear = Integer.parseInt(year);
+        if (currentYear < inputYear ||
+            (currentYear == inputYear && currentQuarter < inputQuarter)) {
+            Utilities.showError(this, "Error: Invalid Input", "Please input a present or past course.");
+            return false;
+        }
+
 
         return true;
     }

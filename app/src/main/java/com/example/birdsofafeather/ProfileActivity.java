@@ -3,7 +3,7 @@ package com.example.birdsofafeather;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
-import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 // Refers to the screen where the user can see a match's enlarged photo, name, and list of shared courses
-public class ViewProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
     private AppDatabase db;
     private String profileId;
     private Profile match;
@@ -35,12 +34,12 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ImageView photoImageView;
     private RecyclerView sharedCoursesRecyclerView;
     private RecyclerView.LayoutManager sharedCoursesLayoutManager;
-    private ViewProfileAdapter viewProfileAdapter;
+    private ProfileViewAdapter viewProfileAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_profile);
+        setContentView(R.layout.activity_profile);
 
         Log.d("<Match>", "Setting up Match Screen");
 
@@ -92,7 +91,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Set the shared courses using a view adapter and recycler view
         this.sharedCoursesRecyclerView = findViewById(R.id.viewprofile_shared_courses);
-        this.viewProfileAdapter = new ViewProfileAdapter(this.sharedCourses);
+        this.viewProfileAdapter = new ProfileViewAdapter(this.sharedCourses);
         this.sharedCoursesLayoutManager = new LinearLayoutManager(this);
 
         this.sharedCoursesRecyclerView.setAdapter(this.viewProfileAdapter);

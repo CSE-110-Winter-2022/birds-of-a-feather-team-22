@@ -19,17 +19,18 @@ public class Session {
     @ColumnInfo(name = "isLastSession")
     private boolean isLastSession;
 
-    public Session(String sessionId, String name, boolean isLastSession) {
+    public Session(@NonNull String sessionId, String name, boolean isLastSession) {
         this.sessionId = sessionId;
         this.name = name;
         this.isLastSession = isLastSession;
     }
 
+    @NonNull
     public String getSessionId() {
         return this.sessionId;
     }
 
-    public void setSessionId(String sessionId) {
+    public void setSessionId(@NonNull String sessionId) {
         this.sessionId = sessionId;
     }
 

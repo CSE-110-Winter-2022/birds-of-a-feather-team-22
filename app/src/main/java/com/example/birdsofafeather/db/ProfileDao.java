@@ -17,6 +17,7 @@ public interface ProfileDao {
     @Query("SELECT * FROM PROFILE WHERE profileId=:profileId")
     Profile getProfile(String profileId);
 
+    // Retrieves the user's (self) profile
     @Query("SELECT * FROM PROFILE WHERE isUser=:isUser")
     Profile getUserProfile(boolean isUser);
 

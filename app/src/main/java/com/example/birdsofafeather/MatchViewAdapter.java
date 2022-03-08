@@ -17,11 +17,11 @@ import com.example.birdsofafeather.db.Profile;
 import java.util.List;
 
 // View adapter for HomeScreenActivity
-public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.ViewHolder> {
+public class MatchViewAdapter extends RecyclerView.Adapter<MatchViewAdapter.ViewHolder> {
     private final List<Pair<Profile, Integer>> matches;
     private Context context;
 
-    public MatchesViewAdapter(List<Pair<Profile, Integer>> matches, Context context) {
+    public MatchViewAdapter(List<Pair<Profile, Integer>> matches, Context context) {
         super();
         this.matches = matches;
         this.context = context;
@@ -29,7 +29,7 @@ public class MatchesViewAdapter extends RecyclerView.Adapter<MatchesViewAdapter.
 
     @NonNull
     @Override
-    public MatchesViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MatchViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.match_row, parent, false);

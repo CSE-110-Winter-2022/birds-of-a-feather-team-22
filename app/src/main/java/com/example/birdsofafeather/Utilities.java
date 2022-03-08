@@ -78,49 +78,70 @@ public class Utilities {
                 c1.getSubject().equals(c2.getSubject()) && c1.getNumber().equals(c2.getNumber());
     }
 
-    public static List<String> getCurrentQuarter() {
-        List<String> quarter = new ArrayList<>();
+    public static String getCurrentQuarter() {
         DateFormat df = new SimpleDateFormat("MMddyyyy");
         String date = df.format(Calendar.getInstance().getTime());
         int month = Integer.parseInt(date.substring(0, 2));
         int day = Integer.parseInt(date.substring(2, 4));
-        String year = date.substring(4, 8);
+        String quarter;
         if (month >= 1 && month <= 3) {
             if (month == 3 && day > 20) {
-                quarter.add("Spring");
+                quarter = "Spring";
             } else {
-                quarter.add("Winter");
+                quarter = "Winter";
             }
         }
         else if (month >= 4 && month <= 6) {
             if (month == 6 && day >= 15) {
-                quarter.add("Summer Session 1");
+                quarter = "Summer Session 1";
             }
             else {
-                quarter.add("Spring");
+                quarter = "Spring";
             }
         }
         else if (month >= 7 && month <= 8) {
             if (month == 8 && day >= 6) {
-                quarter.add("Summer Session 2");
+                quarter = "Summer Session 2";
             }
             else {
-                quarter.add("Summer Session 1");
+                quarter = "Summer Session 1";
             }
         }
         else if (month >= 8 && month <= 9) {
             if (month == 9 && day >= 20) {
-                quarter.add("Fall");
+                quarter = "Fall";
             }
             else {
-                quarter.add("Summer Session 2");
+                quarter = "Summer Session 2";
             }
         }
         else {
-            quarter.add("Fall");
+            quarter = "Fall";
         }
-        quarter.add(year);
 
         return quarter;
+    }
+
+    public static String getCurrentYear() {
+        DateFormat df = new SimpleDateFormat("MMddyyyy");
+        String date = df.format(Calendar.getInstance().getTime());
+        return date.substring(4, 8);
+    }
+
+    public static int enumerateQuarter(String quarter) {
+        switch(quarter) {
+            case "Winter":
+                return 1;
+            case "Spring":
+                return 2;
+            case "Summer Session 1":
+            case "Summer Session 2":
+            case "Special Summer Session":
+                return 3;
+            case "Fall":
+                return 4;
+            default:
+                return 0;
+        }
     }
 }

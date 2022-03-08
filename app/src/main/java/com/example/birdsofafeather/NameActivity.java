@@ -3,7 +3,6 @@ package com.example.birdsofafeather;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,7 +54,7 @@ public class NameActivity extends AppCompatActivity {
             if (user != null) {
                 Log.d("<Home>", "User profile already created, launching Home Screen");
                 runOnUiThread(() -> {
-                    Intent intent = new Intent(this, HomeScreenActivity.class);
+                    Intent intent = new Intent(this, MatchActivity.class);
                     startActivity(intent);
                 });
             }

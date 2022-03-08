@@ -18,7 +18,7 @@ public class ViewProfileUITest {
 
     @Test
     public void FirstLaunchViewTest() {
-        ActivityScenario<ProfileActivity> viewProfileScreen = ActivityScenario.launch(ProfileActivity.class);
+        ActivityScenario<MatchProfileActivity> viewProfileScreen = ActivityScenario.launch(MatchProfileActivity.class);
         viewProfileScreen.onActivity(activity -> {
             ImageView viewProfilePhoto = activity.findViewById(R.id.viewprofile_photo);
             TextView nameView = activity.findViewById(R.id.viewprofile_name);

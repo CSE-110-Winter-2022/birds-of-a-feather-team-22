@@ -27,7 +27,7 @@ package com.example.birdsofafeather;
 
 @LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4.class)
-public class TestViewProfileActivity {
+public class TestMatchProfileActivity {
     private AppDatabase db;
     private CourseDao courseDao;
     private ProfileDao profileDao;

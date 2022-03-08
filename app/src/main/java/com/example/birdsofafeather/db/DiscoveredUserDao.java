@@ -26,15 +26,15 @@ public interface DiscoveredUserDao {
     @Query("SELECT * FROM DISCOVEREDUSER WHERE sessionId=:sessionId")
     List<DiscoveredUser> getDiscoveredUsersFromSession(String sessionId);
 
-    @Query("SELECT isFavorite FROM DISCOVEREDUSER WHERE profileId=:profileId")
-    boolean getFavoriteStatus(String profileId);
-
     // Checks if a user has already been discovered
     @Query("SELECT profileId FROM DISCOVEREDUSER where profileId=:profileId")
     String getProfileId(String profileId);
 
     @Query("SELECT * FROM DISCOVEREDUSER where profileId=:profileId AND sessionId=:sessionId")
     DiscoveredUser getDiscoveredUserFromSession(String profileId, String sessionId);
+
+    @Query("SELECT isFavorite FROM DISCOVEREDUSER WHERE profileId=:profileId")
+    boolean getFavoriteStatus(String profileId);
 
     // Retrieves the number of DiscoveredUsers objects
     @Query("SELECT COUNT(*) FROM DISCOVEREDUSER")

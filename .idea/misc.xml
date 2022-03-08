@@ -39,17 +39,19 @@
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_match.xml" value="0.25" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_mocking.xml" value="0.25" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_mocking1.xml" value="0.33" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_name.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_name.xml" value="0.33" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_photo.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_profile.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_session.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_view_profile.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/course_row.xml" value="0.5" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/enter_session_name_popup.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/match_row.xml" value="0.17831813576494426" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/select_or_enter_session_name_popup.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/match_row.xml" value="0.67" />
+        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/select_or_enter_session_name_popup.xml" value="0.25" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/select_or_new_session_popup.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/session_course_row.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/session_row.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/shared_course_row.xml" value="0.33" />
+        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/shared_course_row.xml" value="0.67" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/spinner_item_text.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.22760416666666666" />
         <entry key="app/src/main/res/drawable-anydpi/next_arrow_1.xml" value="0.22760416666666666" />

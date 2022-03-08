@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutMatch"
     android:clickable="true"
-    android:onClick="onMatchesSelectMatchRow"
+    android:onClick="onMatchRowSelected"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -36,7 +36,7 @@
         <TextView
             android:id="@+id/match_name_view"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="45dp"
             android:text=""
             android:textColor="@color/dark_seafoam"
             android:textSize="20sp"
@@ -45,9 +45,10 @@
         <TextView
             android:id="@+id/match_num_courses_view"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="45dp"
             android:text=""
-            android:textColor="@color/seafoam" />
+            android:textColor="@color/seafoam"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/match_profile_id_view"

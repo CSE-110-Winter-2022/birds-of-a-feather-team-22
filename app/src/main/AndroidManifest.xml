@@ -15,7 +15,7 @@
             android:name=".MockingActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".MatchProfileActivity"
             android:exported="false" />
         <activity
             android:name=".CourseActivity"

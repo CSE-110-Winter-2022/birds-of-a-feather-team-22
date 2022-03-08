@@ -71,7 +71,7 @@ public class MatchViewAdapter extends RecyclerView.Adapter<MatchViewAdapter.View
             else {
                 this.matchNum.setText(match.second + " Shared Courses");
             }
-            this.matchId.setText(new Integer(match.first.getProfileId()).toString());
+            this.matchId.setText(match.first.getProfileId());
             Glide.with(context).load(match.first.getPhoto()).into(this.matchPhoto);
         }
     }

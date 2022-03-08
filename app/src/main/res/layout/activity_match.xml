@@ -9,18 +9,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/matches_view"
         android:layout_width="380dp"
-        android:layout_height="525dp"
+        android:layout_height="575dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="102dp"
+        android:layout_marginTop="140dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="21dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/nearby_button"
@@ -69,7 +66,7 @@
         android:layout_marginTop="76dp"
         android:background="@color/white"
         android:backgroundTint="@color/white"
-        android:onClick="onClickStart"
+        android:onClick="onStartClicked"
         android:shadowColor="@color/white"
         android:text="@string/start"
         android:textColor="@color/seafoam"
@@ -89,7 +86,7 @@
         android:layout_marginTop="76dp"
         android:background="@color/white"
         android:backgroundTint="@color/white"
-        android:onClick="onClickStop"
+        android:onClick="onStopClicked"
         android:shadowColor="@color/white"
         android:text="@string/stop"
         android:textColor="@color/seafoam"

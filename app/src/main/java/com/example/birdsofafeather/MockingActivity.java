@@ -49,8 +49,8 @@ public class MockingActivity extends AppCompatActivity {
     }
 
     // For testing purposes, visibility is set to gone for demoing and actual use
-    public void onDeleteDBClicked(View view) {
+    public void onClearDBClicked(View view) {
         this.db.clearAllTables();
-        Log.d(TAG, "DB deleted!");
+        Log.d(TAG, "DB cleared!");
     }
 }

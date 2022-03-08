@@ -33,4 +33,14 @@ public class TestHomeScreenActivity {
 
         assertEquals(3, adapter.getItemCount());
     }
+
+    @Test
+    public void sessionsAdapterTest(){
+
+    }
+
+    @Test
+    public void sessionCoursesAdapterTest(){
+
+    }
 }

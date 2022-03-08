@@ -19,17 +19,19 @@ import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
 import com.example.birdsofafeather.db.Session;
+import com.example.birdsofafeather.factory.EnterNameWithStopPromptFactory;
+import com.example.birdsofafeather.factory.PromptFactory;
+import com.example.birdsofafeather.factory.EnterNamePromptFactory;
+import com.example.birdsofafeather.factory.SessionsPromptFactory;
+import com.example.birdsofafeather.factory.StopPromptFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Stack;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -54,6 +56,9 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     // currently open prompt
     private AlertDialog promptDialog;
+
+    //prompt factory
+    private PromptFactory factory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,20 +143,12 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         // TODO: choose/resume session
         //if previous sessions exist: session list pop-up occurs
-        createSessionListPrompt();
-        // Update the last session to no longer be the last session
-        Session lastSession = this.db.sessionDao().getLastSession(true);
-        if( lastSession != null) {this.db.sessionDao().delete(lastSession);
-        lastSession.setIsLastSession(false);
-        this.db.sessionDao().insert(lastSession);}
+        //createSessionListPrompt();
+        /**refactor**/
+        this.factory = new SessionsPromptFactory();
+        this.promptDialog = factory.createPrompt(this, this.promptDialog, null);
+        this.promptDialog.show();
 
-        DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
-        String timestamp = df.format(Calendar.getInstance().getTime());
-
-        // Make new session
-        String sessionId = UUID.randomUUID().toString();
-        this.session = new Session(sessionId, timestamp, true);
-        this.db.sessionDao().insert(this.session);
 
         // TODO: get match info via Nearby Messages API
         // TODO: Create Profile and DiscoveredUser object for match
@@ -221,13 +218,24 @@ public class HomeScreenActivity extends AppCompatActivity {
                 currentCoursesList.add(c);
             }
         }
-
+        /*
         //check if user has entered courses from this current quarter
         if(currentCoursesList.isEmpty()){
             createFirstStopPrompt(true);
         }else{
             createSecondStopPrompt(currentCoursesList);
+        }*/
+        /**refactor*/
+
+        if(currentCoursesList.isEmpty()){
+            this.factory = new EnterNamePromptFactory();
+            this.promptDialog = this.factory.createPrompt(this, this.promptDialog, null);
+        }else{
+            createSecondStopPrompt(currentCoursesList);
+            this.factory = new StopPromptFactory<Course>();
+            this.promptDialog = this.factory.createPrompt(this, this.promptDialog, currentCoursesList);
         }
+
 
     }
 
@@ -243,7 +251,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         if(Character.isDigit(selectedSessionName.getText().charAt(0))){
             this.session =
                     new Session(selectedSessionId.getText().toString(), "", false);
-            createFirstStopPrompt(false);
+            //createFirstStopPrompt(false);
+            this.factory = new EnterNameWithStopPromptFactory();
+            this.promptDialog = this.factory.createPrompt(this, this.promptDialog, null);
+            this.promptDialog.show();
             return;
         }
 
@@ -306,14 +317,36 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         TextView enteredCourseName = this.promptDialog.findViewById(R.id.enterSessionNameEditText);
 
-
+        //update database
         this.db.sessionDao().delete(this.session);
         this.session.setName(enteredCourseName.getText().toString());
         this.db.sessionDao().insert(this.session);
 
+        //close up prompt
+        this.promptDialog.cancel();
+        this.promptDialog = null;
+    }
 
+    public void onCreateNewSession(View view){
 
+        // Update the last session to no longer be the last session
+        Session lastSession = this.db.sessionDao().getLastSession(true);
 
+        if( lastSession != null) {
+            this.db.sessionDao().delete(lastSession);
+            lastSession.setIsLastSession(false);
+            this.db.sessionDao().insert(lastSession);
+        }
+
+        DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
+        String timestamp = df.format(Calendar.getInstance().getTime());
+
+        // Make new session
+        String sessionId = UUID.randomUUID().toString();
+        this.session = new Session(sessionId, timestamp, true);
+        this.db.sessionDao().insert(this.session);
+
+        //close up prompt
         this.promptDialog.cancel();
         this.promptDialog = null;
     }
@@ -340,7 +373,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         Log.d("<Home>", "Enter Session Name Button pressed," +
                 " creating first stop prompt to enter name");
 
-        createFirstStopPrompt(false); //deployed from second prompt
+        //createFirstStopPrompt(false); //deployed from second prompt
+        /**refactor*/
+        this.factory = new EnterNameWithStopPromptFactory();
+        this.promptDialog = factory.createPrompt(this, this.promptDialog, null);
+        this.promptDialog.show();
     }
 
     // When a match in the recycler view is clicked
@@ -405,7 +442,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         promptBuilder.setView(contextView);
 
         if(!isOnly){ this.promptDialog.cancel(); } //if deployed from second stop prompt, close
-        //second prompt
+                                                   //second prompt
 
         this.promptDialog = promptBuilder.create();
         this.promptDialog.show();

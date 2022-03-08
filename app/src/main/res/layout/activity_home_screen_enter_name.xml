@@ -15,6 +15,7 @@
         android:shadowColor="@color/white"
         android:textColor="@color/seafoam"
         android:text="Save"
+        android:onClick="onClickSaveSession"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

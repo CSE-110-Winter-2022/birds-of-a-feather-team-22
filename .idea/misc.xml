@@ -26,9 +26,6 @@
         <entry key="..\:/Users/rober/Documents/Projects/Android/BirdsOfAFeather/app/src/main/res/layout/match_row.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_course.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_home_screen.xml" value="0.17831813576494426" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_home_screen_enter_name.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_home_screen_session_list.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_home_screen_stop_alert.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_name.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_session.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rober/Documents/Projects/Java/PulledBoF/app/src/main/res/layout/activity_view_profile.xml" value="0.17831813576494426" />
@@ -38,9 +35,8 @@
         <entry key="app/src/main/res/drawable-anydpi/next_arrow_1.xml" value="0.22760416666666666" />
         <entry key="app/src/main/res/layout/activity_course.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_home_screen.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/activity_home_screen_enter_name.xml" value="0.3880208333333333" />
-        <entry key="app/src/main/res/layout/activity_home_screen_session_list.xml" value="0.1887031408308004" />
-        <entry key="app/src/main/res/layout/activity_home_screen_stop_alert.xml" value="0.1887031408308004" />
+        <entry key="app/src/main/res/layout/activity_home_screen_enter_name.xml" value="0.327445652173913" />
+        <entry key="app/src/main/res/layout/activity_home_screen_session_list.xml" value="0.327445652173913" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.21145833333333333" />
         <entry key="app/src/main/res/layout/activity_name.xml" value="0.18020833333333333" />
         <entry key="app/src/main/res/layout/activity_photo.xml" value="0.20742753623188406" />

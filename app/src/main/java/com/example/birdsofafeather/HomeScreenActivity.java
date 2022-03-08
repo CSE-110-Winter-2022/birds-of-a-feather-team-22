@@ -210,33 +210,29 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         //get profile of current user
         Profile user = this.db.profileDao().getUserProfile(true);
-        List<Course> sessionCoursesList = this.db.courseDao().getCoursesByProfileId(user.getProfileId());
+        List<Course> sessionCoursesList =
+                this.db.courseDao().getCoursesByProfileId(user.getProfileId());
         List<Course> currentCoursesList = new ArrayList<Course>();
 
         for(Course c : sessionCoursesList){
-            if(c.getQuarter().equals(currentQuarter.get(0)) && c.getYear().equals(currentQuarter.get(1))){
+            if(c.getQuarter().equals(currentQuarter.get(0))
+                    && c.getYear().equals(currentQuarter.get(1))){
                 currentCoursesList.add(c);
             }
         }
-        /*
-        //check if user has entered courses from this current quarter
-        if(currentCoursesList.isEmpty()){
-            createFirstStopPrompt(true);
-        }else{
-            createSecondStopPrompt(currentCoursesList);
-        }*/
+
         /**refactor*/
 
         if(currentCoursesList.isEmpty()){
             this.factory = new EnterNamePromptFactory();
             this.promptDialog = this.factory.createPrompt(this, this.promptDialog, null);
         }else{
-            createSecondStopPrompt(currentCoursesList);
             this.factory = new StopPromptFactory<Course>();
-            this.promptDialog = this.factory.createPrompt(this, this.promptDialog, currentCoursesList);
+            this.promptDialog =
+                    this.factory.createPrompt(this, this.promptDialog, currentCoursesList);
         }
 
-
+        this.promptDialog.show();
     }
 
     //onClick listener for Session items within the recyclerview of the
@@ -279,8 +275,9 @@ public class HomeScreenActivity extends AppCompatActivity {
         Profile testProfile = new Profile("2", "hello", "hello");
         matches.add(new Pair(testProfile, 1));
         /**testing purposes only -- end **/
-        this.promptDialog.cancel();
 
+        this.promptDialog.cancel();
+        this.promptDialog = null;
 
         //load main recyclerview with matches from selected session
         this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
@@ -325,6 +322,12 @@ public class HomeScreenActivity extends AppCompatActivity {
         //close up prompt
         this.promptDialog.cancel();
         this.promptDialog = null;
+
+        //display session title
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setText(this.session.getName());
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setVisibility(View.VISIBLE);
     }
 
     public void onCreateNewSession(View view){
@@ -349,6 +352,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         //close up prompt
         this.promptDialog.cancel();
         this.promptDialog = null;
+
+        //display session title
+        ((TextView)(findViewById(R.id.change_session_name_text_view))).setText(timestamp);
+        ((TextView)(findViewById(R.id.change_session_name_text_view))).setVisibility(View.VISIBLE);
     }
 
     //dialog prompt listener for save button on second stop prompt
@@ -366,6 +373,12 @@ public class HomeScreenActivity extends AppCompatActivity {
         //close up prompt
         this.promptDialog.cancel();
         this.promptDialog = null;
+
+        //display session title
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setText(this.session.getName());
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setVisibility(View.VISIBLE);
     }
 
     //dialog prompt listener

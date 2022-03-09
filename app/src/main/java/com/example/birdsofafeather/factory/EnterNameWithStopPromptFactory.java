@@ -18,7 +18,7 @@ public class EnterNameWithStopPromptFactory extends PromptFactory {
         Log.d("<Home>", "creating first stop prompt AlertDialog");
 
         LayoutInflater inflater = activity.getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.choose_session_name_popup,null);//activity_home_screen_enter_name, null);
+        View contextView = inflater.inflate(R.layout.enter_session_name_popup,null);//activity_home_screen_enter_name, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(activity);
 

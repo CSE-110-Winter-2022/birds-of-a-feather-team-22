@@ -24,6 +24,11 @@ import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
 import com.example.birdsofafeather.db.Session;
+import com.example.birdsofafeather.factory.EnterNamePromptFactory;
+import com.example.birdsofafeather.factory.EnterNameWithStopPromptFactory;
+import com.example.birdsofafeather.factory.PromptFactory;
+import com.example.birdsofafeather.factory.SessionsPromptFactory;
+import com.example.birdsofafeather.factory.StopPromptFactory;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
@@ -37,6 +42,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // Refers to the screen where the user can see discovered users and search for more discovered users
 public class MatchActivity extends AppCompatActivity {
@@ -56,6 +63,7 @@ public class MatchActivity extends AppCompatActivity {
     private ArrayList<String> mockedMessages;
     private List<Session> allSessions;
     private boolean isResumedSession;
+    private List<Course> currentCourses;
 
     // Sorting
     private Mutator mutator;
@@ -70,6 +78,9 @@ public class MatchActivity extends AppCompatActivity {
 
     // currently open prompt
     private AlertDialog promptDialog;
+
+    //prompt factory
+    private PromptFactory factory;
 
     // Utilities
     private MessageListener messageListener;
@@ -313,7 +324,7 @@ public class MatchActivity extends AppCompatActivity {
             String currentYear = Utilities.getCurrentYear();
 
             //get profile of current user
-            List<Course> currentCourses = new ArrayList<Course>();
+            this.currentCourses = new ArrayList<Course>();
 
             for(Course course : this.selfCourses){
                 if(course.getQuarter().equals(currentQuarter) && course.getYear().equals(currentYear)){
@@ -323,10 +334,10 @@ public class MatchActivity extends AppCompatActivity {
 
             //check if user has entered courses from this current quarter
             if(currentCourses.isEmpty()){
-                createEnterSessionNameStopPopup(true);
+                EnterSessionNameStopPopup();
             }
             else{
-                createSelectOrEnterSessionNameStopPopup(currentCourses);
+                chooseSessionNameStopPopup(currentCourses);
             }
         }
 
@@ -335,6 +346,79 @@ public class MatchActivity extends AppCompatActivity {
 
     //onClick listener for Session items within the recyclerview of the
     public void onStartSelectSessionRow(View view){
+            Log.d("<Home>", "Previous session selected, " +
+                    "displaying matches in HomeScreenActivity");
+
+            //selected session object strings
+            String selectedSessionName =
+                    ((TextView)(view.findViewById(R.id.session_name_text_view))).getText().toString();
+            String selectedSessionId =
+                    ((TextView)(view.findViewById(R.id.session_id_text_view))).getText().toString();
+
+
+            //grab selected session as current
+            this.session = this.db.sessionDao().getSession(selectedSessionId);
+
+            String regex  = "(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01])\\/\\d{2}";
+            Pattern pattern = Pattern.compile(regex);
+
+            //Matching the compiled pattern in the String
+            String toCheck = selectedSessionName.substring(0,6);
+            Matcher matcher = pattern.matcher(toCheck);
+
+            //if timestamp selected, change name
+            if(matcher.matches()){
+                this.session =
+                        new Session(selectedSessionId, "", false);
+
+                View changeNameTextView = findViewById(R.id.session_name_text_view);
+                changeNameTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        MatchActivity.this.factory = new EnterNamePromptFactory();
+                        MatchActivity.this.promptDialog =
+                                MatchActivity.this.factory
+                                        .createPrompt(MatchActivity.this,
+                                                MatchActivity.this.promptDialog,
+                                                null);
+
+                        MatchActivity.this.promptDialog.show();
+                    }
+                });
+            }
+
+            //get list of discovered users from selected session
+            List<DiscoveredUser> sessionDiscoveredUsers = this.db.discoveredUserDao()
+                    .getDiscoveredUsersFromSession(selectedSessionId);
+
+            //get list of the user's courses after retrieving this user's profile Id
+            List<Course> myCourses = this.db.courseDao()
+                    .getCoursesByProfileId
+                            (this.db.profileDao().getUserProfile(true).getProfileId());
+
+            List<Course> theirCourses = new ArrayList<Course>();
+
+            //populate appropriate matches from selected session
+            for(DiscoveredUser discoveredUser : sessionDiscoveredUsers){
+                Profile foundProfile = this.db.profileDao().getProfile(discoveredUser.getProfileId());
+                matches.add(new Pair(foundProfile, Utilities.getNumSharedCourses(myCourses, theirCourses)));
+            }
+
+            /**testing purposes only -- start **/
+            Profile testProfile = new Profile("2", "hello", "hello");
+            matches.add(new Pair(testProfile, 1));
+            /**testing purposes only -- end **/
+
+            this.promptDialog.cancel();
+            this.promptDialog = null;
+
+            //load main recyclerview with matches from selected session
+            reloadMatchesRecyclerView();
+
+            displaySessionTitle(selectedSessionName);
+
+        //////////////
+
         Log.d(TAG, "Previous session selected, " +
                 "displaying matches in MatchActivity");
 
@@ -360,26 +444,12 @@ public class MatchActivity extends AppCompatActivity {
     private void createStartPopup() {
         Log.d(TAG, "creating session list prompt AlertDialog");
 
-        //populate sessionsList with previously saved sessions
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.prev_new_session_popup, null);
-
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-        RecyclerView sessionsView = contextView.findViewById(R.id.session_recycler_view);
-
-        sessionsView.setLayoutManager(new LinearLayoutManager(this));
-        sessionsView.setHasFixedSize(true);
-
         this.backgroundThreadExecutor.submit(() -> {
             this.allSessions = this.db.sessionDao().getAllSessions();
         });
 
-        SessionsAdapter adapter = new SessionsAdapter(this.allSessions);
-        sessionsView.setAdapter(adapter);
-        promptBuilder.setView(contextView);
-
-        this.promptDialog = promptBuilder.create();
+        this.factory = new SessionsPromptFactory();
+        this.promptDialog = factory.createPrompt(this, this.promptDialog, this.allSessions);
         this.promptDialog.show();
     }
 
@@ -445,7 +515,11 @@ public class MatchActivity extends AppCompatActivity {
         Log.d(TAG, "Enter Session Name Button pressed," +
                 " creating first stop prompt to enter name");
 
-        createEnterSessionNameStopPopup(false); //deployed from second prompt
+        //EnterSessionNameStopPopup();
+        // deployed from second prompt
+        this.factory = new EnterNameWithStopPromptFactory();
+        this.factory.createPrompt(this, this.promptDialog, null);
+        this.promptDialog.show();
     }
 
     // When a match in the recycler view is clicked
@@ -477,42 +551,21 @@ public class MatchActivity extends AppCompatActivity {
 
     //helper function to create first possible stop prompt to enter a name for a created session
     //and it is also the "default" stop prompt
-    public void createEnterSessionNameStopPopup(Boolean isOnly){
+    public void EnterSessionNameStopPopup(){
         Log.d(TAG, "creating first stop prompt AlertDialog");
 
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.enter_session_name_popup, null);
+        this.factory = new EnterNamePromptFactory();
+        this.promptDialog = this.factory.createPrompt(this, this.promptDialog, null);
 
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-        promptBuilder.setView(contextView);
-
-        if(!isOnly){ this.promptDialog.cancel(); } //if deployed from second stop prompt, close
-        //second prompt
-
-        this.promptDialog = promptBuilder.create();
         this.promptDialog.show();
     }
 
-    public void createSelectOrEnterSessionNameStopPopup(List<Course> list){
+    public void chooseSessionNameStopPopup(List<Course> list){
         Log.d(TAG, "creating second stop prompt AlertDialog");
 
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.choose_session_name_popup, null);
+        this.factory = new SessionsPromptFactory();
+        this.factory.createPrompt(this, this.promptDialog, list);
 
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-
-        RecyclerView sessionsView = contextView.findViewById(R.id.classes_list);
-
-        sessionsView.setLayoutManager(new LinearLayoutManager(this));
-        sessionsView.setHasFixedSize(true);
-
-        SessionCoursesAdapter adapter = new SessionCoursesAdapter(list);
-        sessionsView.setAdapter(adapter);
-        promptBuilder.setView(contextView);
-
-        this.promptDialog = promptBuilder.create();
         this.promptDialog.show();
     }
 

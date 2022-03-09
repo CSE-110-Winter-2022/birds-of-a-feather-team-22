@@ -23,7 +23,7 @@ public class StopPromptFactory<Course> extends PromptFactory {
         Log.d("<Home>", "creating second stop prompt AlertDialog");
 
         LayoutInflater inflater = activity.getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.enter_session_name_popup,null);//activity_home_screen_stop_alert, null);
+        View contextView = inflater.inflate(R.layout.choose_session_name_popup,null);//activity_home_screen_stop_alert, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(activity);
 

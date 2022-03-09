@@ -27,12 +27,12 @@ public class SessionsPromptFactory<listType> extends PromptFactory{
         List<Session> sessionsList = db.sessionDao().getAllSessions();
 
         LayoutInflater inflater = activity.getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.activity_home_screen_session_list, null);
+        View contextView = inflater.inflate(R.layout.prev_new_session_popup, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(activity);
         //setListeners(contextView.findViewById(R.id.sessionFrameLayout), activity);
 
-        RecyclerView sessionsView = contextView.findViewById(R.id.sessions_recycler_view);
+        RecyclerView sessionsView = contextView.findViewById(R.id.session_recycler_view);
 
         sessionsView.setLayoutManager(new LinearLayoutManager(activity));
         sessionsView.setHasFixedSize(true);

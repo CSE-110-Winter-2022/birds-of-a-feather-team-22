@@ -36,6 +36,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // Refers to the screen where the user can see discovered users and search for more discovered users
 public class HomeScreenActivity extends AppCompatActivity {
@@ -164,7 +166,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         List<Course> currentCoursesList = new ArrayList<Course>();
 
         for(Course c : sessionCoursesList){
-            if(c.getQuarter().equals(currentQuarter.get(0)) && c.getYear().equals(currentQuarter.get(1))){
+            if(c.getQuarter().equals(currentQuarter.get(0))
+                    && c.getYear().equals(currentQuarter.get(1))){
                 currentCoursesList.add(c);
             }
         }
@@ -176,12 +179,11 @@ public class HomeScreenActivity extends AppCompatActivity {
             this.factory = new EnterNamePromptFactory();
             this.promptDialog = this.factory.createPrompt(this, this.promptDialog, null);
         }else{
-            createSecondStopPrompt(currentCoursesList);
             this.factory = new StopPromptFactory<Course>();
             this.promptDialog = this.factory.createPrompt(this, this.promptDialog, currentCoursesList);
         }
 
-
+        this.promptDialog.show();
     }
 
     //onClick listener for Session items within the recyclerview of the
@@ -189,23 +191,47 @@ public class HomeScreenActivity extends AppCompatActivity {
         Log.d("<Home>", "Previous session selected, " +
                 "displaying matches in HomeScreenActivity");
 
-        //selected session object
-        TextView selectedSessionName = view.findViewById(R.id.session_name_text_view);
-        TextView selectedSessionId = view.findViewById(R.id.session_id_text_view);
+        //selected session object strings
+        String selectedSessionName =
+                ((TextView)(view.findViewById(R.id.session_name_text_view))).getText().toString();
+        String selectedSessionId =
+                ((TextView)(view.findViewById(R.id.session_id_text_view))).getText().toString();
 
-        if(Character.isDigit(selectedSessionName.getText().charAt(0))){
+
+        //grab selected session as current
+        this.session = this.db.sessionDao().getSession(selectedSessionId);
+
+        String regex  = "(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01])\\/\\d{2}";
+        Pattern pattern = Pattern.compile(regex);
+
+        //Matching the compiled pattern in the String
+        String toCheck = selectedSessionName.substring(0,6);
+        Matcher matcher = pattern.matcher(toCheck);
+
+        //if timestamp selected, change name
+        if(matcher.matches()){
             this.session =
-                    new Session(selectedSessionId.getText().toString(), "", false);
-            //createFirstStopPrompt(false);
-            this.factory = new EnterNameWithStopPromptFactory();
-            this.promptDialog = this.factory.createPrompt(this, this.promptDialog, null);
-            this.promptDialog.show();
-            return;
+                    new Session(selectedSessionId, "", false);
+
+            View changeNameTextView = findViewById(R.id.change_session_name_text_view);
+            changeNameTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HomeScreenActivity.this.factory = new EnterNamePromptFactory();
+                    HomeScreenActivity.this.promptDialog =
+                            HomeScreenActivity.this.factory
+                                    .createPrompt(HomeScreenActivity.this,
+                                                    HomeScreenActivity.this.promptDialog,
+                                            null);
+
+                    HomeScreenActivity.this.promptDialog.show();
+                }
+            });
         }
 
         //get list of discovered users from selected session
         List<DiscoveredUser> sessionDiscoveredUsers = this.db.discoveredUserDao()
-                .getDiscoveredUsersFromSession(selectedSessionId.getText().toString());
+                .getDiscoveredUsersFromSession(selectedSessionId);
 
         //get list of the user's courses after retrieving this user's profile Id
         List<Course> myCourses = this.db.courseDao()
@@ -224,16 +250,23 @@ public class HomeScreenActivity extends AppCompatActivity {
         Profile testProfile = new Profile("2", "hello", "hello");
         matches.add(new Pair(testProfile, 1));
         /**testing purposes only -- end **/
-        this.promptDialog.cancel();
 
+        this.promptDialog.cancel();
+        this.promptDialog = null;
 
         //load main recyclerview with matches from selected session
-        this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
-        this.matchesLayoutManager = new LinearLayoutManager(this);
-        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
-        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
+      //  this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
+        //this.matchesLayoutManager = new LinearLayoutManager(this);
+        //this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
+        //this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
+        reloadMatchesRecyclerView();
+
+        displaySessionTitle(selectedSessionName);
 
     }
+
+
+
 
     //dialog prompt listener
     public void onClickCourseLabel(View view){
@@ -270,6 +303,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         //close up prompt
         this.promptDialog.cancel();
         this.promptDialog = null;
+
+        displaySessionTitle();
     }
 
     public void onCreateNewSession(View view){
@@ -283,6 +318,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             this.db.sessionDao().insert(lastSession);
         }
 
+        //grab current timestamp for default session title
         DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
         String timestamp = df.format(Calendar.getInstance().getTime());
 
@@ -294,6 +330,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         //close up prompt
         this.promptDialog.cancel();
         this.promptDialog = null;
+
+        displaySessionTitle();
     }
 
     //dialog prompt listener for save button on second stop prompt
@@ -311,6 +349,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         //close up prompt
         this.promptDialog.cancel();
         this.promptDialog = null;
+
+        displaySessionTitle();
     }
 
     //dialog prompt listener
@@ -335,6 +375,30 @@ public class HomeScreenActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileViewAdapter.class);
         intent.putExtra("profileId", profileId);
         startActivity(intent);
+    }
+
+    //helper function for session title
+    private void displaySessionTitle(){
+        //display session title
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setText(this.session.getName());
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setVisibility(View.VISIBLE);
+    }
+
+    private void displaySessionTitle(String sessionName) {
+        //display session title
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setText(sessionName);
+        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+                .setVisibility(View.VISIBLE);
+    }
+
+    private void reloadMatchesRecyclerView() {
+        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesLayoutManager = new LinearLayoutManager(this);
+        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
+        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
     }
 
     @Override

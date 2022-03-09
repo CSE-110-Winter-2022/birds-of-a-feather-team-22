@@ -22,8 +22,6 @@ public class SessionsPromptFactory<listType> extends PromptFactory{
     public AlertDialog createPrompt(Activity activity, AlertDialog current, List list) {
         Log.d("<Home>", "creating session list prompt AlertDialog");
 
-
-
         //populate sessionsList with previously saved sessions
         AppDatabase db = AppDatabase.singleton(activity);
         List<Session> sessionsList = db.sessionDao().getAllSessions();
@@ -32,7 +30,7 @@ public class SessionsPromptFactory<listType> extends PromptFactory{
         View contextView = inflater.inflate(R.layout.activity_home_screen_session_list, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(activity);
-
+        //setListeners(contextView.findViewById(R.id.sessionFrameLayout), activity);
 
         RecyclerView sessionsView = contextView.findViewById(R.id.sessions_recycler_view);
 
@@ -44,6 +42,11 @@ public class SessionsPromptFactory<listType> extends PromptFactory{
         promptBuilder.setView(contextView);
 
         return promptBuilder.create();
+    }
+
+
+    public void setListeners(View button, Activity activity){
+
     }
 
 }

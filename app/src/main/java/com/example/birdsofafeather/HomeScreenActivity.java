@@ -213,7 +213,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             this.session =
                     new Session(selectedSessionId, "", false);
 
-            View changeNameTextView = findViewById(R.id.change_session_name_text_view);
+            View changeNameTextView = findViewById(R.id.session_name_text_view);
             changeNameTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -380,22 +380,22 @@ public class HomeScreenActivity extends AppCompatActivity {
     //helper function for session title
     private void displaySessionTitle(){
         //display session title
-        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+        ((TextView)(findViewById(R.id.session_name_text_view)))
                 .setText(this.session.getName());
-        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+        ((TextView)(findViewById(R.id.session_name_text_view)))
                 .setVisibility(View.VISIBLE);
     }
 
     private void displaySessionTitle(String sessionName) {
         //display session title
-        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+        ((TextView)(findViewById(R.id.session_name_text_view)))
                 .setText(sessionName);
-        ((TextView)(findViewById(R.id.change_session_name_text_view)))
+        ((TextView)(findViewById(R.id.session_name_text_view)))
                 .setVisibility(View.VISIBLE);
     }
 
     private void reloadMatchesRecyclerView() {
-        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
         this.matchesLayoutManager = new LinearLayoutManager(this);
         this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);

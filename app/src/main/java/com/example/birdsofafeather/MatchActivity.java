@@ -362,7 +362,7 @@ public class MatchActivity extends AppCompatActivity {
 
         //populate sessionsList with previously saved sessions
         LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.select_or_new_session_popup, null);
+        View contextView = inflater.inflate(R.layout.prev_new_session_popup, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
 
@@ -498,7 +498,7 @@ public class MatchActivity extends AppCompatActivity {
         Log.d(TAG, "creating second stop prompt AlertDialog");
 
         LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.select_or_enter_session_name_popup, null);
+        View contextView = inflater.inflate(R.layout.choose_session_name_popup, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
 

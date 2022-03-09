@@ -13,11 +13,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -223,6 +226,8 @@ public class MatchActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
     }
 
     @Override
@@ -396,6 +401,51 @@ public class MatchActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MatchProfileActivity.class);
         intent.putExtra("match_id", matchId);
         startActivity(intent);
+    }
+
+    public void onFavoriteStarClicked(View view) {
+        Log.d(TAG, "Making selected match a favorite.");
+
+        // Send the match's profile id to the activity responsible for showing the profile
+        TextView matchProfileIdView = view.findViewById(R.id.match_profile_id_view);
+        String matchId = matchProfileIdView.getText().toString();
+//        ImageButton favoriteStar = view.findViewById(R.id.star);
+
+        Future<Profile> future = this.backgroundThreadExecutor.submit(() -> {
+           return this.db.profileDao().getProfile(matchId);
+        });
+
+        Profile matchProfile = null;
+        try {
+            matchProfile = future.get();
+            // Match already a favorite, need to unfavorite
+            if (matchProfile.getIsFavorite()) {
+                matchProfile.setIsFavorite(false);
+
+                Toast.makeText(this, "Unsaved from Favorites!", Toast.LENGTH_SHORT).show();
+                // Update UI to reflect that the match is no longer a favorite
+//                favoriteStar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),android.R.drawable.btn_star_big_off));
+            }
+            // Match not already a favorite, need to favorite
+            else {
+                matchProfile.setIsFavorite(true);
+
+                Toast.makeText(this, "Saved to Favorites!", Toast.LENGTH_SHORT).show();
+                // Update UI to reflect that the match is no longer a favorite
+//                favoriteStar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),android.R.drawable.btn_star_big_on));
+            }
+
+            // Update DB to reflect change in favorite status for match
+            Profile finalMatchProfile = matchProfile;
+            backgroundThreadExecutor.submit(() -> {
+                this.db.profileDao().update(finalMatchProfile);
+            });
+
+        } catch (Exception e) {
+            Log.d(TAG, "Could not retrieve match profile");
+        }
+
+
     }
 
     // For testing purposes, visibility is set to gone for demoing and actual use
@@ -632,11 +682,6 @@ public class MatchActivity extends AppCompatActivity {
         String timestamp = df.format(Calendar.getInstance().getTime());
         return timestamp;
     }
-
-    // TODO
-    public void onSortFilterClicked(View view) {
-    }
-
 }
 
 

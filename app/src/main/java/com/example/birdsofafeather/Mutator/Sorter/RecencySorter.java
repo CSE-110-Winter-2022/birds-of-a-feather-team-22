@@ -25,6 +25,11 @@ public class RecencySorter extends Sorter {
         this.db = AppDatabase.singleton(context);
     }
 
+    // For testing
+    public RecencySorter(AppDatabase db) {
+        this.db = db;
+    }
+
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f = backgroundThreadExecutor.submit(() -> {
@@ -79,7 +84,7 @@ public class RecencySorter extends Sorter {
     }
 
     // Helper method to calculate the recency score per MS2 Planning Phase writeup for a Course
-    private int calculateRecencyScore(Course course) {
+    public int calculateRecencyScore(Course course) {
         String currentQuarter = Utilities.getCurrentQuarter();
         String currentYear = Utilities.getCurrentYear();
         String courseYear = course.getYear();

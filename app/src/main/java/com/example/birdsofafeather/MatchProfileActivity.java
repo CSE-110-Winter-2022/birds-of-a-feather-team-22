@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.birdsofafeather.db.AppDatabase;
@@ -136,6 +137,7 @@ public class MatchProfileActivity extends AppCompatActivity {
         selfInformation += this.matchId + ",wave,,,";
         this.wave = new Message(selfInformation.getBytes());
         Nearby.getMessagesClient(this).publish(this.wave);
+        Toast.makeText(this, "Wave sent!", Toast.LENGTH_SHORT).show();
     }
 
     public String encodeSelfInformation() {

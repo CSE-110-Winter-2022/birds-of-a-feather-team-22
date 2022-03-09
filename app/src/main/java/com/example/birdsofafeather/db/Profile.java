@@ -36,7 +36,7 @@ public class Profile {
 
     @Ignore
     public Profile (String name, String photo) {
-        this.profileId = UUID.randomUUID().toString();;
+        this.profileId = UUID.randomUUID().toString();
         this.name = name;
         if (!URLUtil.isValidUrl(photo)) {
             this.photo = "https://i.imgur.com/MZH5yxZ.png";
@@ -45,7 +45,18 @@ public class Profile {
             this.photo = photo;
         }
         this.isUser = false;
+        this.isFavorite = false;
+        this.isWaving = false;
+    }
 
+    @Ignore
+    public Profile (String profileId, String name, boolean isUser, boolean isFavorite, boolean isWaving) {
+        this.profileId = profileId;
+        this.name = name;
+        this.photo = "https://i.imgur.com/MZH5yxZ.png";
+        this.isUser = isUser;
+        this.isFavorite = isFavorite;
+        this.isWaving = isWaving;
     }
 
     // Checks if the photo URL is valid, otherwise uses a placeholder/default photo
@@ -109,6 +120,18 @@ public class Profile {
 
     public void setIsWaving(boolean isWaving) {
         this.isWaving = isWaving;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        Profile other = (Profile) obj;
+        return this.profileId.equals(other.getProfileId()) &&
+                this.name.equals(other.getName()) &&
+                this.photo.equals(other.getPhoto()) &&
+                this.isUser == other.getIsUser() &&
+                this.isFavorite == other.getIsFavorite() &&
+                this.isWaving == other.getIsWaving();
     }
 
 }

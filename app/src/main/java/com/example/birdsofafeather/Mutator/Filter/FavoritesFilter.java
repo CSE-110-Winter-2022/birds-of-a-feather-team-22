@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
+import com.example.birdsofafeather.Mutator.Sorter.QuantitySorter;
 import com.example.birdsofafeather.Utilities;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
@@ -16,44 +17,31 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class FavoritesFilter extends Filter {
-    private Future<List<Pair<Profile, Integer>>> f1;
+    private Future<List<Profile>> f1;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
+    private Context context;
 
 
     public FavoritesFilter(Context context) {
+        this.context = context;
         this.db = AppDatabase.singleton(context);
     }
 
-    // TODO:
+    public FavoritesFilter(AppDatabase db) {
+        this.db = db;
+    }
+
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
-        this.f1 = this.backgroundThreadExecutor.submit(() -> {
-            List<Profile> favorites = this.db.profileDao().getFavoriteProfiles(true);
-            List<Pair<Profile, Integer>> filtered = new ArrayList<>();
-            for (Profile favorite : favorites) {
-                int numSharedCourses = getNumSharedCoursesFromProfile(favorite);
-                filtered.add(new Pair(favorite, numSharedCourses));
-            }
+        this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getFavoriteProfiles(true));
 
-            return filtered;
-        });
-
-        List<Pair<Profile, Integer>> newMatches = new ArrayList<>();
         try {
-            newMatches = this.f1.get();
+            List<Profile> favorites = this.f1.get();
+            return new QuantitySorter(context).mutate(favorites);
         } catch (Exception e) {
             Log.d("<FavoritesFilter>", "Unable to retrieve filtered matches!");
         }
-        return newMatches;
-    }
-
-    // Helper method to get the shared courses between a profile and the user profile
-    private int getNumSharedCoursesFromProfile(Profile match) {
-        List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
-        String userId = this.db.profileDao().getUserProfile(true).getProfileId();
-        List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
-
-        return Utilities.getNumSharedCourses(userCourses, matchCourses);
+        return new ArrayList<>();
     }
 }

@@ -74,33 +74,6 @@ public class NearbyViewMediator implements BoFObserver {
         this.mrv.setLayoutManager(this.llm);
     }
 
-    private List<Profile> getCurrentMatches() {
-        Future<List<Profile>> future = this.backgroundThreadExecutor.submit(() -> {
-            Log.d(TAG, "Display list of already matched students");
-            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsersFromSession(sessionId);
-            List<Profile> discoveredProfiles = new ArrayList<>();
-            if (discovered != null) {
-                for (DiscoveredUser user : discovered) {
-                    Log.d(TAG, "Prior DiscoveredUser found!");
-                    if (user.getNumShared() > 0) {
-                        Profile profile = db.profileDao().getProfile(user.getProfileId());
-                        discoveredProfiles.add(profile);
-                    }
-                }
-            }
-
-            return discoveredProfiles;
-        });
-
-        try {
-            return future.get();
-        } catch (Exception e) {
-            Log.d(TAG, "Unable to retrieve current matches!");
-        }
-
-        return null;
-    }
-
     public void setMutator(Mutator mutator) {
         this.mutator = mutator;
     }

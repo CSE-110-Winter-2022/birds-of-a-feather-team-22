@@ -25,6 +25,11 @@ public class SizeSorter extends Sorter {
         this.db = AppDatabase.singleton(context);
     }
 
+    // For testing
+    public SizeSorter(AppDatabase db) {
+        this.db = db;
+    }
+
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f = backgroundThreadExecutor.submit(() -> {

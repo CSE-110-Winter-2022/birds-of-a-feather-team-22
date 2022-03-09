@@ -25,6 +25,11 @@ public class QuantitySorter extends Sorter {
         this.db = AppDatabase.singleton(context);
     }
 
+    // For testing
+    public QuantitySorter(AppDatabase db) {
+        this.db = db;
+    }
+
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f1 = backgroundThreadExecutor.submit(() -> {
@@ -56,4 +61,5 @@ public class QuantitySorter extends Sorter {
 
         return Utilities.getNumSharedCourses(userCourses, matchCourses);
     }
+
 }

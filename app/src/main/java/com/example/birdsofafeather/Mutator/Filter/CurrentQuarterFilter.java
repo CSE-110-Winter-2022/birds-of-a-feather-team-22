@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.example.birdsofafeather.BoFObserver;
+import com.example.birdsofafeather.Mutator.Sorter.QuantitySorter;
 import com.example.birdsofafeather.Utilities;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
@@ -21,28 +22,36 @@ import java.util.concurrent.Future;
  * Extends the Filter abstract class.
  */
 public class CurrentQuarterFilter extends Filter {
-    private Future<List<Pair<Profile, Integer>>> f1;
+    private Future<List<Profile>> f1;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
+    private String currentQuarter;
+    private String currentYear;
+    private Context context;
 
 
     public CurrentQuarterFilter(Context context) {
+        this.context = context;
         this.db = AppDatabase.singleton(context);
+        this.currentQuarter = Utilities.getCurrentQuarter();
+        this.currentYear = Utilities.getCurrentYear();
+    }
+
+    public CurrentQuarterFilter(AppDatabase db, String currentQuarter, String currentYear) {
+        this.db = db;
+        this.currentQuarter = currentQuarter;
+        this.currentYear = currentYear;
     }
 
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
-        String currentQuarter = Utilities.getCurrentQuarter();
-        String currentYear = Utilities.getCurrentYear();
-
         this.f1 = this.backgroundThreadExecutor.submit(() -> {
-           List<Pair<Profile, Integer>> filtered = new ArrayList<>();
+           List<Profile> filtered = new ArrayList<>();
            for (Profile match : matches) {
                List<Course> sharedCourses = getSharedCoursesFromProfile(match);
-               int numSharedCourses = getNumSharedCoursesFromProfile(match);
                for (Course course : sharedCourses) {
-                   if (course.getQuarter().equals(currentQuarter) && course.getYear().equals(currentYear)) {
-                       filtered.add(new Pair(match, numSharedCourses));
+                   if (course.getQuarter().equals(this.currentQuarter) && course.getYear().equals(this.currentYear)) {
+                       filtered.add(match);
                        break;
                    }
                }
@@ -51,13 +60,14 @@ public class CurrentQuarterFilter extends Filter {
             return filtered;
         });
 
-        List<Pair<Profile, Integer>> newMatches = new ArrayList<>();
         try {
-            newMatches = this.f1.get();
+            List<Profile> filteredMatches = this.f1.get();
+
+            return new QuantitySorter(context).mutate(filteredMatches);
         } catch (Exception e) {
             Log.d("<CurrentQuarterFilter>", "Unable to retrieve filtered matches!");
         }
-        return newMatches;
+        return new ArrayList<>();
     }
 
     // Helper method to get the shared courses between a profile and the user profile

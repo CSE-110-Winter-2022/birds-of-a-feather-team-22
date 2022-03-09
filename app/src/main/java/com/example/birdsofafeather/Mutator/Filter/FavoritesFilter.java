@@ -1,4 +1,4 @@
-package com.example.birdsofafeather.Mutator.Sorter;
+package com.example.birdsofafeather.Mutator.Filter;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,40 +15,40 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-// Default sorting algorithm that sorts matches based upon the quantity of shared courses
-public class QuantitySorter extends Sorter {
+public class FavoritesFilter extends Filter {
     private Future<List<Pair<Profile, Integer>>> f1;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
 
-    public QuantitySorter(Context context) {
+
+    public FavoritesFilter(Context context) {
         this.db = AppDatabase.singleton(context);
     }
 
+    // TODO:
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
-        this.f1 = backgroundThreadExecutor.submit(() -> {
-            List<Pair<Profile, Integer>> matchQuantityPairs = new ArrayList<>();
-            for (Profile match : matches) {
-                int quantity = getNumSharedCoursesFromProfile(match);
-                matchQuantityPairs.add(new Pair(match, quantity));
+        this.f1 = this.backgroundThreadExecutor.submit(() -> {
+            List<Profile> favorites = this.db.profileDao().getFavoriteProfiles(true);
+            List<Pair<Profile, Integer>> filtered = new ArrayList<>();
+            for (Profile favorite : favorites) {
+                int numSharedCourses = getNumSharedCoursesFromProfile(favorite);
+                filtered.add(new Pair(favorite, numSharedCourses));
             }
 
-            return matchQuantityPairs;
+            return filtered;
         });
 
-        List<Pair<Profile, Integer>> pairs = new ArrayList<>();
+        List<Pair<Profile, Integer>> newMatches = new ArrayList<>();
         try {
-            pairs = this.f1.get();
+            newMatches = this.f1.get();
         } catch (Exception e) {
-            Log.d("<QuantitySorter>", "Unable to retrieve unsorted match-quantity pairs!");
+            Log.d("<FavoritesFilter>", "Unable to retrieve filtered matches!");
         }
-
-        pairs.sort(new MatchesComparator());
-
-        return pairs;
+        return newMatches;
     }
 
+    // Helper method to get the shared courses between a profile and the user profile
     private int getNumSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
         String userId = this.db.profileDao().getUserProfile(true).getProfileId();

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,9 +14,10 @@ import com.bumptech.glide.Glide;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,18 +27,23 @@ public class MatchProfileActivity extends AppCompatActivity {
     private final String TAG = "<Profile>";
 
     private AppDatabase db;
+
     private String matchId;
     private Profile match;
     private List<Course> sharedCourses;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future<Profile> f1;
     private Future<List<Course>> f2;
+    private Profile selfProfile;
+    private List<Course> selfCourses;
 
     private TextView nameTextView;
     private ImageView photoImageView;
     private RecyclerView sharedCoursesRecyclerView;
     private RecyclerView.LayoutManager sharedCoursesLayoutManager;
     private ProfileViewAdapter viewProfileAdapter;
+
+    private Message wave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +111,13 @@ public class MatchProfileActivity extends AppCompatActivity {
 
         this.sharedCoursesRecyclerView.setAdapter(this.viewProfileAdapter);
         this.sharedCoursesRecyclerView.setLayoutManager(this.sharedCoursesLayoutManager);
+
+        this.backgroundThreadExecutor.submit(() -> {
+            this.selfProfile = this.db.profileDao().getUserProfile(true);
+            this.selfCourses = this.db.courseDao().getCoursesByProfileId(this.selfProfile.getProfileId());
+        });
+
+        this.wave = null;
     }
 
     @Override
@@ -114,6 +128,55 @@ public class MatchProfileActivity extends AppCompatActivity {
         }
         if (this.f2 != null) {
             this.f2.cancel(true);
+        }
+    }
+
+    public void onClickSendWave(View view) {
+        String selfInformation = encodeSelfInformation();
+        selfInformation += this.matchId + ",wave,,,";
+        this.wave = new Message(selfInformation.getBytes());
+        Nearby.getMessagesClient(this).publish(this.wave);
+    }
+
+    public String encodeSelfInformation() {
+        // Look at BDD Scenario for CSV format
+        // Were are encoding our own profile
+        StringBuilder encodedMessage = new StringBuilder();
+        String selfUUID = this.selfProfile.getProfileId();
+        String selfName = this.selfProfile.getName();
+        String selfPhoto = this.selfProfile.getPhoto();
+
+        encodedMessage.append(selfUUID + ",,,,\n");
+        encodedMessage.append(selfName + ",,,,\n");
+        encodedMessage.append(selfPhoto + ",,,,\n");
+        for (Course course : this.selfCourses) {
+            encodedMessage.append(course.getYear() + ",");
+            encodedMessage.append(encodeQuarter(course.getQuarter()) + ",");
+            encodedMessage.append(course.getSubject() + ",");
+            encodedMessage.append(course.getNumber() + ",");
+            encodedMessage.append(course.getClassSize() + "\n");
+        }
+
+        return encodedMessage.toString();
+    }
+
+    public String encodeQuarter(String quarter) {
+        switch(quarter) {
+            case "Fall":
+                return "FA";
+            case "Winter":
+                return "WI";
+            case "Spring":
+                return "SP";
+            case "Summer Session 1":
+                return "S1";
+            case "Summer Session 2":
+                return "S2";
+            case "Special Summer Session":
+                return "SS";
+            default:
+                Log.d("<MatchProfileActivity>", "Quarter cannot be encoded");
+                return null;
         }
     }
 }

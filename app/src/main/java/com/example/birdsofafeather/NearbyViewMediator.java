@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.Mutator.Mutator;
+import com.example.birdsofafeather.Mutator.Sorter.QuantitySorter;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
@@ -42,10 +43,30 @@ public class NearbyViewMediator implements BoFObserver {
         this.sessionId = sessionId;
     }
 
+    // TODO: Implement for waves
     @Override
-    public void onChange() {
+    public void updateMatchesList() {
+        List<String> wavingProfileIds = this.db.profileDao().getWavingProfileIds(true);
+        List<DiscoveredUser> usersInSession = this.db.discoveredUserDao().getDiscoveredUsersFromSession(this.sessionId);
+        List<Profile> wavingProfiles = new ArrayList<>();
+        List<Profile> nonWavingProfiles = new ArrayList<>();
+
+        for (DiscoveredUser user : usersInSession) {
+            if (user.getNumShared() > 0) {
+                String profileId = user.getProfileId();
+                if (wavingProfileIds.contains(profileId)) {
+                    wavingProfiles.add(this.db.profileDao().getProfile(profileId));
+                }
+                else {
+                    nonWavingProfiles.add(this.db.profileDao().getProfile(profileId));
+                }
+            }
+        }
+
         // Find and sort/filter matches
-        List<Pair<Profile, Integer>> matches = this.mutator.mutate(getCurrentMatches());
+        List<Pair<Profile, Integer>> matches = new QuantitySorter(context).mutate(wavingProfiles);
+        List<Pair<Profile, Integer>> matchesRest = this.mutator.mutate(nonWavingProfiles);
+        matches.addAll(matchesRest);
 
         // Refresh recycler view
         this.mva = new MatchViewAdapter(matches, this.context);
@@ -80,4 +101,7 @@ public class NearbyViewMediator implements BoFObserver {
         return null;
     }
 
+    public void setMutator(Mutator mutator) {
+        this.mutator = mutator;
+    }
 }

@@ -26,7 +26,7 @@ public class RecencySorter extends Sorter {
     }
 
     @Override
-    public List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
+    public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f = backgroundThreadExecutor.submit(() -> {
             List<Pair<Profile, Integer>> matchScorePairs = new ArrayList<>();
             for (Profile match : matches) {
@@ -43,14 +43,19 @@ public class RecencySorter extends Sorter {
             return matchScorePairs;
         });
 
-        List<Pair<Profile, Integer>> newMatchPairs = new ArrayList<>();
+        List<Pair<Profile, Integer>> sortedMatchScorePairs = new ArrayList<>();
         try {
-            newMatchPairs = this.f.get();
+            sortedMatchScorePairs = this.f.get();
         } catch (Exception e) {
             Log.d("<RecencySorter>", "Unable to retrieve unsorted match-score pairs!");
         }
 
-        newMatchPairs.sort(new MatchesComparator());
+        sortedMatchScorePairs.sort(new MatchesComparator());
+
+        List<Pair<Profile, Integer>> newMatchPairs = new ArrayList<>();
+        for (Pair<Profile, Integer> pair : sortedMatchScorePairs) {
+            newMatchPairs.add(new Pair(pair.first, getNumSharedCoursesFromProfile(pair.first)));
+        }
 
         return newMatchPairs;
     }
@@ -62,6 +67,15 @@ public class RecencySorter extends Sorter {
         List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
 
         return Utilities.getSharedCourses(userCourses, matchCourses);
+    }
+
+    // Helper method to get the shared courses between a profile and the user profile
+    private int getNumSharedCoursesFromProfile(Profile match) {
+        List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
+        String userId = this.db.profileDao().getUserProfile(true).getProfileId();
+        List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
+
+        return Utilities.getNumSharedCourses(userCourses, matchCourses);
     }
 
     // Helper method to calculate the recency score per MS2 Planning Phase writeup for a Course

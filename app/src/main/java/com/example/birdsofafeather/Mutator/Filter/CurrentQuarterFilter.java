@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
+import com.example.birdsofafeather.BoFObserver;
 import com.example.birdsofafeather.Utilities;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
@@ -30,7 +31,7 @@ public class CurrentQuarterFilter extends Filter {
     }
 
     @Override
-    public List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
+    public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         String currentQuarter = Utilities.getCurrentQuarter();
         String currentYear = Utilities.getCurrentYear();
 
@@ -42,6 +43,7 @@ public class CurrentQuarterFilter extends Filter {
                for (Course course : sharedCourses) {
                    if (course.getQuarter().equals(currentQuarter) && course.getYear().equals(currentYear)) {
                        filtered.add(new Pair(match, numSharedCourses));
+                       break;
                    }
                }
            }

@@ -29,7 +29,9 @@ public interface SessionDao {
     @Query("SELECT * FROM SESSION")
     List<Session> getAllSessions();
 
-
+    @Transaction
+    @Query("SELECT name FROM SESSION")
+    List<String> getAllSessionNames();
 
     // Retrieves the number of session objects
     @Query("SELECT COUNT(*) FROM SESSION")

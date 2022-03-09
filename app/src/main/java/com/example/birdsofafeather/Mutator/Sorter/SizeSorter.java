@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
 
 // Specialized sorting algorithm that sorts matches based upon the size of shared courses
 public class SizeSorter extends Sorter {
-    private Future<List<Pair<Profile, Integer>>> f;
+    private Future<List<Pair<Profile, Double>>> f;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
 
@@ -26,9 +26,9 @@ public class SizeSorter extends Sorter {
     }
 
     @Override
-    public List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
+    public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f = backgroundThreadExecutor.submit(() -> {
-            List<Pair<Profile, Integer>> matchScorePairs = new ArrayList<>();
+            List<Pair<Profile, Double>> matchScorePairs = new ArrayList<>();
             for (Profile match : matches) {
                 double matchScore = 0;
                 List<Course> sharedCourses = getSharedCoursesFromProfile(match);
@@ -43,14 +43,19 @@ public class SizeSorter extends Sorter {
             return matchScorePairs;
         });
 
-        List<Pair<Profile, Integer>> newMatchPairs = new ArrayList<>();
+        List<Pair<Profile, Double>> sortedMatchScorePairs = new ArrayList<>();
         try {
-            newMatchPairs = this.f.get();
+            sortedMatchScorePairs = this.f.get();
         } catch (Exception e) {
             Log.d("<SizeSorter>", "Unable to retrieve unsorted match-score pairs!");
         }
 
-        newMatchPairs.sort(new MatchesComparator());
+        sortedMatchScorePairs.sort(new DoubleMatchesComparator());
+
+        List<Pair<Profile, Integer>> newMatchPairs = new ArrayList<>();
+        for (Pair<Profile, Double> pair : sortedMatchScorePairs) {
+            newMatchPairs.add(new Pair(pair.first, getNumSharedCoursesFromProfile(pair.first)));
+        }
 
         return newMatchPairs;
     }
@@ -63,6 +68,15 @@ public class SizeSorter extends Sorter {
         List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
 
         return Utilities.getSharedCourses(userCourses, matchCourses);
+    }
+
+    // Helper method to get the shared courses between a profile and the user profile
+    private int getNumSharedCoursesFromProfile(Profile match) {
+        List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
+        String userId = this.db.profileDao().getUserProfile(true).getProfileId();
+        List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
+
+        return Utilities.getNumSharedCourses(userCourses, matchCourses);
     }
 
 

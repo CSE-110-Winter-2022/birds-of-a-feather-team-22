@@ -1,5 +1,6 @@
 package com.example.birdsofafeather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,8 +9,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -17,8 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.birdsofafeather.Mutator.Filter.CurrentQuarterFilter;
+import com.example.birdsofafeather.Mutator.Filter.FavoritesFilter;
 import com.example.birdsofafeather.Mutator.Mutator;
 import com.example.birdsofafeather.Mutator.Sorter.QuantitySorter;
+import com.example.birdsofafeather.Mutator.Sorter.RecencySorter;
+import com.example.birdsofafeather.Mutator.Sorter.SizeSorter;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.DiscoveredUser;
@@ -30,9 +38,11 @@ import com.google.android.gms.nearby.messages.Message;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -67,6 +77,7 @@ public class MatchActivity extends AppCompatActivity {
     private EditText sessionNameView;
     private Button startButton;
     private Button stopButton;
+    private Spinner sortFilterSpinner;
 
     // currently open prompt
     private AlertDialog promptDialog;
@@ -134,7 +145,7 @@ public class MatchActivity extends AppCompatActivity {
 
         // Utilities initializations
         this.messageListener = new BoFMessageListener(sessionId, this);
-        this.selfMessage = new Message(encodeMessage().getBytes());
+        this.selfMessage = new Message(encodeSelfInformation().getBytes());
 
         // View initializations
         this.matchesRecyclerView = findViewById(R.id.matches_view);
@@ -143,6 +154,7 @@ public class MatchActivity extends AppCompatActivity {
         this.stopButton = findViewById(R.id.stop_button);
         this.startButton = findViewById(R.id.start_button);
         this.sessionNameView = findViewById(R.id.session_name_view);
+        this.sortFilterSpinner = findViewById(R.id.sort_filter_spinner);
 
         // Change session name via EditText View
         this.sessionNameView.setText(this.session.getName());
@@ -151,7 +163,13 @@ public class MatchActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId==EditorInfo.IME_ACTION_DONE){
                     sessionNameView.clearFocus();
-                    changeSessionName(sessionNameView.getText().toString());
+                    if (isValidCourseName(sessionNameView.getText().toString())) {
+                        changeSessionName(sessionNameView.getText().toString());
+                    }
+                    else {
+                        sessionNameView.setText(session.getName());
+                    }
+
                 }
                 return false;
             }
@@ -164,6 +182,47 @@ public class MatchActivity extends AppCompatActivity {
 
         this.nvm = new NearbyViewMediator(this, this.mutator, this.matchesViewAdapter, this.matchesRecyclerView, this.sessionId);
         this.messageListener.register(this.nvm);
+
+        List<String> mutations = new ArrayList<>(Arrays.asList("No Sort/Filter", "Favorites Only", "Prioritize Recent", "Prioritize Small Classes", "This Quarter Only"));
+        ArrayAdapter<String> sort_filter_adapter = new ArrayAdapter<>(this, R.layout.sort_filter_spinner_item_text, mutations);
+        sort_filter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.sortFilterSpinner.setAdapter(sort_filter_adapter);
+
+        Context context = this;
+        this.sortFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+
+                switch(sortFilterSpinner.getSelectedItem().toString()) {
+                    case "No Sort/Filter":
+                        mutator = new QuantitySorter(context);
+                        break;
+                    case "Prioritize Recent":
+                        mutator = new RecencySorter(context);
+                        break;
+                    case "Prioritize Small Classes":
+                        mutator = new SizeSorter(context);
+                        break;
+                    case "This Quarter Only":
+                        mutator = new CurrentQuarterFilter(context);
+                        break;
+                    case "Favorites Only":
+                        mutator = new FavoritesFilter(context);
+                        break;
+                }
+
+                messageListener.unregister(nvm);
+                nvm.setMutator(mutator);
+                messageListener.register(nvm);
+                nvm.updateMatchesList();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     @Override
@@ -249,7 +308,7 @@ public class MatchActivity extends AppCompatActivity {
         }
     }
 
-    public String encodeMessage() {
+    public String encodeSelfInformation() {
         // Look at BDD Scenario for CSV format
         // Were are encoding our own profile
         StringBuilder encodedMessage = new StringBuilder();
@@ -473,6 +532,22 @@ public class MatchActivity extends AppCompatActivity {
         if (!Character.isDigit(courseInfo[1].charAt(courseInfo[1].length() - 1)) && !Character.isLetter(courseInfo[1].charAt(courseInfo[1].length() - 1))) {
             Utilities.showError(this, "Error: Invalid Session Name", "Please enter a course name.");
             return false;
+        }
+
+        synchronized(this) {
+            Future<List<String>> future = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getAllSessionNames());
+
+            List<String> sessionNames = null;
+            try {
+                sessionNames = future.get();
+            } catch (Exception e) {
+                return false;
+            }
+
+            if (sessionNames.contains(courseName) && !courseName.equals(this.session.getName())) {
+                Utilities.showError(this, "Error: Invalid Session Name", "Session name already exists, please enter a unique course name.");
+                return false;
+            }
         }
 
         return true;

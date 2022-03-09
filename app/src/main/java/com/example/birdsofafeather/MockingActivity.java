@@ -35,6 +35,7 @@ public class MockingActivity extends AppCompatActivity {
         this.mockedMessages.add(textBox.getText().toString());
 
         Log.d(TAG, "Published mocked message: " + textBox.getText().toString());
+        textBox.setText("");
     }
 
     @Override

@@ -280,7 +280,9 @@ public class MatchActivity extends AppCompatActivity {
             showStartPopup();
         }
         else {
-            startSearchForMatches();
+            synchronized (this) {
+                startSearchForMatches();
+            }
         }
 
     }
@@ -295,14 +297,14 @@ public class MatchActivity extends AppCompatActivity {
         List<Course> currentCourses = getCurrentCourses();
 
         //check if user has entered courses from this current quarter
-        if (this.isNewSession) {
+//        if (this.isNewSession) {
             if (currentCourses.isEmpty()){
                 showEnterSessionNameStopPopup(true);
             }
             else {
                 showSelectOrEnterSessionNameStopPopup(currentCourses);
             }
-        }
+//        }
 
         this.isNewSession = false;
 
@@ -559,7 +561,6 @@ public class MatchActivity extends AppCompatActivity {
     // TODO
     public void onSortFilterClicked(View view) {
     }
-
 
 }
 

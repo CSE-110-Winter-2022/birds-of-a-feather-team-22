@@ -34,6 +34,19 @@ public class Profile {
     @ColumnInfo(name = "isWaving")
     private boolean isWaving;
 
+    @Ignore
+    public Profile (String name, String photo) {
+        this.profileId = UUID.randomUUID().toString();;
+        this.name = name;
+        if (!URLUtil.isValidUrl(photo)) {
+            this.photo = "https://i.imgur.com/MZH5yxZ.png";
+        }
+        else {
+            this.photo = photo;
+        }
+        this.isUser = false;
+
+    }
 
     // Checks if the photo URL is valid, otherwise uses a placeholder/default photo
     public Profile (@NonNull String profileId, String name, String photo) {

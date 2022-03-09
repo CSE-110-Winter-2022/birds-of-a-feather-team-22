@@ -14,14 +14,17 @@ import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class BoFMessageListener extends MessageListener implements BoFSubject {
     private AppDatabase db;
     private String sessionId;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private List<BoFObserver> observers;
+    private Future<Profile> future;
 
     public BoFMessageListener(String sessionId, Context context) {
         this.sessionId = sessionId;
@@ -50,8 +53,8 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
         String userProfileId = textBoxSeparated[0];
         String userName = textBoxSeparated[1];
         String userThumbnail = textBoxSeparated[2];
-        Profile user = null;
-//        backgroundThreadExecutor.submit(() -> {
+        this.future = backgroundThreadExecutor.submit(() -> {
+            Profile user = null;
             if (this.db.profileDao().getProfile(userProfileId) == null) {
                 user = new Profile(userProfileId, userName, userThumbnail);
                 this.db.profileDao().insert(user);
@@ -61,7 +64,15 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
                 user = this.db.profileDao().getProfile(userProfileId);
             }
 
-//        });
+            return user;
+        });
+
+        Profile user = null;
+        try {
+            user = this.future.get();
+        } catch (Exception e) {
+            Log.d(TAG, "Could not retrieve user profile");
+        }
 
         String[] classInfo = textBoxSeparated[3].split("\n");
         for (int i = 1; i < classInfo.length; i++) {
@@ -84,16 +95,16 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
             String number = classInfoSeparated[3];
             String size = classInfoSeparated[4];
 
-//            backgroundThreadExecutor.submit(() -> {
+            backgroundThreadExecutor.submit(() -> {
                 if (db.courseDao().getCourse(userProfileId, year, quarter, subject, number, size) == null) {
                     Course course = new Course(userProfileId, year, quarter, subject, number, size);
                     db.courseDao().insert(course);
                     Log.d(TAG, "Added Course");
                 }
-//            });
+            });
         }
 
-//        backgroundThreadExecutor.submit(() -> {
+        backgroundThreadExecutor.submit(() -> {
             int numSharedCourses = Utilities.getNumSharedCourses(db.courseDao().getCoursesByProfileId(db.profileDao().getUserProfile(true).getProfileId()),
                     db.courseDao().getCoursesByProfileId(userProfileId));
 
@@ -106,7 +117,7 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
             Log.d(TAG, "Added DiscoveredUser");
             DiscoveredUser discoveredUser = new DiscoveredUser(userProfileId, this.sessionId, numSharedCourses);
             db.discoveredUserDao().insert(discoveredUser);
-//        });
+        });
     }
 
     public String parseQuarter(String quarter) {

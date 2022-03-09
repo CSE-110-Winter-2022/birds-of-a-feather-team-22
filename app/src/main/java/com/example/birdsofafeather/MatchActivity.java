@@ -339,8 +339,8 @@ public class MatchActivity extends AppCompatActivity {
                 "displaying matches in MatchActivity");
 
         //selected session object
-        TextView selectedSessionName = view.findViewById(R.id.session_row_name_view);
-        TextView selectedSessionId = view.findViewById(R.id.session_row_id_view);
+        TextView selectedSessionName = view.findViewById(R.id.match_name_view); //session_row_name_view);
+        TextView selectedSessionId = view.findViewById(R.id.match_profile_id_view);//session_row_id_view);
 
         unsetLastSession();
 

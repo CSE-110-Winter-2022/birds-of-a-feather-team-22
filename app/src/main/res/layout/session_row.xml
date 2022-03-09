@@ -26,7 +26,7 @@
     android:onClick="onStartSelectSessionRow">
 
         <TextView
-            android:id="@+id/session_row_name_view"
+            android:id="@+id/session_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -40,7 +40,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/session_row_id_view"
+            android:id="@+id/session_id_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="287dp"

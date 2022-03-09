@@ -29,6 +29,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +51,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     // View/UI fields
     private RecyclerView matchesRecyclerView;
     private RecyclerView.LayoutManager matchesLayoutManager;
-    private MatchesViewAdapter matchesViewAdapter;
+    private MatchViewAdapter matchesViewAdapter;
     private Button startButton;
     private Button stopButton;
 
@@ -63,7 +64,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
+        setContentView(R.layout.activity_home_screen_session_list);
         setTitle("Birds of a Feather");
 
         Log.d("<Home>", "Setting up Home Screen");
@@ -73,29 +74,9 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.matches = new ArrayList<>();
         this.session = null;
 
-//        String sessionId = getIntent().getStringExtra("sessionId");
-//        // Grab list of discovered users to display on start
-//        this.f3 = this.backgroundThreadExecutor.submit(() -> {
-//            Log.d("<Home>", "Display list of already matched students");
-//            List<DiscoveredUser> discovered = db.discoveredUserDao().getDiscoveredUsers(sessionId);
-//
-//            if (discovered != null) {
-//                for (DiscoveredUser u : discovered) {
-//
-//                    Profile p = db.profileDao().getProfile(u.getProfileId());
-//                    this.matches.add(new Pair(p, u.getNumShared()));
-//                }
-//
-//                this.matches.sort(new MatchesComparator());
-//            }
-//
-//            return null;
-//        });
-
-
         // View initializations
         this.matchesRecyclerView = findViewById(R.id.matches_view);
-        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
         this.matchesLayoutManager = new LinearLayoutManager(this);
         this.stopButton = findViewById(R.id.stop_button);
         this.startButton = findViewById(R.id.start_button);
@@ -155,39 +136,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         // TODO: Add Profile and DiscoveredUser objects to DB
         // TODO: Update matches List and sort
 
-
-        //promptDialog.getWindow().setLayout(600,400);
-
-//        // Demo purposes, calculate the number of shared courses between the user and a match and add to a list to send to the view adapter
-//        if (!addedMatches.isEmpty()) {
-//            Log.d("<Home>", "Finding matches and displaying to screen");
-//            f1 = backgroundThreadExecutor.submit(() -> {
-//                Profile match = addedMatches.pop();
-//                while (db.discoveredUserDao().getProfileId(match.getProfileId()) != null && !addedMatches.isEmpty()) {
-//                    match = addedMatches.pop();
-//                }
-//
-//                if (db.discoveredUserDao().getProfileId(match.getProfileId()) == null) {
-//                    // Get the user's courses
-//                    Profile user = db.profileDao().getUserProfile(true);
-//                    this.myCourses = db.courseDao().getCoursesByProfileId(user.getProfileId());
-//                    List<Course> theirCourses = db.courseDao().getCoursesByProfileId(match.getProfileId());
-//
-//                    int numShared = Utilities.getNumSharedCourses(this.myCourses, theirCourses);
-//
-//                    if (numShared > 0) {
-//                        db.discoveredUserDao().insert(new DiscoveredUser(match.getProfileId(), numShared));
-//
-//                        this.matches.add(new Pair(match, numShared));
-//                        this.matches.sort(new MatchesComparator());
-//                    }
-//                }
-//                return null;
-//            });
-//        }
-
         // Refresh recycler view
-        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
         this.matchesLayoutManager = new LinearLayoutManager(this);
         this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
@@ -206,7 +156,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         // TODO: Update session name and add session to DB
         // this.session.setName(sessionName);
 
-        List<String> currentQuarter = Utilities.getCurrentQuarter();
+        List<String> currentQuarter = Collections.singletonList(Utilities.getCurrentQuarter());
 
         //get profile of current user
         Profile user = this.db.profileDao().getUserProfile(true);
@@ -218,13 +168,8 @@ public class HomeScreenActivity extends AppCompatActivity {
                 currentCoursesList.add(c);
             }
         }
-        /*
+
         //check if user has entered courses from this current quarter
-        if(currentCoursesList.isEmpty()){
-            createFirstStopPrompt(true);
-        }else{
-            createSecondStopPrompt(currentCoursesList);
-        }*/
         /**refactor*/
 
         if(currentCoursesList.isEmpty()){
@@ -283,7 +228,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
 
         //load main recyclerview with matches from selected session
-        this.matchesViewAdapter = new MatchesViewAdapter(this.matches,this);
+        this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
         this.matchesLayoutManager = new LinearLayoutManager(this);
         this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
         this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
@@ -296,8 +241,8 @@ public class HomeScreenActivity extends AppCompatActivity {
                 "item becomes selected");
 
         //find selected item from recyclerview, grab views for course info
-        TextView sessionCourseNameTextView = view.findViewById(R.id.session_course_name_text_view);
-        TextView sessionCourseNumberTextView = view.findViewById(R.id.session_course_number_text_view);
+        TextView sessionCourseNameTextView = view.findViewById(R.id.session_course_name_view);
+        TextView sessionCourseNumberTextView = view.findViewById(R.id.session_course_number_view);
         TextView setSessionTextView = this.promptDialog.findViewById(R.id.set_course);
 
         //adjust view elements of UI accordingly
@@ -387,7 +332,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         // Send the match's profile id to the activity responsible for showing the profile
         TextView profileIdView = view.findViewById(R.id.match_profile_id_view);
         String profileId = profileIdView.getText().toString();
-        Intent intent = new Intent(this, ViewProfileActivity.class);
+        Intent intent = new Intent(this, ProfileViewAdapter.class);
         intent.putExtra("profileId", profileId);
         startActivity(intent);
     }
@@ -430,12 +375,13 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     //helper function to create first possible stop prompt to enter a name for a created session
-    //and it is also the "default" stop prompt
+    //and it is also the "default" stop prompt-NANDO
+    // SHOULD BE IF NEW SESSION
     public void createFirstStopPrompt(Boolean isOnly){
         Log.d("<Home>", "creating first stop prompt AlertDialog");
 
         LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.activity_home_screen_enter_name, null);
+        View contextView = inflater.inflate(R.layout.enter_session_name_popup,null);//activity_home_screen_enter_name, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
 
@@ -448,11 +394,12 @@ public class HomeScreenActivity extends AppCompatActivity {
         this.promptDialog.show();
     }
 
+    //SHOULD BE IF ALREADY CREATED SESSION-NANDO
     public void createSecondStopPrompt(List<Course> list){
         Log.d("<Home>", "creating second stop prompt AlertDialog");
 
         LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.activity_home_screen_stop_alert, null);
+        View contextView = inflater.inflate(R.layout.enter_session_name_popup,null);//activity_home_screen_stop_alert, null);
 
         AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
 

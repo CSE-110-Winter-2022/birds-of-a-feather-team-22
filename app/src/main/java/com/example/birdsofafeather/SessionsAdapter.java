@@ -45,8 +45,8 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
 
         ViewHolder(View itemView){
             super(itemView);
-            this.sessionNameTextView = itemView.findViewById(R.id.session_row_name_view);
-            this.sessionIdTextView = itemView.findViewById(R.id.session_row_id_view);
+            this.sessionNameTextView = itemView.findViewById(R.id.session_name_text_view);
+            this.sessionIdTextView = itemView.findViewById(R.id.session_id_text_view);
         }
         public void setSession(Session session){
             this.sessionNameTextView.setText(session.getName());
@@ -54,6 +54,6 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
         }
     }
 
-
+//SHOULDNT ALLOW EMPTY SESSION ID
 }
 

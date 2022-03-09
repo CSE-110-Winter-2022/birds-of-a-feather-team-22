@@ -483,6 +483,8 @@ public class MatchActivity extends AppCompatActivity {
         }
         else {
             unsetLastSession();
+            clearWaves();
+
             Intent intent = new Intent(this, MatchActivity.class);
             intent.putExtra("session_id", selectedSessionId);
             startActivity(intent);
@@ -492,6 +494,7 @@ public class MatchActivity extends AppCompatActivity {
 
     public void onStartPopupCreateNewSessionClicked(View view) {
         unsetLastSession();
+        clearWaves();
 
         Intent intent = new Intent(this, MatchActivity.class);
         intent.putExtra("session_id", "");
@@ -681,6 +684,16 @@ public class MatchActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
         String timestamp = df.format(Calendar.getInstance().getTime());
         return timestamp;
+    }
+
+    private void clearWaves() {
+        backgroundThreadExecutor.submit(() -> {
+            List<Profile> wavingProfiles = this.db.profileDao().getWavingProfiles(true);
+            for (Profile profile : wavingProfiles) {
+                profile.setIsWaving(false);
+                this.db.profileDao().update(profile);
+            }
+        });
     }
 }
 

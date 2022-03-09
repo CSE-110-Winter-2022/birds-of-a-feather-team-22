@@ -49,11 +49,15 @@ public class CurrentQuarterFilter extends Filter {
            List<Profile> filtered = new ArrayList<>();
            for (Profile match : matches) {
                List<Course> sharedCourses = getSharedCoursesFromProfile(match);
+               int numSharedCoursesThisQuarter = 0;
                for (Course course : sharedCourses) {
                    if (course.getQuarter().equals(this.currentQuarter) && course.getYear().equals(this.currentYear)) {
-                       filtered.add(match);
-                       break;
+                       numSharedCoursesThisQuarter++;
                    }
+               }
+
+               if (numSharedCoursesThisQuarter > 0) {
+                   filtered.add(match);
                }
            }
 

@@ -25,6 +25,9 @@ public interface ProfileDao {
     @Query("SELECT * FROM PROFILE WHERE isFavorite=:isFavorite")
     List<Profile> getFavoriteProfiles(boolean isFavorite);
 
+    @Query("SELECT * FROM PROFILE WHERE isWaving=:isWaving")
+    List<Profile> getWavingProfiles(boolean isWaving);
+
     @Query("SELECT profileId FROM PROFILE WHERE isWaving=:isWaving")
     List<String> getWavingProfileIds(boolean isWaving);
 

@@ -13,7 +13,7 @@ import org.junit.Test;
 
 
 @LargeTest
-public class HomeScreenUITest {
+public class MatchActivityUITest {
 
     @Test
     public void startButtonPressWithStopFirstTimeTest() {

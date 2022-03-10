@@ -262,11 +262,11 @@ public class CourseActivity extends AppCompatActivity {
      */
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "CourseActivity being destroyed");
-        super.onDestroy();
         if (this.f1 != null) {
             this.f1.cancel(true);
         }
+        super.onDestroy();
+        Log.d(TAG, "CourseActivity destroyed!");
     }
 
     /**

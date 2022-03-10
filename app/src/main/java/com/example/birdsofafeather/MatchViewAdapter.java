@@ -132,7 +132,12 @@ public class MatchViewAdapter extends RecyclerView.Adapter<MatchViewAdapter.View
 //                this.star.setTextColor(Color.parseColor("#BBBBBB"));
             }
             this.matchId.setText(match.first.getProfileId());
-            Glide.with(context).load(match.first.getPhoto()).apply(new RequestOptions().override(350, 350)).into(this.matchPhoto);
+//            Glide.with(context).load(match.first.getPhoto()).apply(new RequestOptions().override(350, 350)).into(this.matchPhoto);
+            Glide.with(context)
+                    .load(match.first.getPhoto())
+                    .apply(RequestOptions.placeholderOf(R.drawable.feather_1)
+                            .override(1000,1000).centerCrop())
+                    .into(this.matchPhoto);
 
             if (match.first.getIsWaving()) {
                 this.wave.setVisibility(View.VISIBLE);

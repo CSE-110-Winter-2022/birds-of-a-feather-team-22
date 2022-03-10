@@ -31,6 +31,12 @@ public interface ProfileDao {
     @Query("SELECT profileId FROM PROFILE WHERE isWaving=:isWaving")
     List<String> getWavingProfileIds(boolean isWaving);
 
+    @Query("SELECT * FROM PROFILE WHERE isWaved=:isWaved")
+    List<Profile> getWavedProfiles(boolean isWaved);
+
+    @Query("SELECT profileId FROM PROFILE WHERE isWaved=:isWaved")
+    List<String> getWavedProfileIds(boolean isWaved);
+
     // Retrieves list of profiles
     @Transaction
     @Query("SELECT * FROM PROFILE")

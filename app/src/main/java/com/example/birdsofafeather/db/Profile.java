@@ -31,8 +31,13 @@ public class Profile {
     @ColumnInfo(name = "isFavorite")
     private boolean isFavorite;
 
+    // Did this profile wave at the user?
     @ColumnInfo(name = "isWaving")
     private boolean isWaving;
+
+    // Did user wave at this profile?
+    @ColumnInfo(name = "isWaved")
+    private boolean isWaved;
 
     @Ignore
     public Profile (String name, String photo) {
@@ -47,16 +52,18 @@ public class Profile {
         this.isUser = false;
         this.isFavorite = false;
         this.isWaving = false;
+        this.isWaved = false;
     }
 
     @Ignore
-    public Profile (String profileId, String name, boolean isUser, boolean isFavorite, boolean isWaving) {
+    public Profile (String profileId, String name, boolean isUser, boolean isFavorite, boolean isWaving, boolean isWaved) {
         this.profileId = profileId;
         this.name = name;
         this.photo = "https://i.imgur.com/MZH5yxZ.png";
         this.isUser = isUser;
         this.isFavorite = isFavorite;
         this.isWaving = isWaving;
+        this.isWaved = isWaved;
     }
 
     // Checks if the photo URL is valid, otherwise uses a placeholder/default photo
@@ -72,6 +79,7 @@ public class Profile {
         this.isUser = false;
         this.isFavorite = false;
         this.isWaving = false;
+        this.isWaved = false;
     }
 
     public String getProfileId() {
@@ -122,6 +130,14 @@ public class Profile {
         this.isWaving = isWaving;
     }
 
+    public boolean getIsWaved() {
+        return this.isWaved;
+    }
+
+    public void setIsWaved(boolean isWaved) {
+        this.isWaved = isWaved;
+    }
+
     @Override
     public boolean equals(Object obj)
     {
@@ -131,7 +147,8 @@ public class Profile {
                 this.photo.equals(other.getPhoto()) &&
                 this.isUser == other.getIsUser() &&
                 this.isFavorite == other.getIsFavorite() &&
-                this.isWaving == other.getIsWaving();
+                this.isWaving == other.getIsWaving() &&
+                this.isWaved == other.getIsWaved();
     }
 
 }

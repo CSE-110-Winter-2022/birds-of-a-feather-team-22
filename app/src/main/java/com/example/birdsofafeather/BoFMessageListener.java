@@ -62,10 +62,16 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      * @return none
      */
     @Override
-    public void onFound(Message message) {
+    public synchronized void onFound(Message message) {
         Log.d(TAG, "Found message: " + new String(message.getContent()));
 
         parseInfo(new String(message.getContent()));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Log.d(TAG, "Unable to sleep thread for 1000ms");
+        }
         for (BoFObserver observer : this.observers) {
             observer.updateMatchesList();
         }
@@ -89,7 +95,7 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      *
      * @param info A complete text with a user's information
      */
-    private void parseInfo(String info) {
+    private synchronized void parseInfo(String info) {
         String[] textBoxSeparated = info.split(",,,,");
 
         String profileId = textBoxSeparated[0].replaceAll("\n", "");
@@ -190,10 +196,11 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
                 db.discoveredUserDao().delete(finalDiscovered);
                 Log.d(TAG, "Deleted DiscoveredUser");
             }
-            Log.d(TAG, "Added DiscoveredUser");
 
             DiscoveredUser discoveredUser = new DiscoveredUser(profileId, this.sessionId, finalNumSharedCourses);
             db.discoveredUserDao().insert(discoveredUser);
+
+            Log.d(TAG, "Added DiscoveredUser");
 
             return null;
         });

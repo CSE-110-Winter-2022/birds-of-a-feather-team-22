@@ -15,6 +15,7 @@ import com.example.birdsofafeather.db.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,12 +44,17 @@ public class NearbyViewMediator implements BoFObserver {
         this.mutator = mutator;
         this.rv = mrv;
         this.llm = new LinearLayoutManager(context);
+        this.rv.setAdapter(new MatchViewAdapter(new ArrayList<>(), this.context));
+        this.rv.setLayoutManager(this.llm);
         this.sessionId = sessionId;
     }
 
     // TODO: Implement for waves
     @Override
     public synchronized void updateMatchesList() {
+        // Get current position of RecyclerView
+        int currentVisiblePosition = ((LinearLayoutManager) Objects.requireNonNull(this.rv.getLayoutManager())).findFirstCompletelyVisibleItemPosition();
+
         Log.d(TAG, "Updating matches list!");
 
         this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getWavingProfileIds(true));
@@ -96,12 +102,15 @@ public class NearbyViewMediator implements BoFObserver {
         List<Pair<Profile, Integer>> matchesRest = this.mutator.mutate(nonWavingProfiles);
         matches.addAll(matchesRest);
 
-        Log.d(TAG, "Displaying new matches!");
+        Log.d(TAG, "Displaying updated matches!");
 
         // Refresh recycler view
 
         this.rv.setAdapter(new MatchViewAdapter(matches, this.context));
         this.rv.setLayoutManager(this.llm);
+
+        // Scroll RecyclerView back to previous position
+        ((LinearLayoutManager) Objects.requireNonNull(rv.getLayoutManager())).scrollToPosition(currentVisiblePosition);
     }
 
     public void setMutator(Mutator mutator) {

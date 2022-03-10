@@ -13,12 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,6 +38,7 @@ public class MatchProfileActivity extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future<Profile> f1;
     private Future<List<Course>> f2;
+    private Future<Void> f3;
     private Profile selfProfile;
     private List<Course> selfCourses;
 
@@ -87,6 +90,13 @@ public class MatchProfileActivity extends AppCompatActivity {
         this.wave = findViewById(R.id.profile_wave);
         this.sendWave = findViewById(R.id.profile_send_wave);
 
+        if (this.match.getIsWaved()) {
+            this.sendWave.setImageResource(R.drawable.filled_hand);
+        }
+        else {
+            this.sendWave.setImageResource(R.drawable.hollow_hand);
+        }
+
         if (match.getIsFavorite()) {
             this.star.setImageResource(R.drawable.filled_star);
 //            this.favoriteStar.setText("★");
@@ -108,7 +118,12 @@ public class MatchProfileActivity extends AppCompatActivity {
 
         this.nameTextView.setText(this.match.getName());
         Profile finalMatch = this.match;
-        Glide.with(this).load(finalMatch.getPhoto()).into(this.photoImageView);
+//        Glide.with(this).load(finalMatch.getPhoto()).into(this.photoImageView);
+        Glide.with(this)
+                .load(finalMatch.getPhoto())
+                .apply(RequestOptions.placeholderOf(R.drawable.feather_1)
+                        .override(1000,1000).centerCrop())
+                .into(this.photoImageView);
 
         // Get shared courses between user and match
         this.f2 = this.backgroundThreadExecutor.submit(() -> {
@@ -157,28 +172,40 @@ public class MatchProfileActivity extends AppCompatActivity {
         if (this.f2 != null) {
             this.f2.cancel(true);
         }
-
+        if (this.f3 != null) {
+            this.f3.cancel(true);
+        }
         super.onDestroy();
+        Log.d(TAG, "MatchProfileActivity destroyed!");
     }
 
     public void onSendWaveClicked(View view) {
         String selfInformation = encodeSelfInformation();
         selfInformation += this.matchId + ",wave,,,";
-        this.waveMessage = new Message(selfInformation.getBytes());
+        this.waveMessage = new Message(selfInformation.getBytes(StandardCharsets.UTF_8));
         Nearby.getMessagesClient(this).publish(this.waveMessage);
         Toast.makeText(this, "Wave sent!", Toast.LENGTH_SHORT).show();
         this.sendWave.setImageResource(R.drawable.filled_hand);
-        backgroundThreadExecutor.submit(() -> {
-            try {
-                Thread.sleep(2250);
-                runOnUiThread(() -> {
-                    sendWave.setImageResource(R.drawable.hollow_hand);
-                });
-            } catch (InterruptedException e) {
-                Log.d(TAG, "Unable to change hand icon!");
-            }
+        this.match.setIsWaved(true);
+        this.f3 = backgroundThreadExecutor.submit(() -> {
+            this.db.profileDao().update(this.match);
 
+            return null;
         });
+
+        Log.d(TAG, "Wave sent: " + new String(this.waveMessage.getContent()));
+
+//        backgroundThreadExecutor.submit(() -> {
+//            try {
+//                Thread.sleep(2250);
+//                runOnUiThread(() -> {
+//                    sendWave.setImageResource(R.drawable.hollow_hand);
+//                });
+//            } catch (InterruptedException e) {
+//                Log.d(TAG, "Unable to change hand icon!");
+//            }
+//
+//        });
     }
 
     public String encodeSelfInformation() {

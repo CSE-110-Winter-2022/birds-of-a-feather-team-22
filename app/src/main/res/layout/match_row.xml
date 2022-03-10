@@ -45,6 +45,8 @@
 
 
 
+
+
             ]]>
 
             <ImageView
@@ -132,15 +134,14 @@
 <!--            android:textStyle="bold" />-->
 
 
-
         <ImageView
             android:id="@+id/wave"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="102dp"
-            android:layout_marginEnd="297dp"
+            android:layout_marginTop="105dp"
+            android:layout_marginEnd="310dp"
             app:srcCompat="@drawable/next_arrow_3_square" />
 
         <ImageView
@@ -149,8 +150,8 @@
             android:layout_height="35dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="27dp"
-            android:layout_marginEnd="305dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="315dp"
             android:onClick="onFavoriteStarClicked"
             app:srcCompat="@drawable/hollow_star" />
 

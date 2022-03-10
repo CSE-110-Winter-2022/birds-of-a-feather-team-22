@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-public class TestMimicBluetooth {
+public class TestMimicBluetoothCourses {
 
     public Context context = ApplicationProvider.getApplicationContext();
     public AppDatabase db = AppDatabase.useTestSingleton(context);
@@ -132,12 +132,6 @@ public class TestMimicBluetooth {
         String[] classInfo = textBoxSeparated[3].split("\n");
         for (int i = 1; i < classInfo.length; i++) {
             String[] classInfoSeparated = classInfo[i].split(",");
-
-            if (classInfoSeparated[1].equals("wave")) {
-                String UUID_self = classInfoSeparated[0];
-                String filter = classInfoSeparated[1];
-                continue;
-            }
 
             String year = classInfoSeparated[0];
             String quarter = classInfoSeparated[1];

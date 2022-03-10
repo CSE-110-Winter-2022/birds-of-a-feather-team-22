@@ -1,3 +1,9 @@
+/*
+ * This file is capable of performing operations on the database to add courses for self user and
+ * allows the self user to be able to interact with the application in order to added such courses.
+ *
+ * Author: Group 22
+ */
 package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +31,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-// Refers to the screen where the user can add their previously taken courses
+/*
+ * This class refers to the screen where the user can add their previously taken courses and
+ * adds such courses to the database.
+ */
 public class CourseActivity extends AppCompatActivity {
+    // Log tag
     private final String TAG = "<Course>";
 
     // DB-related fields
@@ -45,6 +55,12 @@ public class CourseActivity extends AppCompatActivity {
     // For mocking
     private ArrayList<String> mockedMessages;
 
+    /**
+     * Initializes the screen for the activity.
+     *
+     * @param savedInstanceState A bundle that contains information regarding layout and data
+     * @return none
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +120,12 @@ public class CourseActivity extends AppCompatActivity {
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
     }
 
+    /**
+     * Allows the user to input a course, that gets processed, into the database .
+     *
+     * @param view The current view
+     * @return none
+     */
     public void onEnterClicked(View view) {
 
         Log.d(TAG, "Enter button clicked");
@@ -212,7 +234,12 @@ public class CourseActivity extends AppCompatActivity {
         });
     }
 
-    // When the done button is clicked
+    /**
+     * Allows user to declare being finished with inputting course.
+     *
+     * @param view The current view
+     * @return none
+     */
     public void onDoneClicked(View view) {
         Log.d(TAG, "Done button clicked, moving to Home Screen");
 
@@ -227,6 +254,12 @@ public class CourseActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Closes/destroys the current activity.
+     *
+     * @param
+     * @return none
+     */
     @Override
     protected void onDestroy() {
         Log.d(TAG, "CourseActivity being destroyed");
@@ -236,7 +269,16 @@ public class CourseActivity extends AppCompatActivity {
         }
     }
 
-    // Checks if course information is formatted and inputted correctly
+    /**
+     * Checks if course information is formatted and inputted correctly.
+     *
+     * @param year A given year
+     * @param quarter A given quarter
+     * @param subject A given subject
+     * @param number A given number
+     * @param classSize A given class size
+     * @return True if the entered course information if valid, false otherwise
+     */
     public boolean isValidCourse(String year, String quarter, String subject, String number, String classSize) {
 
         Log.d(TAG, "Checking if course information is valid");
@@ -302,18 +344,34 @@ public class CourseActivity extends AppCompatActivity {
         return true;
     }
 
-    // Checks if a course already exists in the DB
+    /**
+     * Checks if a course already exists in the database.
+     *
+     * @param courseId A given course ID
+     * @return True if a course exists in the database, false otherwise
+     */
     public boolean isExistingCourse(String courseId) {
         Log.d(TAG, "Checking if course is already in DB");
         return courseId != null;
     }
 
-    // Overrides back button to clearing all fields
+    /**
+     * Override the back button to clearing all fields.
+     *
+     * @param
+     * @return none
+     */
     @Override
     public void onBackPressed() {
         clearFields();
     }
 
+    /**
+     * Clears the course fields whenever the back button is pressed.
+     *
+     * @param
+     * @return none
+     */
     public void clearFields() {
         Log.d(TAG, "Back button pressed, clearing fields");
 

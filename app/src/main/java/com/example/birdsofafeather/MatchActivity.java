@@ -1,3 +1,9 @@
+/*
+ * This file is capable of assorting and displaying a list of matches to the user. Allowing the user
+ * to interact with the matches through sort/filter functionality.
+ *
+ * Author: Group 22
+ */
 package com.example.birdsofafeather;
 
 import android.content.Context;
@@ -54,8 +60,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-// Refers to the screen where the user can see discovered users and search for more discovered users
+/*
+ * This class refers to the screen where the user can see discovered users and search for more
+ * discovered users.
+ */
 public class MatchActivity extends AppCompatActivity {
+    // Log tag
     private final String TAG = "<Match>";
 
     // DB-related fields
@@ -92,6 +102,12 @@ public class MatchActivity extends AppCompatActivity {
     private BoFMessageListener messageListener;
     private Message selfMessage;
 
+    /**
+     * Initializes the screen for this acitivity.
+     *
+     * @param savedInstanceState A bundle that contains information regarding layout and data
+     * @return none
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,19 +171,19 @@ public class MatchActivity extends AppCompatActivity {
 
         switch(this.session.getSortFilter()) {
             case "Favorites Only":
-                this.mutator = new FavoritesFilter(this);
+                this.mutator = (Mutator) new FavoritesFilter(this);
                 break;
             case "Prioritize Recent":
-                this.mutator = new RecencySorter(this);
+                this.mutator = (Mutator) new RecencySorter(this);
                 break;
             case "Prioritize Small Classes":
-                this.mutator = new SizeSorter(this);
+                this.mutator = (Mutator) new SizeSorter(this);
                 break;
             case "This Quarter Only":
-                this.mutator = new CurrentQuarterFilter(this);
+                this.mutator = (Mutator) new CurrentQuarterFilter(this);
                 break;
             default:
-                this.mutator = new QuantitySorter(this);
+                this.mutator = (Mutator) new QuantitySorter(this);
                 break;
         }
 
@@ -234,25 +250,33 @@ public class MatchActivity extends AppCompatActivity {
         Context context = this;
         this.sortFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+            /**
+             * Allows the spinner to create an interaction with the list.
+             *
+             * @param parent Given parent view
+             * @param view Given view
+             * @param position Given position
+             * @param id Given id
+             */
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
 
                 switch(sortFilterSpinner.getSelectedItem().toString()) {
                     case "No Sort/Filter":
-                        mutator = new QuantitySorter(context);
+                        mutator = (Mutator) new QuantitySorter(context);
                         break;
                     case "Prioritize Recent":
-                        mutator = new RecencySorter(context);
+                        mutator = (Mutator) new RecencySorter(context);
                         break;
                     case "Prioritize Small Classes":
-                        mutator = new SizeSorter(context);
+                        mutator = (Mutator) new SizeSorter(context);
                         break;
                     case "This Quarter Only":
-                        mutator = new CurrentQuarterFilter(context);
+                        mutator = (Mutator) new CurrentQuarterFilter(context);
                         break;
                     case "Favorites Only":
-                        mutator = new FavoritesFilter(context);
+                        mutator = (Mutator) new FavoritesFilter(context);
                         break;
                 }
 
@@ -265,6 +289,12 @@ public class MatchActivity extends AppCompatActivity {
                 nvm.updateMatchesList();
             }
 
+            /**
+             * Ensures the nothing occurs when nothing is selected from spinner.
+             *
+             * @param parent Given parent view
+             * @return none
+             */
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -276,13 +306,24 @@ public class MatchActivity extends AppCompatActivity {
         System.out.println(selfProfile.getProfileId());
     }
 
+    /**
+     * Closes/destoryed the current activity.
+     *
+     * @param
+     * @return none
+     */
     @Override
     protected void onDestroy() {
         setLastSession();
         super.onDestroy();
     }
 
-
+    /**
+     * Provides a list of all the current matches to the user.
+     *
+     * @param
+     * @return A list of profiles which have courses matches to the user.
+     */
     private List<Profile> getCurrentMatches() {
         Future<List<Profile>> future = this.backgroundThreadExecutor.submit(() -> {
             Log.d(TAG, "Display list of already matched students");
@@ -310,6 +351,12 @@ public class MatchActivity extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * Start searching for matches when the user enables student searches.
+     *
+     * @param
+     * @return none
+     */
     public void startSearchForMatches() {
         Log.d(TAG, "Starting search for matches...");
         this.isSearching = true;
@@ -318,7 +365,9 @@ public class MatchActivity extends AppCompatActivity {
         this.startButton.setVisibility(View.GONE);
 
         Nearby.getMessagesClient(this).publish(this.selfMessage);
+        Log.d(TAG, "Published a message: " + this.selfMessage.getContent().toString());
         Nearby.getMessagesClient(this).subscribe(this.messageListener);
+        Log.d(TAG, "New listener subscribed!");
 
         // Discover mocked messages
         for (String msg : this.mockedMessages) {
@@ -329,6 +378,12 @@ public class MatchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Prevents user from receiving any new matches, stops student searches.
+     *
+     * @param
+     * @return none
+     */
     public void stopSearchForMatches() {
         Log.d(TAG, "Stopping search for matches...");
         this.isSearching = false;
@@ -337,9 +392,17 @@ public class MatchActivity extends AppCompatActivity {
         this.stopButton.setVisibility(View.GONE);
 
         Nearby.getMessagesClient(this).unpublish(this.selfMessage);
+        Log.d(TAG, "Unpublished a message: " + this.selfMessage.getContent().toString());
         Nearby.getMessagesClient(this).unsubscribe(this.messageListener);
+        Log.d(TAG, "Listener has been unsubscribed!");
     }
 
+    /**
+     * Encodes the full quarter name to an abbreviation.
+     *
+     * @param quarter A given quarter
+     * @return The abbreviation of the full quarter name
+     */
     public String encodeQuarter(String quarter) {
         switch(quarter) {
             case "Fall":
@@ -360,6 +423,12 @@ public class MatchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Encodes the information of the self user into a CSV format.
+     *
+     * @param
+     * @return Returns a CSV format representation of the user's information
+     */
     public String encodeSelfInformation() {
         // Look at BDD Scenario for CSV format
         // Were are encoding our own profile
@@ -382,7 +451,12 @@ public class MatchActivity extends AppCompatActivity {
         return encodedMessage.toString();
     }
 
-    // When the start button is clicked
+    /**
+     * Allows the user to view sessions or start for matches, when the start button is clicked.
+     *
+     * @param view The given view
+     * @return none
+     */
     public void onStartClicked(View view) {
 
         Log.d(TAG, "Start button pressed");
@@ -396,6 +470,13 @@ public class MatchActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Allows the user to name a current session of matches or select another session, when the
+     * stop button is clicked.
+     *
+     * @param view The given view
+     * @return none
+     */
     // When the stop button is clicked
     public void onStopClicked(View view) {
         Log.d(TAG, "Stop button pressed, stopping search for matches...");
@@ -417,6 +498,12 @@ public class MatchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Retrieves the current courses from present time.
+     *
+     * @param
+     * @return A list of current courses
+     */
     public List<Course> getCurrentCourses() {
         String currentQuarter = Utilities.getCurrentQuarter();
         String currentYear = Utilities.getCurrentYear();
@@ -433,7 +520,12 @@ public class MatchActivity extends AppCompatActivity {
         return currentCourses;
     }
 
-    // When a match in the recycler view is clicked
+    /**
+     * Allows the user to view a match when they have been clicked on.
+     *
+     * @param view The given view
+     * @return none
+     */
     public void onMatchRowSelected(View view) {
         Log.d(TAG, "Match selected, displaying match profile and course information");
 
@@ -446,6 +538,13 @@ public class MatchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Allows the user to be able to click on the favorite button to a match and updates it to the
+     * database.
+     *
+     * @param view The given view
+     * @return none
+     */
     public void onFavoriteStarClicked(View view) {
         Log.d(TAG, "Making selected match a favorite.");
 
@@ -495,15 +594,25 @@ public class MatchActivity extends AppCompatActivity {
             Log.d(TAG, "Could not retrieve match profile");
         }
 
-
     }
 
-    // For testing purposes, visibility is set to gone for demoing and actual use
+    /**
+     * Utilizes to test visibility for the nearby button.
+     *
+     * @param view The given view
+     * @return none
+     */
     public void onNearbyClicked(View view) {
         Intent intent = new Intent(this, MockingActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Allows the user to be able to press the back button and opens the course activity screen.
+     *
+     * @param
+     * @return none
+     */
     @Override
     public void onBackPressed() {
         if (this.isSearching) {
@@ -515,6 +624,12 @@ public class MatchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Allows the user to be able to view the clicked session from a list of previous sessions.
+     *
+     * @param view The given view
+     * @return none
+     */
     //onClick listener for Session items within the recyclerview of the
     public void onStartPopupSessionRowSelected(View view){
         Log.d(TAG, "Previous session selected, " +
@@ -542,6 +657,12 @@ public class MatchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Allows the user to be able to create a new session when option is clicked.
+     *
+     * @param view The given view
+     * @return none
+     */
     public void onStartPopupCreateNewSessionClicked(View view) {
         unsetLastSession();
         clearWaves();
@@ -551,7 +672,9 @@ public class MatchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //helper function to create session list dialog box with previous sessions
+    /**
+     * Assists in creating a session list dialog box with previous sessions.
+     */
     private void showStartPopup() {
         Log.d(TAG, "creating session list prompt AlertDialog");
 

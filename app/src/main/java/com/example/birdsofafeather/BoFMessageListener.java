@@ -1,3 +1,10 @@
+/*
+ * This file is capable of creating a MessageListener and is able to receive messages, parse them,
+ * and send out messages.
+ *
+ * Author: Group 22
+ */
+
 package com.example.birdsofafeather;
 
 import android.content.Context;
@@ -17,9 +24,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/*
+ * The class is capable of receiving messages, parsing the data that is from the message, and is
+ * able to send out messages.
+ */
 public class BoFMessageListener extends MessageListener implements BoFSubject {
+    // Log tag
     private final String TAG = "<BoFMessageListener>";
 
+    // Instance variables for class
     private AppDatabase db;
     private String sessionId;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
@@ -29,12 +42,25 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
     private Future<Integer> f3;
     private Future<DiscoveredUser> f4;
 
+    /**
+     * Constructor for class.
+     *
+     * @param sessionId Current session
+     * @param context The current context of the application
+     * @return none
+     */
     public BoFMessageListener(String sessionId, Context context) {
         this.sessionId = sessionId;
         this.db = AppDatabase.singleton(context);
         this.observers = new ArrayList<>();
     }
 
+    /**
+     * Receives a message to allow for parsing of data.
+     *
+     * @param message The message being received
+     * @return none
+     */
     @Override
     public void onFound(Message message) {
         Log.d(TAG, "Found message: " + new String(message.getContent()));
@@ -46,17 +72,30 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
 
     }
 
+    /**
+     * A message that is lost with its data.
+     *
+     * @param message The message being lost
+     * @return none
+     */
     @Override
     public void onLost(Message message) {
         Log.d(TAG, "Lost message: " + new String(message.getContent()));
     }
 
+    /**
+     * Receives data and parses through the data in order create profiles, course lists according
+     * to each profile, and perform any actions from such user into the database.
+     *
+     * @param info A complete text with a user's information
+     */
     private void parseInfo(String info) {
         String[] textBoxSeparated = info.split(",,,,");
 
         String profileId = textBoxSeparated[0].replaceAll("\n", "");
         String name = textBoxSeparated[1].replaceAll("\n", "");
         String photo = textBoxSeparated[2].replaceAll("\n", "");
+
         Log.d(TAG, "Parsed profile information: " + profileId + " " + name + " " + photo);
         this.f1 = this.backgroundThreadExecutor.submit(() -> {
             Profile user;
@@ -160,6 +199,12 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
         });
     }
 
+    /**
+     * Parse the encoding characters of a quarter to its equivalent name.
+     *
+     * @param quarter The encoded quarter name
+     * @return The full quarter name
+     */
     public String parseQuarter(String quarter) {
         switch(quarter) {
             case "FA":
@@ -179,11 +224,23 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
         }
     }
 
+    /**
+     * Register any observers to the listener.
+     *
+     * @param observer An observer to listener
+     * @return none
+     */
     @Override
     public void register(BoFObserver observer) {
         this.observers.add(observer);
     }
 
+    /**
+     * Unregister/remove an observer from observing the listener.
+     *
+     * @param observer An observer to listener.
+     * @return none
+     */
     @Override
     public void unregister(BoFObserver observer) {
         this.observers.remove(observer);

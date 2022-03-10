@@ -46,6 +46,7 @@ public class MatchProfileActivity extends AppCompatActivity {
     private ProfileViewAdapter viewProfileAdapter;
     private ImageView star;
     private ImageView wave;
+    private ImageView sendWave;
 
     private Message waveMessage;
 
@@ -84,6 +85,7 @@ public class MatchProfileActivity extends AppCompatActivity {
         this.photoImageView = findViewById(R.id.viewprofile_photo);
         this.star = findViewById(R.id.profile_star);
         this.wave = findViewById(R.id.profile_wave);
+        this.sendWave = findViewById(R.id.profile_send_wave);
 
         if (match.getIsFavorite()) {
             this.star.setImageResource(R.drawable.filled_star);
@@ -147,21 +149,36 @@ public class MatchProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        Nearby.getMessagesClient(this).unpublish(waveMessage);
+
         if (this.f1 != null) {
             this.f1.cancel(true);
         }
         if (this.f2 != null) {
             this.f2.cancel(true);
         }
+
+        super.onDestroy();
     }
 
-    public void onClickSendWave(View view) {
+    public void onSendWaveClicked(View view) {
         String selfInformation = encodeSelfInformation();
         selfInformation += this.matchId + ",wave,,,";
         this.waveMessage = new Message(selfInformation.getBytes());
         Nearby.getMessagesClient(this).publish(this.waveMessage);
         Toast.makeText(this, "Wave sent!", Toast.LENGTH_SHORT).show();
+        this.sendWave.setImageResource(R.drawable.filled_hand);
+        backgroundThreadExecutor.submit(() -> {
+            try {
+                Thread.sleep(2250);
+                runOnUiThread(() -> {
+                    sendWave.setImageResource(R.drawable.hollow_hand);
+                });
+            } catch (InterruptedException e) {
+                Log.d(TAG, "Unable to change hand icon!");
+            }
+
+        });
     }
 
     public String encodeSelfInformation() {
@@ -241,4 +258,5 @@ public class MatchProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MatchActivity.class);
         startActivity(intent);
     }
+
 }

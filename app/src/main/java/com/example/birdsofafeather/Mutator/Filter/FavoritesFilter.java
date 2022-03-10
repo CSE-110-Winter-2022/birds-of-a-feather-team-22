@@ -1,13 +1,11 @@
-package com.example.birdsofafeather.Mutator.Filter;
+package com.example.birdsofafeather.mutator.filter;
 
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
-import com.example.birdsofafeather.Mutator.Sorter.QuantitySorter;
-import com.example.birdsofafeather.Utilities;
+import com.example.birdsofafeather.mutator.sorter.QuantitySorter;
 import com.example.birdsofafeather.db.AppDatabase;
-import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
 
 import java.util.ArrayList;

@@ -6,12 +6,12 @@ import android.util.Pair;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.birdsofafeather.Mutator.Filter.CurrentQuarterFilter;
-import com.example.birdsofafeather.Mutator.Filter.FavoritesFilter;
-import com.example.birdsofafeather.Mutator.Mutator;
-import com.example.birdsofafeather.Mutator.Sorter.QuantitySorter;
-import com.example.birdsofafeather.Mutator.Sorter.RecencySorter;
-import com.example.birdsofafeather.Mutator.Sorter.SizeSorter;
+import com.example.birdsofafeather.mutator.filter.CurrentQuarterFilter;
+import com.example.birdsofafeather.mutator.filter.FavoritesFilter;
+import com.example.birdsofafeather.mutator.Mutator;
+import com.example.birdsofafeather.mutator.sorter.QuantitySorter;
+import com.example.birdsofafeather.mutator.sorter.RecencySorter;
+import com.example.birdsofafeather.mutator.sorter.SizeSorter;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;

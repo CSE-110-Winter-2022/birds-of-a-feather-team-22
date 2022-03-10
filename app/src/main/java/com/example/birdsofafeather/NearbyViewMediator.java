@@ -1,14 +1,13 @@
 package com.example.birdsofafeather;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.birdsofafeather.Mutator.Mutator;
-import com.example.birdsofafeather.Mutator.Sorter.QuantitySorter;
+import com.example.birdsofafeather.mutator.Mutator;
+import com.example.birdsofafeather.mutator.sorter.QuantitySorter;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class NearbyViewMediator implements BoFObserver {
     private final String TAG = "<NVM>";

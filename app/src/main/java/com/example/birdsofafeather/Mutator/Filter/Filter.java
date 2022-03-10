@@ -1,8 +1,8 @@
-package com.example.birdsofafeather.Mutator.Filter;
+package com.example.birdsofafeather.mutator.filter;
 
 import android.util.Pair;
 
-import com.example.birdsofafeather.Mutator.Mutator;
+import com.example.birdsofafeather.mutator.Mutator;
 import com.example.birdsofafeather.db.Profile;
 
 import java.util.List;

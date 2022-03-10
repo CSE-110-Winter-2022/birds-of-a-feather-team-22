@@ -1,6 +1,6 @@
 package com.example.birdsofafeather;
 
-import com.example.birdsofafeather.Mutator.Mutator;
+import com.example.birdsofafeather.mutator.Mutator;
 
 public interface BoFObserver {
 

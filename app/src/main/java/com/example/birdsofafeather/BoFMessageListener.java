@@ -83,7 +83,11 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
                 Profile self = this.db.profileDao().getUserProfile(true);
                 if (UUID.equals(self.getProfileId())) {
                     user.setIsWaving(true);
-                    this.db.profileDao().update(user);
+                    Profile finalUser = user;
+                    this.backgroundThreadExecutor.submit(() -> {
+                        this.db.profileDao().update(finalUser);
+                    });
+
                 }
                 continue;
             }

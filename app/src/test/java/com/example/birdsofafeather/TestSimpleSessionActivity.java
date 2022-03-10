@@ -44,4 +44,16 @@ public class TestSimpleSessionActivity {
         assertFalse(s.getIsLastSession());
         assertTrue(s1.getIsLastSession());
     }
+
+    @Test
+    public void deleteSession(){
+        Session s = new Session("1", "CSE 110", true);
+        db.sessionDao().insert(s);
+
+        assertEquals(1, db.sessionDao().count());
+
+        db.sessionDao().delete(s);
+
+        assertEquals(0, db.sessionDao().count());
+    }
 }

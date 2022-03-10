@@ -36,7 +36,13 @@ public class FavoritesFilter extends Filter {
 
         try {
             List<Profile> favorites = this.f1.get();
-            return new QuantitySorter(context).mutate(favorites);
+            List<Profile> nonWavingFavorites = new ArrayList<>();
+            for (Profile favorite : favorites) {
+                if (!favorite.getIsWaving()) {
+                    nonWavingFavorites.add(favorite);
+                }
+            }
+            return new QuantitySorter(context).mutate(nonWavingFavorites);
         } catch (Exception e) {
             Log.d("<FavoritesFilter>", "Unable to retrieve filtered matches!");
         }

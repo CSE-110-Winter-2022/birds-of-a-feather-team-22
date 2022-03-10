@@ -67,10 +67,10 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
 
         parseInfo(new String(message.getContent()));
         try {
-            Thread.sleep(1000);
+            Thread.sleep(250);
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Log.d(TAG, "Unable to sleep thread for 1000ms");
+            Log.d(TAG, "Unable to sleep thread for 500ms");
         }
         for (BoFObserver observer : this.observers) {
             observer.updateMatchesList();

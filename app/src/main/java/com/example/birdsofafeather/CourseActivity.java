@@ -252,6 +252,7 @@ public class CourseActivity extends AppCompatActivity {
         }
 
         startActivity(intent);
+        finish();
     }
 
     /**

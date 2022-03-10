@@ -32,7 +32,7 @@ public class MockingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mocking);
 
         this.db = AppDatabase.singleton(this);
-        this.mockedMessages = new ArrayList<>();
+        this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
 
         String selfProfileId = getIntent().getStringExtra("self_profile_id");
         this.selfProfileIdView = findViewById(R.id.self_profile_id_view);

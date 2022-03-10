@@ -30,11 +30,11 @@ public class TestMutators {
 
     public Context context = ApplicationProvider.getApplicationContext();
     public AppDatabase db = AppDatabase.useTestSingleton(context);
-    public Profile bill = new Profile("a", "Bill", false, false, false);
-    public Profile will = new Profile("b", "Will", false, false, false);
-    public Profile jill = new Profile("c", "Jill", false, true, false);
-    public Profile dill = new Profile("d", "Dill", false, true, false);
-    public Profile self = new Profile("self", "Me", true, false, false);
+    public Profile bill = new Profile("a", "Bill", false, false, false, false);
+    public Profile will = new Profile("b", "Will", false, false, false, false);
+    public Profile jill = new Profile("c", "Jill", false, true, false, false);
+    public Profile dill = new Profile("d", "Dill", false, true, false, false);
+    public Profile self = new Profile("self", "Me", true, false, false, false);
 
     @Test
     public void TestQuantitySorter() {

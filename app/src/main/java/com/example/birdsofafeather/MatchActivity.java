@@ -82,6 +82,7 @@ public class MatchActivity extends AppCompatActivity {
     private boolean isNewSession = false;
     private boolean isSearching = false;
     private boolean isTesting = false;
+    private boolean isDone = false;
 
     // Sorting
     private Mutator mutator;
@@ -179,7 +180,7 @@ public class MatchActivity extends AppCompatActivity {
         // Get current session
         this.sessionId = getIntent().getStringExtra("session_id");
         if (this.sessionId == null) {
-            Log.d(TAG, "No sessionId intent extra passed in, opening last saved session!");
+            Log.d(TAG, "Opening last saved session!");
             Future<Session> future = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getLastSession(true));
 
             try {
@@ -313,7 +314,7 @@ public class MatchActivity extends AppCompatActivity {
         // Initializing and registering NearbyViewMediator, then updating the matches list to retrieve prior matches
         this.nvm = new NearbyViewMediator(this, this.mutator, this.matchesRecyclerView, this.sessionId);
         this.messageListener.register(this.nvm);
-        this.nvm.updateMatchesList();
+//        this.nvm.updateMatchesList();
     }
 
     /**
@@ -327,8 +328,12 @@ public class MatchActivity extends AppCompatActivity {
         for (Message wavedMessage : this.wavedMessages) {
             Nearby.getMessagesClient(this).unpublish(wavedMessage);
         }
-        this.promptDialog.cancel();
-        unsetLastSession();
+        if (this.promptDialog != null) {
+            this.promptDialog.cancel();
+        }
+        if (this.isDone) {
+            unsetLastSession();
+        }
         super.onDestroy();
         Log.d(TAG, "MatchActivity destroyed!");
     }
@@ -534,6 +539,7 @@ public class MatchActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MatchProfileActivity.class);
         intent.putExtra("match_id", matchId);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -603,7 +609,9 @@ public class MatchActivity extends AppCompatActivity {
     public void onNearbyClicked(View view) {
         Intent intent = new Intent(this, MockingActivity.class);
         intent.putExtra("self_profile_id", selfProfile.getProfileId());
+        intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -621,6 +629,7 @@ public class MatchActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CourseActivity.class);
         intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -650,6 +659,7 @@ public class MatchActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MatchActivity.class);
             intent.putExtra("session_id", selectedSessionId);
             startActivity(intent);
+            this.isDone = true;
             finish();
         }
 
@@ -667,6 +677,7 @@ public class MatchActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MatchActivity.class);
         intent.putExtra("session_id", "");
         startActivity(intent);
+        this.isDone = true;
         finish();
     }
 
@@ -728,9 +739,7 @@ public class MatchActivity extends AppCompatActivity {
             changeSessionName(courseName);
 
             this.promptDialog.cancel();
-
         }
-
     }
 
     private boolean isValidCourseName(String courseName) {
@@ -877,9 +886,7 @@ public class MatchActivity extends AppCompatActivity {
         Log.d(TAG, "Clearing all waved profiles.");
         List<Profile> wavedProfiles = this.db.profileDao().getWavedProfiles(true);
         for (Profile profile : wavedProfiles) {
-            System.out.println(profile.getName() + " " + profile.getIsWaved());
             profile.setIsWaved(false);
-            System.out.println(profile.getName() + " " + profile.getIsWaved());
             this.db.profileDao().update(profile);
         }
     }

@@ -59,6 +59,7 @@ public class NameActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Intent intent = new Intent(this, MatchActivity.class);
                     startActivity(intent);
+                    finish();
                 });
             }
             Log.d(TAG, "No user profile, setup profile now");

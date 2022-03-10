@@ -35,7 +35,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.403" />
+        app:layout_constraintVertical_bias="0.45" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewprofile_shared_courses"
@@ -46,5 +46,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/profile_star"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:onClick="onFavoriteStarClicked"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/hollow_star"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageView
+        android:id="@+id/profile_wave"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        app:srcCompat="@drawable/next_arrow_3_square"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="189dp" />
+
+    <!--    <TextView-->
+<!--        android:id="@+id/profile_favorite_star"-->
+<!--        android:layout_width="66dp"-->
+<!--        android:layout_height="73dp"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_marginStart="96dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:background="#00ffffff"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:minWidth="48dp"-->
+<!--        android:onClick="onFavoriteStarClicked"-->
+<!--        android:text="☆"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="50dp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

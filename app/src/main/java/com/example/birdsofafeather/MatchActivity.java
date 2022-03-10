@@ -2,17 +2,22 @@ package com.example.birdsofafeather;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.birdsofafeather.mutator.filter.CurrentQuarterFilter;
 import com.example.birdsofafeather.mutator.filter.FavoritesFilter;
 import com.example.birdsofafeather.mutator.Mutator;
@@ -43,6 +49,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -62,6 +69,7 @@ public class MatchActivity extends AppCompatActivity {
     private ArrayList<String> mockedMessages;
     private List<Session> allSessions;
     private BoFObserver nvm;
+    private List<Course> currentCourses;
 
     // Flags
     private boolean isNewSession = false;
@@ -72,12 +80,10 @@ public class MatchActivity extends AppCompatActivity {
 
     // View/UI fields
     private RecyclerView matchesRecyclerView;
-    private RecyclerView.LayoutManager matchesLayoutManager;
-    private MatchViewAdapter matchesViewAdapter;
-    private EditText sessionNameView;
     private Button startButton;
     private Button stopButton;
     private Spinner sortFilterSpinner;
+    private TextView sessionLabel;
 
     // currently open prompt
     private AlertDialog promptDialog;
@@ -108,11 +114,18 @@ public class MatchActivity extends AppCompatActivity {
         this.sessionId = getIntent().getStringExtra("session_id");
         if (this.sessionId == null) {
             Log.d(TAG, "No sessionId intent extra passed in, opening last saved session!");
-            this.backgroundThreadExecutor.submit(() -> {
+            Future<Session> future = this.backgroundThreadExecutor.submit(() -> {
                 this.session = this.db.sessionDao().getLastSession(true);
-                this.sessionId = this.session.getSessionId();
-                setLastSession();
+
+                return this.session;
             });
+
+            try {
+                this.session = future.get();
+                this.sessionId = this.session.getSessionId();
+            } catch (Exception e) {
+                Log.d(TAG, "Unable to retrieve session!");
+            }
         }
         else if (this.sessionId.equals("")) {
             Log.d(TAG, "Making new session!");
@@ -120,18 +133,49 @@ public class MatchActivity extends AppCompatActivity {
             this.session = new Session(this.sessionId, getCurrentTimestamp(), true);
             this.backgroundThreadExecutor.submit(() -> {
                 this.db.sessionDao().insert(this.session);
-                setLastSession();
             });
             this.isNewSession = true;
         }
         else {
             Log.d(TAG, "Resuming previous session!");
-            this.backgroundThreadExecutor.submit(() -> {
+            Future<Session> future = this.backgroundThreadExecutor.submit(() -> {
                 this.session = this.db.sessionDao().getSession(this.sessionId);
-                this.sessionId = this.session.getSessionId();
-                setLastSession();
+
+                return this.session;
             });
+
+            try {
+                this.session = future.get();
+            } catch (Exception e) {
+                Log.d(TAG, "Unable to retrieve session!");
+            }
         }
+
+        setLastSession();
+
+        switch(this.session.getSortFilter()) {
+            case "Favorites Only":
+                this.mutator = new FavoritesFilter(this);
+                break;
+            case "Prioritize Recent":
+                this.mutator = new RecencySorter(this);
+                break;
+            case "Prioritize Small Classes":
+                this.mutator = new SizeSorter(this);
+                break;
+            case "This Quarter Only":
+                this.mutator = new CurrentQuarterFilter(this);
+                break;
+            default:
+                this.mutator = new QuantitySorter(this);
+                break;
+        }
+
+        System.out.println(this.session.getSortFilter());
+        System.out.println(this.session.getSortFilter().equals("Favorites Only"));
+
+        // Grab list of discovered users to display on start and sort by number of shared courses
+        this.matches = this.mutator.mutate(getCurrentMatches());
 
         // Get mocked messages
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
@@ -139,54 +183,53 @@ public class MatchActivity extends AppCompatActivity {
             this.mockedMessages = new ArrayList<>();
         }
 
-        // Grab list of discovered users to display on start and sort by number of shared courses
-        this.mutator = new QuantitySorter(this);
-        this.matches = this.mutator.mutate(getCurrentMatches());
-
         // Utilities initializations
-        this.messageListener = new BoFMessageListener(sessionId, this);
+        this.messageListener = new BoFMessageListener(this.sessionId, this);
         this.selfMessage = new Message(encodeSelfInformation().getBytes());
 
         // View initializations
         this.matchesRecyclerView = findViewById(R.id.matches_view);
-        this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
-        this.matchesLayoutManager = new LinearLayoutManager(this);
+//        this.matchesViewAdapter = new MatchViewAdapter(this.matches,this);
+//        this.matchesLayoutManager = new LinearLayoutManager(this);
         this.stopButton = findViewById(R.id.stop_button);
         this.startButton = findViewById(R.id.start_button);
-        this.sessionNameView = findViewById(R.id.session_name_view);
-        this.sortFilterSpinner = findViewById(R.id.sort_filter_spinner);
+        this.sessionLabel = findViewById(R.id.session_name_view);
+        this.sessionLabel.setText(this.session.getName());
+////        this.sessionNameView = findViewById(R.id.session_name_view);
+//
+//        // Change session name via EditText View
+//        this.sessionNameView.setText(this.session.getName());
+//        this.sessionNameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                if (actionId==EditorInfo.IME_ACTION_DONE){
+//                    sessionNameView.clearFocus();
+//                    if (isValidCourseName(sessionNameView.getText().toString())) {
+//                        changeSessionName(sessionNameView.getText().toString());
+//                    }
+//                    else {
+//                        sessionNameView.setText(session.getName());
+//                    }
+//
+//                }
+//                return false;
+//            }
+//        });
 
-        // Change session name via EditText View
-        this.sessionNameView.setText(this.session.getName());
-        this.sessionNameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId==EditorInfo.IME_ACTION_DONE){
-                    sessionNameView.clearFocus();
-                    if (isValidCourseName(sessionNameView.getText().toString())) {
-                        changeSessionName(sessionNameView.getText().toString());
-                    }
-                    else {
-                        sessionNameView.setText(session.getName());
-                    }
-
-                }
-                return false;
-            }
-        });
-
-        // Setup recycler view
-        this.matchesRecyclerView.setAdapter(this.matchesViewAdapter);
-        this.matchesRecyclerView.setLayoutManager(this.matchesLayoutManager);
-        this.matchesRecyclerView.setVisibility(View.VISIBLE);
-
-        this.nvm = new NearbyViewMediator(this, this.mutator, this.matchesViewAdapter, this.matchesRecyclerView, this.sessionId);
+        this.nvm = new NearbyViewMediator(this, this.mutator, this.matchesRecyclerView, this.sessionId);
         this.messageListener.register(this.nvm);
 
+        this.sortFilterSpinner = findViewById(R.id.sort_filter_spinner);
         List<String> mutations = new ArrayList<>(Arrays.asList("No Sort/Filter", "Favorites Only", "Prioritize Recent", "Prioritize Small Classes", "This Quarter Only"));
         ArrayAdapter<String> sort_filter_adapter = new ArrayAdapter<>(this, R.layout.sort_filter_spinner_item_text, mutations);
         sort_filter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.sortFilterSpinner.setAdapter(sort_filter_adapter);
+
+        for (int i = 0; i < this.sortFilterSpinner.getCount(); i++) {
+            if (this.sortFilterSpinner.getItemAtPosition(i).equals(this.session.getSortFilter())) {
+                this.sortFilterSpinner.setSelection(i);
+            }
+        }
 
         Context context = this;
         this.sortFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -213,9 +256,12 @@ public class MatchActivity extends AppCompatActivity {
                         break;
                 }
 
-                messageListener.unregister(nvm);
+                session.setSortFilter(sortFilterSpinner.getSelectedItem().toString());
+                backgroundThreadExecutor.submit(() -> {
+                    db.sessionDao().update(session);
+                });
+
                 nvm.setMutator(mutator);
-                messageListener.register(nvm);
                 nvm.updateMatchesList();
             }
 
@@ -224,7 +270,10 @@ public class MatchActivity extends AppCompatActivity {
             }
         });
 
+        this.nvm.updateMatchesList();
+        this.currentCourses = getCurrentCourses();
 
+        System.out.println(selfProfile.getProfileId());
     }
 
     @Override
@@ -232,6 +281,7 @@ public class MatchActivity extends AppCompatActivity {
         setLastSession();
         super.onDestroy();
     }
+
 
     private List<Profile> getCurrentMatches() {
         Future<List<Profile>> future = this.backgroundThreadExecutor.submit(() -> {
@@ -341,11 +391,8 @@ public class MatchActivity extends AppCompatActivity {
             showStartPopup();
         }
         else {
-            synchronized (this) {
-                startSearchForMatches();
-            }
+            startSearchForMatches();
         }
-
     }
 
 
@@ -354,16 +401,15 @@ public class MatchActivity extends AppCompatActivity {
         Log.d(TAG, "Stop button pressed, stopping search for matches...");
 
         stopSearchForMatches();
-
-        List<Course> currentCourses = getCurrentCourses();
+        changeSessionName(this.session.getName());
 
         //check if user has entered courses from this current quarter
 //        if (this.isNewSession) {
-            if (currentCourses.isEmpty()){
+            if (this.currentCourses.isEmpty()){
                 showEnterSessionNameStopPopup(true);
             }
             else {
-                showSelectOrEnterSessionNameStopPopup(currentCourses);
+                showSelectOrEnterSessionNameStopPopup();
             }
 //        }
 
@@ -404,9 +450,11 @@ public class MatchActivity extends AppCompatActivity {
         Log.d(TAG, "Making selected match a favorite.");
 
         // Send the match's profile id to the activity responsible for showing the profile
-        TextView matchProfileIdView = view.findViewById(R.id.match_profile_id_view);
+        ViewGroup vg = (ViewGroup) view.getParent();
+        TextView matchProfileIdView = vg.findViewById(R.id.match_profile_id_view);
         String matchId = matchProfileIdView.getText().toString();
-//        ImageButton favoriteStar = view.findViewById(R.id.star);
+        ImageView favoriteStar = view.findViewById(R.id.star);
+//        CheckBox checkBox = (CheckBox) view;
 
         Future<Profile> future = this.backgroundThreadExecutor.submit(() -> {
            return this.db.profileDao().getProfile(matchId);
@@ -419,9 +467,12 @@ public class MatchActivity extends AppCompatActivity {
             if (matchProfile.getIsFavorite()) {
                 matchProfile.setIsFavorite(false);
 
+
                 Toast.makeText(this, "Unsaved from Favorites!", Toast.LENGTH_SHORT).show();
-                // Update UI to reflect that the match is no longer a favorite
-//                favoriteStar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),android.R.drawable.btn_star_big_off));
+//                favoriteStar.setText("☆");
+//                favoriteStar.setTextColor(Color.parseColor("#BBBBBB"));
+                favoriteStar.setImageResource(R.drawable.hollow_star);
+//                checkBox.getButtonDrawable().setColorFilter(0xFF808080, PorterDuff.Mode.SRC_ATOP);
             }
             // Match not already a favorite, need to favorite
             else {
@@ -429,7 +480,9 @@ public class MatchActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "Saved to Favorites!", Toast.LENGTH_SHORT).show();
                 // Update UI to reflect that the match is no longer a favorite
-//                favoriteStar.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),android.R.drawable.btn_star_big_on));
+                favoriteStar.setImageResource(R.drawable.filled_star);
+//                favoriteStar.setText("★");
+//                favoriteStar.setTextColor(Color.parseColor("#FFFF00"));
             }
 
             // Update DB to reflect change in favorite status for match
@@ -437,7 +490,7 @@ public class MatchActivity extends AppCompatActivity {
             backgroundThreadExecutor.submit(() -> {
                 this.db.profileDao().update(finalMatchProfile);
             });
-
+            this.nvm.updateMatchesList();
         } catch (Exception e) {
             Log.d(TAG, "Could not retrieve match profile");
         }
@@ -631,7 +684,7 @@ public class MatchActivity extends AppCompatActivity {
         this.promptDialog.show();
     }
 
-    public void showSelectOrEnterSessionNameStopPopup(List<Course> list){
+    public void showSelectOrEnterSessionNameStopPopup(){
         Log.d(TAG, "creating second stop prompt AlertDialog");
 
         LayoutInflater inflater = getLayoutInflater();
@@ -645,7 +698,7 @@ public class MatchActivity extends AppCompatActivity {
         sessionsView.setLayoutManager(new LinearLayoutManager(this));
         sessionsView.setHasFixedSize(true);
 
-        SessionCoursesAdapter adapter = new SessionCoursesAdapter(list);
+        SessionCoursesAdapter adapter = new SessionCoursesAdapter(this.currentCourses);
         sessionsView.setAdapter(adapter);
         promptBuilder.setView(contextView);
 
@@ -673,7 +726,7 @@ public class MatchActivity extends AppCompatActivity {
             this.db.sessionDao().update(this.session);
             this.allSessions = this.db.sessionDao().getAllSessions();
         });
-        this.sessionNameView.setText(newName);
+        this.sessionLabel.setText(newName);
         this.isNewSession = false;
     }
 
@@ -691,6 +744,10 @@ public class MatchActivity extends AppCompatActivity {
                 this.db.profileDao().update(profile);
             }
         });
+    }
+
+    public void onSessionLabelClicked(View view) {
+        showSelectOrEnterSessionNameStopPopup();
     }
 }
 

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,8 +44,10 @@ public class MatchProfileActivity extends AppCompatActivity {
     private RecyclerView sharedCoursesRecyclerView;
     private RecyclerView.LayoutManager sharedCoursesLayoutManager;
     private ProfileViewAdapter viewProfileAdapter;
+    private ImageView star;
+    private ImageView wave;
 
-    private Message wave;
+    private Message waveMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,27 @@ public class MatchProfileActivity extends AppCompatActivity {
         // Get the name and photo Views and set them
         this.nameTextView = findViewById(R.id.viewprofile_name);
         this.photoImageView = findViewById(R.id.viewprofile_photo);
+        this.star = findViewById(R.id.profile_star);
+        this.wave = findViewById(R.id.profile_wave);
+
+        if (match.getIsFavorite()) {
+            this.star.setImageResource(R.drawable.filled_star);
+//            this.favoriteStar.setText("★");
+//            this.favoriteStar.setTextColor(Color.parseColor("#FFFF00"));
+        }
+        else {
+            this.star.setImageResource(R.drawable.hollow_star);
+//            this.favoriteStar.setText("☆");
+//            this.favoriteStar.setTextColor(Color.parseColor("#776000"));
+        }
+
+        if (match.getIsWaving()) {
+            this.wave.setVisibility(View.VISIBLE);
+            Glide.with(this).load(R.drawable.waving_hand).into(this.wave);
+        }
+        else {
+            this.wave.setVisibility(View.GONE);
+        }
 
         this.nameTextView.setText(this.match.getName());
         Profile finalMatch = this.match;
@@ -118,7 +142,7 @@ public class MatchProfileActivity extends AppCompatActivity {
             this.selfCourses = this.db.courseDao().getCoursesByProfileId(this.selfProfile.getProfileId());
         });
 
-        this.wave = null;
+        this.waveMessage = null;
     }
 
     @Override
@@ -135,8 +159,8 @@ public class MatchProfileActivity extends AppCompatActivity {
     public void onClickSendWave(View view) {
         String selfInformation = encodeSelfInformation();
         selfInformation += this.matchId + ",wave,,,";
-        this.wave = new Message(selfInformation.getBytes());
-        Nearby.getMessagesClient(this).publish(this.wave);
+        this.waveMessage = new Message(selfInformation.getBytes());
+        Nearby.getMessagesClient(this).publish(this.waveMessage);
         Toast.makeText(this, "Wave sent!", Toast.LENGTH_SHORT).show();
     }
 
@@ -180,5 +204,41 @@ public class MatchProfileActivity extends AppCompatActivity {
                 Log.d("<MatchProfileActivity>", "Quarter cannot be encoded");
                 return null;
         }
+    }
+
+    public void onFavoriteStarClicked(View view) {
+        Log.d(TAG, "Making selected match a favorite.");
+
+        // Match already a favorite, need to unfavorite
+        if (this.match.getIsFavorite()) {
+            this.match.setIsFavorite(false);
+
+            // Update UI to reflect that the match is no longer a favorite
+            Toast.makeText(this, "Unsaved from Favorites!", Toast.LENGTH_SHORT).show();
+//            this.favoriteStar.setText("☆");
+//            this.favoriteStar.setTextColor(Color.parseColor("#BBBBBB"));
+            this.star.setImageResource(R.drawable.hollow_star);
+        }
+        // Match not already a favorite, need to favorite
+        else {
+            this.match.setIsFavorite(true);
+
+            // Update UI to reflect that the match is no longer a favorite
+            Toast.makeText(this, "Saved to Favorites!", Toast.LENGTH_SHORT).show();
+//            this.favoriteStar.setText("★");
+//            this.favoriteStar.setTextColor(Color.parseColor("#FFFF00"));
+            this.star.setImageResource(R.drawable.filled_star);
+        }
+
+        // Update DB to reflect change in favorite status for match
+        backgroundThreadExecutor.submit(() -> {
+            this.db.profileDao().update(this.match);
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MatchActivity.class);
+        startActivity(intent);
     }
 }

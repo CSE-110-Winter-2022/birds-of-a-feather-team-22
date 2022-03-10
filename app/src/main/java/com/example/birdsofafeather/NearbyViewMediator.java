@@ -1,6 +1,7 @@
 package com.example.birdsofafeather;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,8 +15,10 @@ import com.example.birdsofafeather.db.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class NearbyViewMediator implements BoFObserver {
     private final String TAG = "<NVM>";
@@ -24,39 +27,66 @@ public class NearbyViewMediator implements BoFObserver {
     private Context context;
     private AppDatabase db;
     private Mutator mutator;
-    private MatchViewAdapter mva;
-    private RecyclerView mrv;
+    private RecyclerView rv;
     private RecyclerView.LayoutManager llm;
 
     private String sessionId;
 
+    private Future<List<String>> f1;
+    private Future<List<DiscoveredUser>> f2;
+    private Future<Profile> f3;
 
-    public NearbyViewMediator(Context context, Mutator mutator, MatchViewAdapter mva, RecyclerView mrv, String sessionId) {
+
+    public NearbyViewMediator(Context context, Mutator mutator, RecyclerView mrv, String sessionId) {
         this.context = context;
         this.db = AppDatabase.singleton(context);
         this.mutator = mutator;
-        this.mva = mva;
-        this.mrv = mrv;
+        this.rv = mrv;
         this.llm = new LinearLayoutManager(context);
         this.sessionId = sessionId;
     }
 
     // TODO: Implement for waves
     @Override
-    public void updateMatchesList() {
-        List<String> wavingProfileIds = this.db.profileDao().getWavingProfileIds(true);
-        List<DiscoveredUser> usersInSession = this.db.discoveredUserDao().getDiscoveredUsersFromSession(this.sessionId);
+    public synchronized void updateMatchesList() {
+        Log.d(TAG, "Updating matches list!");
+
+        this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getWavingProfileIds(true));
+        List<String> wavingProfileIds = null;
+        try {
+            wavingProfileIds = this.f1.get();
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to retrieve waving profile ids!");
+        }
+
+        this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.discoveredUserDao().getDiscoveredUsersFromSession(this.sessionId));
+        List<DiscoveredUser> usersInSession = null;
+        try {
+            usersInSession = this.f2.get();
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to retrieve discovered users in session!");
+        }
+
         List<Profile> wavingProfiles = new ArrayList<>();
         List<Profile> nonWavingProfiles = new ArrayList<>();
 
         for (DiscoveredUser user : usersInSession) {
             if (user.getNumShared() > 0) {
                 String profileId = user.getProfileId();
+
+                this.f3 = backgroundThreadExecutor.submit(() -> this.db.profileDao().getProfile(profileId));
+                Profile profile = null;
+                try {
+                    profile = this.f3.get();
+                } catch (Exception e) {
+                    Log.d(TAG, "Unable to retrieve profile!");
+                }
+
                 if (wavingProfileIds.contains(profileId)) {
-                    wavingProfiles.add(this.db.profileDao().getProfile(profileId));
+                    wavingProfiles.add(profile);
                 }
                 else {
-                    nonWavingProfiles.add(this.db.profileDao().getProfile(profileId));
+                    nonWavingProfiles.add(profile);
                 }
             }
         }
@@ -66,10 +96,12 @@ public class NearbyViewMediator implements BoFObserver {
         List<Pair<Profile, Integer>> matchesRest = this.mutator.mutate(nonWavingProfiles);
         matches.addAll(matchesRest);
 
+        Log.d(TAG, "Displaying new matches!");
+
         // Refresh recycler view
-        this.mva = new MatchViewAdapter(matches, this.context);
-        this.mrv.setAdapter(this.mva);
-        this.mrv.setLayoutManager(this.llm);
+
+        this.rv.setAdapter(new MatchViewAdapter(matches, this.context));
+        this.rv.setLayoutManager(this.llm);
     }
 
     public void setMutator(Mutator mutator) {

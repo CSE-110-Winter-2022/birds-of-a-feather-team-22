@@ -1,62 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layoutMatch"
-    android:clickable="true"
-    android:onClick="onMatchRowSelected"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/match_photo_view"
-        android:layout_width="320dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:adjustViewBounds="false"
-        android:contentDescription="@string/profile_picture"
-        android:scaleX="0.8"
-        android:scaleY="0.8"
-        tools:ignore="ImageContrastCheck"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <LinearLayout
-        android:id="@+id/match_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="match_parent" >
 
-        <TextView
-            android:id="@+id/forappearance"
+        <LinearLayout
+            android:id="@+id/belowLayout"
+            android:layout_width="375dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="10sp"
+            android:clickable="true"
+            android:onClick="onMatchRowSelected"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"><![CDATA[
+
+
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/layoutMatch"
+            android:clickable="true"
+            android:onClick="onClickMatch"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/match_name_view"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:text=""
-            android:textColor="@color/dark_seafoam"
-            android:textSize="20sp"
-            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/match_num_courses_view"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:text=""
-            android:textColor="@color/seafoam"
-            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/match_profile_id_view"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:text=""
-            android:visibility="invisible" />
 
-    </LinearLayout>
 
-</LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+            ]]>
+
+            <ImageView
+                android:id="@+id/match_photo_view"
+                android:layout_width="300dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="false"
+                android:contentDescription="@string/profile_picture"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                tools:ignore="ImageContrastCheck"
+                tools:layout_editor_absoluteX="269dp"
+                tools:layout_editor_absoluteY="0dp"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <LinearLayout
+                android:id="@+id/match_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/forappearance"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/match_name_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:textAlignment="gravity"
+                    android:textColor="@color/dark_seafoam"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/match_num_courses_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@color/seafoam"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/match_num_courses_quarter_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@color/seafoam"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/match_profile_id_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+<!--        <TextView-->
+<!--            android:id="@+id/star"-->
+<!--            android:layout_width="95dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginEnd="305dp"-->
+<!--            android:layout_marginBottom="71dp"-->
+<!--            android:background="#00ffffff"-->
+<!--            android:gravity="bottom"-->
+<!--            android:minWidth="48dp"-->
+<!--            android:onClick="onFavoriteStarClicked"-->
+<!--            android:text="☆"-->
+<!--            android:textAlignment="viewEnd"-->
+<!--            android:textSize="40dp"-->
+<!--            android:textStyle="bold" />-->
+
+
+
+        <ImageView
+            android:id="@+id/wave"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="102dp"
+            android:layout_marginEnd="297dp"
+            app:srcCompat="@drawable/next_arrow_3_square" />
+
+        <ImageView
+            android:id="@+id/star"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="27dp"
+            android:layout_marginEnd="305dp"
+            android:onClick="onFavoriteStarClicked"
+            app:srcCompat="@drawable/hollow_star" />
+
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

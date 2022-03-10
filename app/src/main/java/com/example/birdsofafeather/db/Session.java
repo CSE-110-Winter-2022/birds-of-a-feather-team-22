@@ -19,10 +19,14 @@ public class Session {
     @ColumnInfo(name = "isLastSession")
     private boolean isLastSession;
 
+    @ColumnInfo(name = "sortFilter")
+    private String sortFilter;
+
     public Session(@NonNull String sessionId, String name, boolean isLastSession) {
         this.sessionId = sessionId;
         this.name = name;
         this.isLastSession = isLastSession;
+        this.sortFilter = "No Sort/Filter";
     }
 
     @NonNull
@@ -48,5 +52,13 @@ public class Session {
 
     public void setIsLastSession(boolean isLastSession) {
         this.isLastSession = isLastSession;
+    }
+
+    public String getSortFilter() {
+        return this.sortFilter;
+    }
+
+    public void setSortFilter(String sortFilter) {
+        this.sortFilter = sortFilter;
     }
 }

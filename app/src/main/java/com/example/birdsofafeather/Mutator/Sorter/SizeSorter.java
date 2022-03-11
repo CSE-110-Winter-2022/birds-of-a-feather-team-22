@@ -1,3 +1,9 @@
+/*
+ * This file is capable of implementing the sorting of profiles with the sizes of shared courses.
+ *
+ * Author: CSE 110 Winter 2022 Group 22
+ */
+
 package com.example.birdsofafeather.mutator.sorter;
 
 import android.content.Context;
@@ -15,21 +21,41 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-// Specialized sorting algorithm that sorts matches based upon the size of shared courses
+/*
+ * Class provides a specialized sorting algorithm that sorts matches based upon the size of shared
+ * courses.
+ */
 public class SizeSorter extends Sorter {
+
+    // Instance variables for class
     private Future<List<Pair<Profile, Double>>> f;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
 
+    /**
+     * Constructor for class.
+     *
+     * @param context A given context
+     */
     public SizeSorter(Context context) {
         this.db = AppDatabase.singleton(context);
     }
 
-    // For testing
+    /**
+     * Constructor for class. Used for testing purposes
+     *
+     * @param db A given database
+     */
     public SizeSorter(AppDatabase db) {
         this.db = db;
     }
 
+    /**
+     * Filters through the profiles by the scores of the course sizes and provides modifications to
+     * a list.
+     * @param matches List of profiles with at least one shared course
+     * @return List of profiles with application of scores by course size
+     */
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f = backgroundThreadExecutor.submit(() -> {
@@ -66,7 +92,11 @@ public class SizeSorter extends Sorter {
     }
 
 
-    // Helper method to get the shared courses between a profile and the user profile
+    /**
+     * Helps in getting the shared courses between a profile and the user self profile.
+     * @param match A profile object that is a match
+     * @return List of shared courses
+     */
     private List<Course> getSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
         String userId = this.db.profileDao().getUserProfile(true).getProfileId();
@@ -75,7 +105,12 @@ public class SizeSorter extends Sorter {
         return Utilities.getSharedCourses(userCourses, matchCourses);
     }
 
-    // Helper method to get the shared courses between a profile and the user profile
+    /**
+     * Helpers in getting the number of shared courses between a profile and the user self profile.
+     *
+     * @param match A profile object that is a match
+     * @return Number of shared courses
+     */
     private int getNumSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
         String userId = this.db.profileDao().getUserProfile(true).getProfileId();
@@ -84,8 +119,12 @@ public class SizeSorter extends Sorter {
         return Utilities.getNumSharedCourses(userCourses, matchCourses);
     }
 
-
-    // Helper method to calculate the size score per MS2 Planning Phase writeup for a Course
+    /**
+     * Helps in calculating the size score per MS2 Planning Phase writeup for a course.
+     *
+     * @param course A given course object
+     * @return The score based on class size
+     */
     private double calculateSizeScore(Course course) {
         switch (course.getClassSize()) {
             case "Tiny":

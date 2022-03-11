@@ -1,3 +1,10 @@
+/*
+ * This file is capable of implementing the sorting of profiles in pair objects, with the
+ * corresponding number of courses shared.
+ *
+ * Author: CSE 110 Winter 2022 Group 22
+ */
+
 package com.example.birdsofafeather.mutator.sorter;
 
 import android.content.Context;
@@ -15,21 +22,41 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-// Default sorting algorithm that sorts matches based upon the quantity of shared courses
+/*
+ * Class providing default sorting algorithm that sorts matches based upon the quantity of shared
+ * courses
+ */
 public class QuantitySorter extends Sorter {
+
+    // Instance variables of class
     private Future<List<Pair<Profile, Integer>>> f1;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
 
+    /**
+     * Constructor for class.
+     * @param context A given context
+     */
     public QuantitySorter(Context context) {
         this.db = AppDatabase.singleton(context);
     }
 
-    // For testing
+    /**
+     * Constrcutor for class. Used for testing.
+     *
+     * @param db A given database
+     */
     public QuantitySorter(AppDatabase db) {
         this.db = db;
     }
 
+    /**
+     * Filters through the profiles by number of shared courses in descending order.
+     *
+     * @param matches List of profiles that have at least one shared course with user self
+     * @return List of pair objects with profiles and their corresponding number of shared courses
+     * with user self
+     */
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f1 = backgroundThreadExecutor.submit(() -> {
@@ -54,6 +81,12 @@ public class QuantitySorter extends Sorter {
         return pairs;
     }
 
+    /**
+     * Returns the number of shared courses from a profile that has been matched.
+     *
+     * @param match A given profile match
+     * @return Number of shared courses between match and user self
+     */
     private int getNumSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
         String userId = this.db.profileDao().getUserProfile(true).getProfileId();

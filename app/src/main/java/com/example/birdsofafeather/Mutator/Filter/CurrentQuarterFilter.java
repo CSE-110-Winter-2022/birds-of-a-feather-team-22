@@ -1,3 +1,9 @@
+/*
+ * This file is capable of filtering matches by the current quarter and year.
+ *
+ * Authors: CSE 110 Winter 2022 Group 22
+ */
+
 package com.example.birdsofafeather.mutator.filter;
 
 import android.content.Context;
@@ -21,6 +27,8 @@ import java.util.concurrent.Future;
  * Extends the Filter abstract class.
  */
 public class CurrentQuarterFilter extends Filter {
+
+    // Instance variables of class
     private Future<List<Profile>> f1;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private AppDatabase db;
@@ -29,6 +37,11 @@ public class CurrentQuarterFilter extends Filter {
     private Context context;
 
 
+    /**
+     * Constructor for class.
+     *
+     * @param context A given context
+     */
     public CurrentQuarterFilter(Context context) {
         this.context = context;
         this.db = AppDatabase.singleton(context);
@@ -36,12 +49,26 @@ public class CurrentQuarterFilter extends Filter {
         this.currentYear = Utilities.getCurrentYear();
     }
 
+    /**
+     * Constructor for class.
+     *
+     * @param db A given database
+     * @param currentQuarter A given quarter
+     * @param currentYear A given year
+     */
     public CurrentQuarterFilter(AppDatabase db, String currentQuarter, String currentYear) {
         this.db = db;
         this.currentQuarter = currentQuarter;
         this.currentYear = currentYear;
     }
 
+    /**
+     * Provides a list of user profiles as well as the amount of classes shared with self user
+     * and filters through them.
+     *
+     * @param matches List of profiles that have matches with user self
+     * @return List of match profiles with corresponding number of shared courses
+     */
     @Override
     public synchronized List<Pair<Profile, Integer>> mutate(List<Profile> matches) {
         this.f1 = this.backgroundThreadExecutor.submit(() -> {
@@ -73,7 +100,12 @@ public class CurrentQuarterFilter extends Filter {
         return new ArrayList<>();
     }
 
-    // Helper method to get the shared courses between a profile and the user profile
+    /**
+     * Helper in getting the shared courses between a profile and the self user profile.
+     *
+     * @param match A matched profile
+     * @return List of courses that are shared
+     */
     private List<Course> getSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
         String userId = this.db.profileDao().getUserProfile(true).getProfileId();
@@ -82,6 +114,7 @@ public class CurrentQuarterFilter extends Filter {
         return Utilities.getSharedCourses(userCourses, matchCourses);
     }
 
+    // TODO: Check if method is to be removed or kept
     // Helper method to get the shared courses between a profile and the user profile
     private int getNumSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());

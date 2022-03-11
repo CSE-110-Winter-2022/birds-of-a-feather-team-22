@@ -252,19 +252,19 @@ public class MatchActivity extends AppCompatActivity {
                                        int position, long id) {
                 switch(sortFilterSpinner.getSelectedItem().toString()) {
                     case "No Sort/Filter":
-                        mutator = new QuantitySorter(context);
+                        mutator = (Mutator) new QuantitySorter(context);
                         break;
                     case "Prioritize Recent":
-                        mutator = new RecencySorter(context);
+                        mutator = (Mutator) new RecencySorter(context);
                         break;
                     case "Prioritize Small Classes":
-                        mutator = new SizeSorter(context);
+                        mutator = (Mutator) new SizeSorter(context);
                         break;
                     case "This Quarter Only":
-                        mutator = new CurrentQuarterFilter(context);
+                        mutator = (Mutator) new CurrentQuarterFilter(context);
                         break;
                     case "Favorites Only":
-                        mutator = new FavoritesFilter(context);
+                        mutator = (Mutator) new FavoritesFilter(context);
                         break;
                 }
 
@@ -279,7 +279,7 @@ public class MatchActivity extends AppCompatActivity {
             }
 
             /**
-             * Ensures the nothing occurs when nothing is selected from spinner.
+             * Ensures that nothing occurs when nothing is selected from spinner.
              *
              * @param parent Given parent view
              * @return none

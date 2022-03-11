@@ -256,7 +256,12 @@ public class Profile {
         this.isWaved = isWaved;
     }
 
-
+    /**
+     * Overrides the equals method to allow for comparing of Profiles.
+     *
+     * @param obj A given profile object
+     * @return none
+     */
     @Override
     public boolean equals(Object obj)
     {

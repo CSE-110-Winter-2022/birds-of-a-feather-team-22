@@ -215,9 +215,9 @@ public class CourseActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    // Update outgoing waves due to added courses
                     this.f5 = this.backgroundThreadExecutor.submit(() -> {
                         List<Wave> waves = this.db.waveDao().getAllWaves();
-                        System.out.println(waves);
                         if (waves != null) {
                             for (Wave wave : waves) {
                                 Log.d(TAG, "Found outgoing wave, updating now...");

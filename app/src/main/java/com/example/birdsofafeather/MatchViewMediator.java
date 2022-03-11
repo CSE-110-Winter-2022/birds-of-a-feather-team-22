@@ -21,8 +21,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class NearbyViewMediator implements BoFObserver {
-    private final String TAG = "<NVM>";
+public class MatchViewMediator implements BoFObserver {
+    private final String TAG = "<MVM>";
 
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Context context;
@@ -38,9 +38,9 @@ public class NearbyViewMediator implements BoFObserver {
     private Future<Profile> f3;
 
 
-    public NearbyViewMediator(Context context, Mutator mutator, RecyclerView mrv, String sessionId) {
+    public MatchViewMediator(Context context, AppDatabase db, Mutator mutator, RecyclerView mrv, String sessionId) {
         this.context = context;
-        this.db = AppDatabase.singleton(context);
+        this.db = db;
         this.mutator = mutator;
         this.rv = mrv;
         this.llm = new LinearLayoutManager(context);
@@ -51,7 +51,7 @@ public class NearbyViewMediator implements BoFObserver {
 
     // TODO: Implement for waves
     @Override
-    public synchronized void updateMatchesList() {
+    public synchronized void updateMatchView() {
         // Get current position of RecyclerView
         int currentVisiblePosition = ((LinearLayoutManager) Objects.requireNonNull(this.rv.getLayoutManager())).findFirstCompletelyVisibleItemPosition();
 

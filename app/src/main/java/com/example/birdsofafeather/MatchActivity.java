@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ import com.example.birdsofafeather.mutator.sorter.RecencySorter;
 import com.example.birdsofafeather.mutator.sorter.SizeSorter;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
-import com.example.birdsofafeather.db.DiscoveredUser;
 import com.example.birdsofafeather.db.Profile;
 import com.example.birdsofafeather.db.Session;
 import com.google.android.gms.nearby.Nearby;
@@ -50,12 +48,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-/*
+/**
  * This class refers to the screen where the user can see discovered users and search for more
  * discovered users.
  */
@@ -63,19 +60,23 @@ public class MatchActivity extends AppCompatActivity {
     // Log tag
     private final String TAG = "<Match>";
 
-    // DB-related fields
-    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    // DB/Threading fields
     private AppDatabase db;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Future<List<String>> f1;
+    private Future<Profile> f2;
+    private Future<List<Course>> f3;
+    private Future<List<Session>> f4;
+    private Future<Void> f5;
+    private Future<Session> f6;
+
+    // Self information fields
     private List<Session> allSessions;
     private Session session;
     private String sessionId;
     private Profile selfProfile;
     private List<Course> selfCourses;
     private List<Course> currentCourses;
-
-    private ArrayList<String> mockedMessages;
-    private ArrayList<Message> wavedMessages;
-    private BoFObserver nvm;
 
 
     // Flags
@@ -88,27 +89,24 @@ public class MatchActivity extends AppCompatActivity {
     private Mutator mutator;
 
     // View/UI fields
-    private RecyclerView matchesRecyclerView;
+    private TextView sessionLabel;
     private Button startButton;
     private Button stopButton;
     private Spinner sortFilterSpinner;
-    private TextView sessionLabel;
+    private RecyclerView matchesRecyclerView;
 
-    // currently open prompt
-    private AlertDialog promptDialog;
+    // Popup field
+    private AlertDialog currentPopup;
 
-    // Utilities
+    // Nearby/MatchViewMediator fields
     private BoFMessageListener messageListener;
     private Message selfMessage;
-
-    private Future<List<String>> f1;
-    private Future<Profile> f2;
-    private Future<List<Course>> f3;
-    private Future<List<Session>> f4;
-    private Future<Void> f5;
+    private ArrayList<String> mockedMessages;
+    private ArrayList<Message> wavedMessages;
+    private BoFObserver mvm;
 
     /**
-     * Initializes the screen for this acitivity.
+     * Initializes the screen for this activity.
      *
      * @param savedInstanceState A bundle that contains information regarding layout and data
      * @return none
@@ -121,9 +119,8 @@ public class MatchActivity extends AppCompatActivity {
 
         Log.d(TAG, "Setting up Match Screen");
 
+        // Initialize testing DB if testing, otherwise use normal DB
         this.isTesting = getIntent().getBooleanExtra("isTesting", false);
-
-        // DB-related Initializations
         if (this.isTesting) {
             this.db = AppDatabase.useTestSingleton(this);
         }
@@ -131,30 +128,31 @@ public class MatchActivity extends AppCompatActivity {
             this.db = AppDatabase.singleton(this);
         }
 
+        // Get self profile
         this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getUserProfile(true));
-
         try {
             this.selfProfile = this.f2.get();
         } catch (Exception e) {
             Log.d(TAG, "Unable to retrieve self profile!");
         }
 
+        // Get list of all self courses
         this.f3 = this.backgroundThreadExecutor.submit(() -> this.db.courseDao().getCoursesByProfileId(this.selfProfile.getProfileId()));
-
         try {
             this.selfCourses = this.f3.get();
         } catch (Exception e) {
             Log.d(TAG, "Unable to retrieve self courses!");
         }
 
+        // Get list of all sessions
         this.f4 = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getAllSessions());
-
         try {
             this.allSessions = this.f4.get();
         } catch (Exception e) {
             Log.d(TAG, "Unable to retrieve all session!");
         }
 
+        // Get current courses
         this.currentCourses = getCurrentCourses();
 
         // Get mocked messages
@@ -163,7 +161,7 @@ public class MatchActivity extends AppCompatActivity {
             this.mockedMessages = new ArrayList<>();
         }
 
-        // Get outgoing waved messages
+        // Get and publish outgoing waves
         this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getWavedProfileIds(true));
         this.wavedMessages = new ArrayList<>();
         try {
@@ -177,19 +175,21 @@ public class MatchActivity extends AppCompatActivity {
             Log.d(TAG, "Unable to retrieve waved profile ids!");
         }
 
-        // Get current session
+        // Gets the current session depending on the "session_id" extra
         this.sessionId = getIntent().getStringExtra("session_id");
+        // Open/resume last session
         if (this.sessionId == null) {
             Log.d(TAG, "Opening last saved session!");
-            Future<Session> future = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getLastSession(true));
+            this.f6 = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getLastSession(true));
 
             try {
-                this.session = future.get();
+                this.session = this.f6.get();
                 this.sessionId = this.session.getSessionId();
             } catch (Exception e) {
                 Log.d(TAG, "Unable to retrieve session!");
             }
         }
+        // Create a new session
         else if (this.sessionId.equals("")) {
             Log.d(TAG, "Making new session!");
             this.sessionId = UUID.randomUUID().toString();
@@ -200,37 +200,19 @@ public class MatchActivity extends AppCompatActivity {
             });
             this.isNewSession = true;
         }
+        // Resume a previous session
         else {
             Log.d(TAG, "Resuming previous session!");
-            Future<Session> future = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getSession(this.sessionId));
+            this.f6 = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getSession(this.sessionId));
 
             try {
-                this.session = future.get();
+                this.session = this.f6.get();
             } catch (Exception e) {
                 Log.d(TAG, "Unable to retrieve session!");
             }
         }
-
+        // Sets current session to the last session
         setLastSession();
-
-        // Resume last sort/filter option
-        switch(this.session.getSortFilter()) {
-            case "Favorites Only":
-                this.mutator = new FavoritesFilter(this);
-                break;
-            case "Prioritize Recent":
-                this.mutator = new RecencySorter(this);
-                break;
-            case "Prioritize Small Classes":
-                this.mutator = new SizeSorter(this);
-                break;
-            case "This Quarter Only":
-                this.mutator = new CurrentQuarterFilter(this);
-                break;
-            default:
-                this.mutator = new QuantitySorter(this);
-                break;
-        }
 
         // View initializations
         this.matchesRecyclerView = findViewById(R.id.matches_view);
@@ -239,20 +221,21 @@ public class MatchActivity extends AppCompatActivity {
         this.sessionLabel = findViewById(R.id.session_name_view);
         this.sessionLabel.setText(this.session.getName());
 
+        // Set up dynamic sort/filter spinner
         this.sortFilterSpinner = findViewById(R.id.sort_filter_spinner);
         List<String> mutations = new ArrayList<>(Arrays.asList("No Sort/Filter", "Favorites Only", "Prioritize Recent", "Prioritize Small Classes", "This Quarter Only"));
         ArrayAdapter<String> sort_filter_adapter = new ArrayAdapter<>(this, R.layout.sort_filter_spinner_item_text, mutations);
         sort_filter_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.sortFilterSpinner.setAdapter(sort_filter_adapter);
 
-        // Setting spinner to correct option
+        // Setting spinner to prior sort/filter selection
         for (int i = 0; i < this.sortFilterSpinner.getCount(); i++) {
             if (this.sortFilterSpinner.getItemAtPosition(i).equals(this.session.getSortFilter())) {
                 this.sortFilterSpinner.setSelection(i);
             }
         }
 
-        // Setting a listener for spinner
+        // Setting a selection listener for sort/filter spinner
         Context context = this;
         this.sortFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -267,7 +250,6 @@ public class MatchActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-
                 switch(sortFilterSpinner.getSelectedItem().toString()) {
                     case "No Sort/Filter":
                         mutator = new QuantitySorter(context);
@@ -292,8 +274,8 @@ public class MatchActivity extends AppCompatActivity {
                     return null;
                 });
 
-                nvm.setMutator(mutator);
-                nvm.updateMatchesList();
+                mvm.setMutator(mutator);
+                mvm.updateMatchView();
             }
 
             /**
@@ -307,42 +289,119 @@ public class MatchActivity extends AppCompatActivity {
             }
         });
 
-        // Utilities initializations
+        // Setting up Nearby and MatchViewMediator dependencies
+        this.mvm = new MatchViewMediator(this, this.db, this.mutator, this.matchesRecyclerView, this.sessionId);
         this.messageListener = new BoFMessageListener(this.sessionId, this);
+        this.messageListener.register(this.mvm);
         this.selfMessage = null;
-
-        // Initializing and registering NearbyViewMediator, then updating the matches list to retrieve prior matches
-        this.nvm = new NearbyViewMediator(this, this.mutator, this.matchesRecyclerView, this.sessionId);
-        this.messageListener.register(this.nvm);
-//        this.nvm.updateMatchesList();
     }
 
     /**
-     * Closes/destroyed the current activity.
+     * Unpublishes all outgoing waves, closes any popups, unsets the current session as the last session,
+     * and cancels any nonnull futures to prepare for opening another session.
      *
-     * @param
-     * @return none
      */
     @Override
     protected void onDestroy() {
         for (Message wavedMessage : this.wavedMessages) {
             Nearby.getMessagesClient(this).unpublish(wavedMessage);
         }
-        if (this.promptDialog != null) {
-            this.promptDialog.cancel();
+        if (this.currentPopup != null) {
+            this.currentPopup.cancel();
         }
         if (this.isDone) {
             unsetLastSession();
+        }
+        if (this.f1 != null) {
+            this.f1.cancel(true);
+        }
+        if (this.f2 != null) {
+            this.f2.cancel(true);
+        }
+        if (this.f3 != null) {
+            this.f3.cancel(true);
+        }
+        if (this.f4 != null) {
+            this.f4.cancel(true);
+        }
+        if (this.f5 != null) {
+            this.f5.cancel(true);
+        }
+        if (this.f6 != null) {
+            this.f6.cancel(true);
         }
         super.onDestroy();
         Log.d(TAG, "MatchActivity destroyed!");
     }
 
     /**
-     * Start searching for matches when the user enables student searches.
+     * Sets the current session as the last session so that the current session will be resumed by default if the app crashes or closes.
+     */
+    private void setLastSession() {
+        Log.d(TAG, "Setting this session as the last session.");
+        backgroundThreadExecutor.submit(() -> {
+            this.session.setIsLastSession(true);
+            this.db.sessionDao().update(this.session);
+        });
+    }
+
+    /**
+     * Unsets the current session as the last session and also removes all incoming and outgoing waves
+     */
+    private void unsetLastSession() {
+        Log.d(TAG, "Unsetting this session as the last session.");
+        backgroundThreadExecutor.submit(() -> {
+            this.session.setIsLastSession(false);
+            this.db.sessionDao().update(this.session);
+            removeWaving();
+            removeWaved();
+        });
+    }
+
+    /**
+     * Removes the incoming waves from the database.
+     */
+    private void removeWaving() {
+        Log.d(TAG, "Clearing all waving profiles.");
+        List<Profile> wavingProfiles = this.db.profileDao().getWavingProfiles(true);
+        for (Profile profile : wavingProfiles) {
+            profile.setIsWaving(false);
+            this.db.profileDao().update(profile);
+        }
+    }
+
+    /**
+     * Removes the outgoing waves from the database.
+     */
+    private void removeWaved() {
+        Log.d(TAG, "Clearing all waved profiles.");
+        List<Profile> wavedProfiles = this.db.profileDao().getWavedProfiles(true);
+        for (Profile profile : wavedProfiles) {
+            profile.setIsWaved(false);
+            this.db.profileDao().update(profile);
+        }
+    }
+
+    /**
+     * Allows the user to view sessions or start for matches, when the start button is clicked.
      *
-     * @param
-     * @return none
+     * @param view The start button.
+     */
+    public void onStartClicked(View view) {
+
+        Log.d(TAG, "Start button pressed");
+
+        if (!isNewSession) {
+            showStartPopup();
+        }
+        else {
+            startSearchForMatches();
+        }
+    }
+
+    /**
+     * Starts searching for matches.
+     *
      */
     public void startSearchForMatches() {
         Log.d(TAG, "Starting search for matches...");
@@ -365,29 +424,46 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     /**
-     * Prevents user from receiving any new matches, stops student searches.
+     * Encodes the information of the self user into a CSV format.
      *
-     * @param
-     * @return none
+     * @return The CSV String of the user's information.
      */
-    public void stopSearchForMatches() {
-        Log.d(TAG, "Stopping search for matches...");
-        this.isSearching = false;
+    public String encodeInformationMessage() {
+        // Look at BDD Scenario for CSV format
+        // Were are encoding our own profile
+        StringBuilder encodedMessage = new StringBuilder();
+        String selfUUID = this.selfProfile.getProfileId();
+        String selfName = this.selfProfile.getName();
+        String selfPhoto = this.selfProfile.getPhoto();
 
-        this.startButton.setVisibility(View.VISIBLE);
-        this.stopButton.setVisibility(View.GONE);
+        encodedMessage.append(selfUUID).append(",,,,\n");
+        encodedMessage.append(selfName).append(",,,,\n");
+        encodedMessage.append(selfPhoto).append(",,,,\n");
+        for (Course course : this.selfCourses) {
+            encodedMessage.append(course.getYear()).append(",");
+            encodedMessage.append(encodeQuarter(course.getQuarter())).append(",");
+            encodedMessage.append(course.getSubject()).append(",");
+            encodedMessage.append(course.getNumber()).append(",");
+            encodedMessage.append(course.getClassSize()).append("\n");
+        }
 
-        Nearby.getMessagesClient(this).unpublish(this.selfMessage);
-        Log.d(TAG, "Unpublished a message: " + new String(this.selfMessage.getContent()));
-        Nearby.getMessagesClient(this).unsubscribe(this.messageListener);
-        Log.d(TAG, "BoFMessageListener unsubscribed!");
+        return encodedMessage.toString();
+    }
+
+    /**
+     * Encodes the information of the self user and a wave to another user with a profile id of profileId
+     * @param profileId The profile id of the user the wave is sent to.
+     * @return The CSV String of the self user's information and the wave.
+     */
+    public String encodeWaveMessage(String profileId) {
+        return encodeInformationMessage() + profileId + ",wave,,,\n";
     }
 
     /**
      * Encodes the full quarter name to an abbreviation.
      *
-     * @param quarter A given quarter
-     * @return The abbreviation of the full quarter name
+     * @param quarter A given quarter.
+     * @return The abbreviation of the full quarter name.
      */
     public String encodeQuarter(String quarter) {
         switch(quarter) {
@@ -410,77 +486,11 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     /**
-     * Encodes the information of the self user into a CSV format.
-     *
-     * @param
-     * @return Returns a CSV format representation of the user's information
-     */
-    public String encodeInformationMessage() {
-        // Look at BDD Scenario for CSV format
-        // Were are encoding our own profile
-        StringBuilder encodedMessage = new StringBuilder();
-        String selfUUID = this.selfProfile.getProfileId();
-        String selfName = this.selfProfile.getName();
-        String selfPhoto = this.selfProfile.getPhoto();
-//        String encoded = "";
-//        encoded += selfUUID + ",,,,\n" +
-//                   selfName + ",,,,\n" +
-//                   selfPhoto + ",,,,\n";
-//        for (Course course : this.selfCourses) {
-//            encoded += course.getYear() + "," +
-//                       encodeQuarter(course.getQuarter()) + "," +
-//                       course.getSubject() + "," +
-//                       course.getNumber() + "," +
-//                       course.getClassSize() + "\n";
-//        }
-//
-//        return encoded;
-
-        encodedMessage.append(selfUUID).append(",,,,\n");
-        encodedMessage.append(selfName).append(",,,,\n");
-        encodedMessage.append(selfPhoto).append(",,,,\n");
-        for (Course course : this.selfCourses) {
-            encodedMessage.append(course.getYear()).append(",");
-            encodedMessage.append(encodeQuarter(course.getQuarter())).append(",");
-            encodedMessage.append(course.getSubject()).append(",");
-            encodedMessage.append(course.getNumber()).append(",");
-            encodedMessage.append(course.getClassSize()).append("\n");
-        }
-
-        return encodedMessage.toString();
-    }
-
-    public String encodeWaveMessage(String profileId) {
-        return encodeInformationMessage() + profileId + ",wave,,,\n";
-    }
-
-    /**
-     * Allows the user to view sessions or start for matches, when the start button is clicked.
-     *
-     * @param view The given view
-     * @return none
-     */
-    public void onStartClicked(View view) {
-
-        Log.d(TAG, "Start button pressed");
-
-        if (!isNewSession) {
-            showStartPopup();
-        }
-        else {
-            startSearchForMatches();
-        }
-    }
-
-
-    /**
      * Allows the user to name a current session of matches or select another session, when the
      * stop button is clicked.
      *
-     * @param view The given view
-     * @return none
+     * @param view The stop button.
      */
-    // When the stop button is clicked
     public void onStopClicked(View view) {
         Log.d(TAG, "Stop button pressed, stopping search for matches...");
 
@@ -488,46 +498,39 @@ public class MatchActivity extends AppCompatActivity {
         changeSessionName(this.session.getName());
 
         //check if user has entered courses from this current quarter
-//        if (this.isNewSession) {
-            if (this.currentCourses.isEmpty()){
-                showEnterSessionNameStopPopup(true);
-            }
-            else {
-                showSelectOrEnterSessionNameStopPopup();
-            }
-//        }
+        if (this.currentCourses.isEmpty()){
+            showEnterSessionNameStopPopup(false);
+        }
+        else {
+            showSelectOrEnterSessionNameStopPopup();
+        }
 
+        // Now that a search has occurred in the session, the session is no longer a new session
         this.isNewSession = false;
 
     }
 
     /**
-     * Retrieves the current courses from present time.
+     * Stops searching for new matches.
      *
-     * @param
-     * @return A list of current courses
      */
-    public List<Course> getCurrentCourses() {
-        String currentQuarter = Utilities.getCurrentQuarter();
-        String currentYear = Utilities.getCurrentYear();
+    public void stopSearchForMatches() {
+        Log.d(TAG, "Stopping search for matches...");
+        this.isSearching = false;
 
-        //get profile of current user
-        List<Course> currentCourses = new ArrayList<>();
+        this.startButton.setVisibility(View.VISIBLE);
+        this.stopButton.setVisibility(View.GONE);
 
-        for (Course course : this.selfCourses){
-            if (course.getQuarter().equals(currentQuarter) && course.getYear().equals(currentYear)){
-                currentCourses.add(course);
-            }
-        }
-
-        return currentCourses;
+        Nearby.getMessagesClient(this).unpublish(this.selfMessage);
+        Log.d(TAG, "Unpublished a message: " + new String(this.selfMessage.getContent()));
+        Nearby.getMessagesClient(this).unsubscribe(this.messageListener);
+        Log.d(TAG, "BoFMessageListener unsubscribed!");
     }
 
     /**
-     * Allows the user to view a match when they have been clicked on.
+     * On click method for when the user selects a match row.
      *
-     * @param view The given view
-     * @return none
+     * @param view The selected match row.
      */
     public void onMatchRowSelected(View view) {
         Log.d(TAG, "Match selected, displaying match profile and course information");
@@ -543,11 +546,9 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     /**
-     * Allows the user to be able to click on the favorite button to a match and updates it to the
-     * database.
+     * On click method for when the user clicks the favorite star on a corresponding match row.
      *
-     * @param view The given view
-     * @return none
+     * @param view The favorite star button corresponding to a match row.
      */
     public void onFavoriteStarClicked(View view) {
         Log.d(TAG, "Making selected match a favorite.");
@@ -556,26 +557,21 @@ public class MatchActivity extends AppCompatActivity {
         ViewGroup vg = (ViewGroup) view.getParent();
         TextView matchProfileIdView = vg.findViewById(R.id.match_profile_id_view);
         String matchId = matchProfileIdView.getText().toString();
-        ImageView favoriteStar = view.findViewById(R.id.star);
-//        CheckBox checkBox = (CheckBox) view;
+        ImageView star = view.findViewById(R.id.star);
 
-        Future<Profile> future = this.backgroundThreadExecutor.submit(() -> {
-           return this.db.profileDao().getProfile(matchId);
-        });
+        this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getProfile(matchId));
 
-        Profile matchProfile = null;
+        Profile matchProfile;
         try {
-            matchProfile = future.get();
+            matchProfile = this.f2.get();
+
             // Match already a favorite, need to unfavorite
             if (matchProfile.getIsFavorite()) {
                 matchProfile.setIsFavorite(false);
 
 
                 Toast.makeText(this, "Unsaved from Favorites!", Toast.LENGTH_SHORT).show();
-//                favoriteStar.setText("☆");
-//                favoriteStar.setTextColor(Color.parseColor("#BBBBBB"));
-                favoriteStar.setImageResource(R.drawable.hollow_star);
-//                checkBox.getButtonDrawable().setColorFilter(0xFF808080, PorterDuff.Mode.SRC_ATOP);
+                star.setImageResource(R.drawable.hollow_star);
             }
             // Match not already a favorite, need to favorite
             else {
@@ -583,9 +579,7 @@ public class MatchActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "Saved to Favorites!", Toast.LENGTH_SHORT).show();
                 // Update UI to reflect that the match is no longer a favorite
-                favoriteStar.setImageResource(R.drawable.filled_star);
-//                favoriteStar.setText("★");
-//                favoriteStar.setTextColor(Color.parseColor("#FFFF00"));
+                star.setImageResource(R.drawable.filled_star);
             }
 
             // Update DB to reflect change in favorite status for match
@@ -593,18 +587,18 @@ public class MatchActivity extends AppCompatActivity {
             backgroundThreadExecutor.submit(() -> {
                 this.db.profileDao().update(finalMatchProfile);
             });
-            this.nvm.updateMatchesList();
+
+            // Update match view in light of changes
+            this.mvm.updateMatchView();
         } catch (Exception e) {
             Log.d(TAG, "Could not retrieve match profile");
         }
-
     }
 
     /**
-     * Utilizes to test visibility for the nearby button.
+     * On click method for when the user clicks on the nearby button.
      *
-     * @param view The given view
-     * @return none
+     * @param view The nearby button.
      */
     public void onNearbyClicked(View view) {
         Intent intent = new Intent(this, MockingActivity.class);
@@ -615,10 +609,17 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     /**
-     * Allows the user to be able to press the back button and opens the course activity screen.
+     * On click method for when the user clicks on the session name label to change the session name.
      *
-     * @param
-     * @return none
+     * @param view The view of the session name label.
+     */
+    public void onSessionLabelClicked(View view) {
+        showSelectOrEnterSessionNameStopPopup();
+    }
+
+    /**
+     * Overrides the back button to return to the CourseActivity to add more courses.
+     *
      */
     @Override
     public void onBackPressed() {
@@ -633,56 +634,7 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     /**
-     * Allows the user to be able to view the clicked session from a list of previous sessions.
-     *
-     * @param view The given view
-     * @return none
-     */
-    //onClick listener for Session items within the recyclerview of the
-    public void onStartPopupSessionRowSelected(View view){
-        Log.d(TAG, "Previous session selected, " +
-                "displaying matches in MatchActivity");
-
-        //selected session object
-        TextView selectedSessionIdView = view.findViewById(R.id.session_row_id_view);
-        String selectedSessionId = selectedSessionIdView.getText().toString();
-        if (this.sessionId.equals(selectedSessionId)) {
-            // Discover Bluetooth messages
-            this.promptDialog.cancel();
-
-            startSearchForMatches();
-
-        }
-        else {
-//            unsetLastSession();
-
-            Intent intent = new Intent(this, MatchActivity.class);
-            intent.putExtra("session_id", selectedSessionId);
-            startActivity(intent);
-            this.isDone = true;
-            finish();
-        }
-
-    }
-
-    /**
-     * Allows the user to be able to create a new session when option is clicked.
-     *
-     * @param view The given view
-     * @return none
-     */
-    public void onStartPopupCreateNewSessionClicked(View view) {
-//        unsetLastSession();
-
-        Intent intent = new Intent(this, MatchActivity.class);
-        intent.putExtra("session_id", "");
-        startActivity(intent);
-        this.isDone = true;
-        finish();
-    }
-
-    /**
-     * Assists in creating a session list dialog box with previous sessions.
+     * Create and show the start popup asking whether to create a new session or resume a previous session.
      */
     private void showStartPopup() {
         Log.d(TAG, "creating session list prompt AlertDialog");
@@ -706,11 +658,78 @@ public class MatchActivity extends AppCompatActivity {
         sessionsView.setAdapter(adapter);
         promptBuilder.setView(contextView);
 
-        this.promptDialog = promptBuilder.create();
-        this.promptDialog.show();
+        this.currentPopup = promptBuilder.create();
+        this.currentPopup.show();
     }
 
-    //dialog prompt listener
+    /**
+     * Allows the user to be able to view the clicked session from a list of previous sessions.
+     *
+     * @param view The selected session row in the start popup
+     */
+    public void onStartPopupSessionRowSelected(View view){
+        Log.d(TAG, "Previous session selected, " +
+                "displaying matches in MatchActivity");
+
+        //selected session object
+        TextView selectedSessionIdView = view.findViewById(R.id.session_row_id_view);
+        String selectedSessionId = selectedSessionIdView.getText().toString();
+        if (this.sessionId.equals(selectedSessionId)) {
+            // Discover Bluetooth messages
+            this.currentPopup.cancel();
+            startSearchForMatches();
+        }
+        else {
+            Intent intent = new Intent(this, MatchActivity.class);
+            intent.putExtra("session_id", selectedSessionId);
+            startActivity(intent);
+            this.isDone = true;
+            finish();
+        }
+    }
+
+    /**
+     * Allows the user to be able to create a new session when option is clicked.
+     *
+     * @param view The create new session button in the start popup
+     */
+    public void onStartPopupCreateNewSessionClicked(View view) {
+        Intent intent = new Intent(this, MatchActivity.class);
+        intent.putExtra("session_id", "");
+        startActivity(intent);
+        this.isDone = true;
+        finish();
+    }
+
+    /**
+     * Create and show the stop popup asking whether to select a session or enter a session name.
+     */
+    public void showSelectOrEnterSessionNameStopPopup(){
+        Log.d(TAG, "creating second stop prompt AlertDialog");
+
+        LayoutInflater inflater = getLayoutInflater();
+        View contextView = inflater.inflate(R.layout.select_or_enter_session_name_popup, null);
+
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
+
+
+        RecyclerView sessionsView = contextView.findViewById(R.id.classes_list);
+
+        sessionsView.setLayoutManager(new LinearLayoutManager(this));
+        sessionsView.setHasFixedSize(true);
+
+        SessionCoursesAdapter adapter = new SessionCoursesAdapter(this.currentCourses);
+        sessionsView.setAdapter(adapter);
+        promptBuilder.setView(contextView);
+
+        this.currentPopup = promptBuilder.create();
+        this.currentPopup.show();
+    }
+
+    /**
+     * On click method for when a course row is selected in the stop popup
+     * @param view The selected course row in the stop popup.
+     */
     public void onStopPopupCourseRowSelected(View view){
         Log.d(TAG, "Course selected from second stop prompt's course items," +
                 "item becomes selected");
@@ -722,26 +741,65 @@ public class MatchActivity extends AppCompatActivity {
         changeSessionName(courseNameView.getText() + " " +
                 courseNumberView.getText());
 
-        this.promptDialog.cancel();
+        this.currentPopup.cancel();
 
     }
 
-    //dialog prompt listener for submit button when entering a course name
+    /**
+     * On click method for when the submit session name button is clicked in the stop popup
+     * @param view The submit session name button in the stop popup.
+     */
     public void onStopPopupSubmitSessionNameClicked(View view) {
         Log.d(TAG, "Save Session Name button pressed on first stop prompt," +
                 " saving session with name given...");
 
         // TODO: verify that the inputted course name is valid
-        EditText enteredCourseName = this.promptDialog.findViewById(R.id.session_name_input_view);
+        EditText enteredCourseName = this.currentPopup.findViewById(R.id.session_name_input_view);
         String courseName = enteredCourseName.getText().toString().trim();
 
         if (isValidCourseName(courseName)) {
             changeSessionName(courseName);
 
-            this.promptDialog.cancel();
+            this.currentPopup.cancel();
         }
     }
 
+    /**
+     * Create and show the stop popup asking to enter a session name.
+     * @param closeCurrentPopup whether to close the current popup or not.
+     */
+    public void showEnterSessionNameStopPopup(Boolean closeCurrentPopup){
+        Log.d(TAG, "creating first stop prompt AlertDialog");
+
+        LayoutInflater inflater = getLayoutInflater();
+        View contextView = inflater.inflate(R.layout.enter_session_name_popup, null);
+
+        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
+
+        promptBuilder.setView(contextView);
+
+        if(closeCurrentPopup){ this.currentPopup.cancel(); }
+
+        this.currentPopup = promptBuilder.create();
+        this.currentPopup.show();
+    }
+
+    /**
+     * On click method for when the enter session name button is clicked in the stop popup.
+     * @param view The enter session name button
+     */
+    public void onStopPopupEnterSessionNameClicked(View view) {
+        Log.d(TAG, "Enter Session Name Button pressed," +
+                " creating first stop prompt to enter name");
+
+        showEnterSessionNameStopPopup(true); //deployed from second prompt
+    }
+
+    /**
+     * Checks whether a given course name is valid.
+     * @param courseName The given course name.
+     * @return Whether courseName is a valid course name or not.
+     */
     private boolean isValidCourseName(String courseName) {
         String[] courseInfo = courseName.split(" ");
         if (courseInfo.length < 2) {
@@ -768,17 +826,16 @@ public class MatchActivity extends AppCompatActivity {
         }
 
         synchronized(this) {
-            Future<List<String>> future = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getAllSessionNames());
+            this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getAllSessionNames());
 
-            List<String> sessionNames = null;
+            List<String> sessionNames;
             try {
-                sessionNames = future.get();
+                sessionNames = this.f1.get();
+                if (sessionNames.contains(courseName) && !courseName.equals(this.session.getName())) {
+                    Utilities.showError(this, "Error: Invalid Session Name", "Session name already exists, please enter a unique course name.");
+                    return false;
+                }
             } catch (Exception e) {
-                return false;
-            }
-
-            if (sessionNames.contains(courseName) && !courseName.equals(this.session.getName())) {
-                Utilities.showError(this, "Error: Invalid Session Name", "Session name already exists, please enter a unique course name.");
                 return false;
             }
         }
@@ -786,74 +843,31 @@ public class MatchActivity extends AppCompatActivity {
         return true;
     }
 
-    //dialog prompt listener
-    public void onStopPopupEnterSessionNameClicked(View view) {
-        Log.d(TAG, "Enter Session Name Button pressed," +
-                " creating first stop prompt to enter name");
+    /**
+     * Retrieves the self courses from the current quarter.
+     *
+     * @return The list of current courses
+     */
+    public List<Course> getCurrentCourses() {
+        String currentQuarter = Utilities.getCurrentQuarter();
+        String currentYear = Utilities.getCurrentYear();
 
-        showEnterSessionNameStopPopup(false); //deployed from second prompt
+        //get profile of current user
+        List<Course> currentCourses = new ArrayList<>();
+
+        for (Course course : this.selfCourses){
+            if (course.getQuarter().equals(currentQuarter) && course.getYear().equals(currentYear)){
+                currentCourses.add(course);
+            }
+        }
+
+        return currentCourses;
     }
 
-
-    //helper function to create first possible stop prompt to enter a name for a created session
-    //and it is also the "default" stop prompt
-    public void showEnterSessionNameStopPopup(Boolean isOnly){
-        Log.d(TAG, "creating first stop prompt AlertDialog");
-
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.enter_session_name_popup, null);
-
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-        promptBuilder.setView(contextView);
-
-        if(!isOnly){ this.promptDialog.cancel(); } //if deployed from second stop prompt, close
-        //second prompt
-
-        this.promptDialog = promptBuilder.create();
-        this.promptDialog.show();
-    }
-
-    public void showSelectOrEnterSessionNameStopPopup(){
-        Log.d(TAG, "creating second stop prompt AlertDialog");
-
-        LayoutInflater inflater = getLayoutInflater();
-        View contextView = inflater.inflate(R.layout.select_or_enter_session_name_popup, null);
-
-        AlertDialog.Builder promptBuilder = new AlertDialog.Builder(this);
-
-
-        RecyclerView sessionsView = contextView.findViewById(R.id.classes_list);
-
-        sessionsView.setLayoutManager(new LinearLayoutManager(this));
-        sessionsView.setHasFixedSize(true);
-
-        SessionCoursesAdapter adapter = new SessionCoursesAdapter(this.currentCourses);
-        sessionsView.setAdapter(adapter);
-        promptBuilder.setView(contextView);
-
-        this.promptDialog = promptBuilder.create();
-        this.promptDialog.show();
-    }
-
-    private void unsetLastSession() {
-        Log.d(TAG, "Unsetting this session as the last session.");
-        backgroundThreadExecutor.submit(() -> {
-            this.session.setIsLastSession(false);
-            this.db.sessionDao().update(this.session);
-            clearWaves();
-            clearWaved();
-        });
-    }
-
-    private void setLastSession() {
-        Log.d(TAG, "Setting this session as the last session.");
-        backgroundThreadExecutor.submit(() -> {
-            this.session.setIsLastSession(true);
-            this.db.sessionDao().update(this.session);
-        });
-    }
-
+    /**
+     * Changes the name of the current session to newName.
+     * @param newName The new name of the current session.
+     */
     private void changeSessionName(String newName) {
         Log.d(TAG, "Changing this session name to " + newName + ".") ;
 
@@ -866,38 +880,19 @@ public class MatchActivity extends AppCompatActivity {
         this.isNewSession = false;
     }
 
+    /**
+     * Retrieves the current timestamp, new sessions by default are named with current timestamp upon creation.
+     * @return The formatted current timestamp String.
+     */
     private String getCurrentTimestamp() {
         DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
         String timestamp = df.format(Calendar.getInstance().getTime());
         return timestamp;
     }
 
-
-    private void clearWaves() {
-        Log.d(TAG, "Clearing all waving profiles.");
-        List<Profile> wavingProfiles = this.db.profileDao().getWavingProfiles(true);
-        for (Profile profile : wavingProfiles) {
-            profile.setIsWaving(false);
-            this.db.profileDao().update(profile);
-        }
-    }
-
-    private void clearWaved() {
-        Log.d(TAG, "Clearing all waved profiles.");
-        List<Profile> wavedProfiles = this.db.profileDao().getWavedProfiles(true);
-        for (Profile profile : wavedProfiles) {
-            profile.setIsWaved(false);
-            this.db.profileDao().update(profile);
-        }
-    }
-
-    public void onSessionLabelClicked(View view) {
-        showSelectOrEnterSessionNameStopPopup();
-    }
-
     // For testing
     public void mockSearch() {
-        this.nvm.updateMatchesList();
+        this.mvm.updateMatchView();
     }
 }
 

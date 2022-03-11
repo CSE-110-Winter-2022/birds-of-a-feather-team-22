@@ -33,7 +33,7 @@
         android:background="@null"
         android:ems="10"
         android:gravity="start|top"
-        android:hint="UUID,,,,\nName,,,,\nPhoto URL,,,,\n..."
+        android:hint="UUID,,,,\nName,,,,\nPhoto URL,,,,\nYear,Qtr,Subject,Number,Size\n...\nUUID,wave,,,\n..."
         android:inputType="textMultiLine"
         android:textAlignment="viewStart"
         android:textColor="@color/dark_seafoam"
@@ -72,12 +72,12 @@
         android:layout_marginStart="26dp"
         android:layout_marginTop="28dp"
         android:gravity="center"
-        android:text="TextView"
+        android:onClick="onSelfProfileIdClicked"
+        android:text="Self Profile ID"
         android:textAlignment="center"
         android:textColor="@color/seafoam"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:onClick="onSelfProfileIdClicked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

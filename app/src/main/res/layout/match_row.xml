@@ -155,7 +155,8 @@
             android:layout_marginTop="28dp"
             android:layout_marginEnd="315dp"
             android:onClick="onFavoriteStarClicked"
-            app:srcCompat="@drawable/hollow_star" />
+            app:srcCompat="@drawable/hollow_star"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
 
     </RelativeLayout>

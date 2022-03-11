@@ -15,7 +15,7 @@ public interface BoFObserver {
      * @param
      * @return none
      */
-    void updateMatchesList();
+    void updateMatchView();
 
     /**
      * Sets the mutator of the observer.

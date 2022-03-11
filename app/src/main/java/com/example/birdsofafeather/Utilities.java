@@ -1,6 +1,6 @@
 /*
  * This file is capable of allowing the developers to utilize tools for the overall functionality of
- * the application and while developing.
+ * the application and while developing features.
  *
  * Authors: CSE 110 Winter 2022, Group 22
  * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen

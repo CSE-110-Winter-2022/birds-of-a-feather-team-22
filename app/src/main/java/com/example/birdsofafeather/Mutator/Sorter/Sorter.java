@@ -1,7 +1,8 @@
 /*
  * This file provides the structure for how implementations should sort through profiles.
  *
- * Author: CSE 110 Winter 2022 Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.mutator.sorter;

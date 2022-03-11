@@ -1,5 +1,8 @@
 /*
  * This file is capable of implementing the comparison of Integers in pair objects.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.mutator.sorter;

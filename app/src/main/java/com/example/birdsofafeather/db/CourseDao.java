@@ -72,7 +72,6 @@ public interface CourseDao {
 
     /**
      * Inserts course without any conflict.
-     *
      * @param course A given course object
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)

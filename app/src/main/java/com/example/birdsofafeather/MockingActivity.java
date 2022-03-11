@@ -1,3 +1,11 @@
+/*
+ * This file is capable of allowing the user to being able to mock the functionality of recieving and
+ * interacting with matches.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import android.content.ClipData;
@@ -67,6 +75,9 @@ public class MockingActivity extends AppCompatActivity {
         // field initializations
         this.db = AppDatabase.singleton(this);
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
+        if (this.mockedMessages == null) {
+            this.mockedMessages = new ArrayList<>();
+        }
 
         // Get self profile
         this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getSelfProfile(true));

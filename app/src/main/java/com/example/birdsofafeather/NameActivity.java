@@ -1,3 +1,11 @@
+/*
+ * This file is capable to processing the name inputted by the user to allow for a step in the creation
+ * of the self user profile.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;

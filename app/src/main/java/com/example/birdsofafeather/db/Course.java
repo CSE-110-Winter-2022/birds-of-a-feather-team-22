@@ -2,7 +2,8 @@
  * This file is capable of organizing the contents found within a course, allowing
  * for setting of fields, modification, and retrieval of data.
  *
- * Author: Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.db;
@@ -194,7 +195,8 @@ public class Course {
         return this.classSize;
     }
 
-    /** Sets the class size of the course.
+    /**
+     * Sets the class size of the course.
      *
      * @param classSize A given class size
      * @return none

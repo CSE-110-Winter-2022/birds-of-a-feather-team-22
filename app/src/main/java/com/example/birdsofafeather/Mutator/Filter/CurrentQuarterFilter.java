@@ -1,7 +1,8 @@
 /*
  * This file is capable of filtering matches by the current quarter and year.
  *
- * Authors: CSE 110 Winter 2022 Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.mutator.filter;

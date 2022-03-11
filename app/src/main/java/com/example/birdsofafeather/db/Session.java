@@ -2,7 +2,8 @@
  * This file is capable of organizing the contents found within a course, allowing for setting of
  * fields, modification, and retrieval of data.
  *
- * Authors: CSE 110 Winter 2022 Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.db;

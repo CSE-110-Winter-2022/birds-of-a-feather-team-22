@@ -2,7 +2,8 @@
  * This file is capable of performing operations on the database to add courses for self user and
  * allows the self user to be able to interact with the application in order to added such courses.
  *
- * Author: Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather;

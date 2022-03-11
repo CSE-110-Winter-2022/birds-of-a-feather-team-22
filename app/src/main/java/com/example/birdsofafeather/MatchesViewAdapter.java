@@ -1,3 +1,11 @@
+/*
+ * This file is capable of allowing information from profiles to be able to be displayed onto
+ * views for the user to be able to view and interact with.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import android.content.Context;

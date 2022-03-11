@@ -1,7 +1,11 @@
 /*
  * This file is capable of providing the structure for how implementations should filter through
  * profiles.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
+
 package com.example.birdsofafeather.mutator.filter;
 
 import android.util.Pair;

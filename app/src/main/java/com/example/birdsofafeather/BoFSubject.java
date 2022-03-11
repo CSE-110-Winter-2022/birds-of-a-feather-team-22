@@ -1,7 +1,8 @@
 /*
  * This file provides the blueprint for implementations of BOFSubject interface.
  *
- * Author: Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 package com.example.birdsofafeather;
 

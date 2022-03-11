@@ -2,7 +2,8 @@
  * This file is capable of implementing the sorting of profiles in pair objects, with the
  * corresponding number of courses shared.
  *
- * Author: CSE 110 Winter 2022 Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.mutator.sorter;

@@ -1,3 +1,11 @@
+/*
+ * This file is capable of providing a client to allow for logging of the client for nearby
+ * messaging.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import android.app.PendingIntent;

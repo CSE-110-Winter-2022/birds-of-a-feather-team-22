@@ -2,7 +2,8 @@
  * This file is capable of creating a MessageListener and is able to receive messages, parse them,
  * and send out messages.
  *
- * Author: Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather;

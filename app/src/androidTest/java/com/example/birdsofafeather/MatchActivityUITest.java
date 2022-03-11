@@ -16,7 +16,7 @@ import org.junit.Test;
 public class MatchActivityUITest {
 
     @Test
-    public void startButtonPressWithStopFirstTimeTest() {
+    public void startButtonPressForFirstTimeTest() {
         ActivityScenario<MatchActivity> homeScreen = ActivityScenario.launch(MatchActivity.class);
         homeScreen.onActivity(activity -> {
             Button startButton = activity.findViewById(R.id.start_button);
@@ -24,23 +24,8 @@ public class MatchActivityUITest {
 
             startButton.performClick();
 
-            assertEquals(View.GONE, startButton.getVisibility());
-            assertEquals(View.VISIBLE, stopButton.getVisibility());
-        });
-    }
-    @Test
-    public void stopButtonPressAfterStartTest() {
-        ActivityScenario<MatchActivity> homeScreen = ActivityScenario.launch(MatchActivity.class);
-        homeScreen.onActivity(activity -> {
-            RecyclerView matchesList = activity.findViewById(R.id.matches_view);
-            Button startButton = activity.findViewById(R.id.start_button);
-            Button stopButton = activity.findViewById(R.id.stop_button);
-
-            stopButton.performClick();
-
-            assertEquals(View.VISIBLE,matchesList.getVisibility());
+            assertEquals(View.INVISIBLE, stopButton.getVisibility());
             assertEquals(View.VISIBLE, startButton.getVisibility());
-            assertEquals(View.GONE, stopButton.getVisibility());
         });
     }
 

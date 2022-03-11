@@ -1,7 +1,8 @@
 /*
  * This file is capable of creating databases for actual application user and for testing purposes.
  *
- * Author: Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.db;

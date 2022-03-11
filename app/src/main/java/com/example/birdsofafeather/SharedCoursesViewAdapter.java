@@ -1,3 +1,11 @@
+/*
+ * This file is capable of enabling a list of shared courses between the self user and another
+ * user to be displayed.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import android.view.LayoutInflater;

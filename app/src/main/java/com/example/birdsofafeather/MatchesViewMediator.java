@@ -1,3 +1,11 @@
+/*
+ * This file is capable of allowing a mediator to be able to make changes to displays which the user
+ * will interact with and update as the database makes changes.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import android.content.Context;

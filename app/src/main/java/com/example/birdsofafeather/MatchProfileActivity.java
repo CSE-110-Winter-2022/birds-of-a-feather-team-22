@@ -1,3 +1,11 @@
+/*
+ * This file is capable of displaying all information from the database with respect to profiles
+ * and allow the user to be able to favorite and send waves.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +36,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * Refers to the screen where the user can see a match's enlarged photo, name, and list of shared courses
+ * Refers to the screen where the user can see a match's enlarged photo, name, and list of shared courses.
  */
 public class MatchProfileActivity extends AppCompatActivity {
     // Log Tag

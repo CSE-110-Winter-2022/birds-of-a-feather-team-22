@@ -1,3 +1,10 @@
+/*
+ * This file is capable of taking in a photo URL to allow for the creation of the self user profile.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;

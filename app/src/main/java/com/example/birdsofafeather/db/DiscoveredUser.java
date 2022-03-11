@@ -2,7 +2,8 @@
  * This file is capable of organizing the contents found within a discovered user, allowing
  * for setting of fields, modification, and retrieval of data.
  *
- * Author: Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 
 package com.example.birdsofafeather.db;
@@ -35,7 +36,6 @@ public class DiscoveredUser {
      * @param profileId A given profile ID
      * @param sessionId A given session ID
      * @param numShared The number of courses shared with the user
-     * @return none
      */
     public DiscoveredUser(String profileId, String sessionId, int numShared) {
         this.profileId = profileId;
@@ -46,7 +46,6 @@ public class DiscoveredUser {
     /**
      * Returns the profile ID of the discovered user.
      *
-     * @param
      * @return Profile ID of discovered user
      */
     public String getProfileId() {
@@ -57,7 +56,6 @@ public class DiscoveredUser {
      * Sets the profile ID of the discovered user.
      *
      * @param profileId A given profile ID
-     * @return none
      */
     public void setProfileId(String profileId) {
         this.profileId = profileId;
@@ -66,7 +64,6 @@ public class DiscoveredUser {
     /**
      * Returns the session ID of the discovered user.
      *
-     * @param
      * @return Session ID of discovered user
      */
     public String getSessionId() {
@@ -77,7 +74,6 @@ public class DiscoveredUser {
      * Sets the session ID of the discovered user.
      *
      * @param sessionId A given session ID
-     * @return none
      */
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
@@ -86,7 +82,6 @@ public class DiscoveredUser {
     /**
      * Returns the number of courses that is shared between a discovered user and self user.
      *
-     * @param
      * @return Number of shared courses between discovered user and self user
      */
     public int getNumShared() {
@@ -97,7 +92,6 @@ public class DiscoveredUser {
      * Sets the number of courses shared between a discovered user and self user.
      *
      * @param numShared Number of shared courses
-     * @return none
      */
     public void setNumShared(int numShared) {
         this.numShared = numShared;

@@ -1,3 +1,10 @@
+/*
+ * This file is capable of displaying courses associated with a profile and courses in which have
+ * matched with the self user.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
 package com.example.birdsofafeather;
 
 import android.view.LayoutInflater;

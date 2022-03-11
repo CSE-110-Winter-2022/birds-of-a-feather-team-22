@@ -2,8 +2,10 @@
  * This file is capable of providing a filter through profile matches based on being a favorited
  * profile.
  *
- * Author: CSE 110 Winter 20022 Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
+
 package com.example.birdsofafeather.mutator.filter;
 
 import android.content.Context;

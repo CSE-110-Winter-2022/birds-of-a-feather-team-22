@@ -2,7 +2,8 @@
  * This file is capable of assorting and displaying a list of matches to the user. Allowing the user
  * to interact with the matches through sort/filter functionality.
  *
- * Author: Group 22
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 package com.example.birdsofafeather;
 
@@ -894,7 +895,9 @@ public class MatchActivity extends AppCompatActivity {
         return df.format(Calendar.getInstance().getTime());
     }
 
-    // For testing
+    /**
+     * Utilized for testing the view.
+     */
     public void mockSearch() {
         this.mvm.updateMatchView();
     }

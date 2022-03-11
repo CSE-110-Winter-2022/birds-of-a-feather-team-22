@@ -1,6 +1,9 @@
 /*
  * This file is capable of providing the means to be able to allow for querying, inserting, and
  * deleting session data access objects.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
  */
 package com.example.birdsofafeather.db;
 

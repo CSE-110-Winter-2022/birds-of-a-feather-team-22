@@ -1,3 +1,9 @@
+/*
+ * This file is capable of enabling interactions with respect to the wave data access object.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
 package com.example.birdsofafeather.db;
 
 import androidx.room.Dao;
@@ -9,6 +15,10 @@ import androidx.room.Update;
 
 import java.util.List;
 
+/*
+ * This interface is capable of providing the means to be able to allow for searches, insertions, and
+ * modifications to waves.
+ */
 @Dao
 public interface WaveDao {
     /**

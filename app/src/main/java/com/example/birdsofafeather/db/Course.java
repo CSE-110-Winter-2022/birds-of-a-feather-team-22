@@ -1,5 +1,5 @@
 /*
- * This file is capable to organizing the contents found within a course, allowing
+ * This file is capable of organizing the contents found within a course, allowing
  * for setting of fields, modification, and retrieval of data.
  *
  * Author: Group 22

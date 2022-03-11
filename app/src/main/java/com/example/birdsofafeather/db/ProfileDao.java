@@ -99,20 +99,32 @@ public interface ProfileDao {
     /**
      * Retrieves the number of profile objects in database.
      *
-     * @return Number of profile
+     * @return Number of profile objects in database
      */
-    // Retrieves the number of profile objects
     @Query("SELECT COUNT(*) FROM PROFILE")
     int count();
 
-    // Inserts a profile object without conflict
+    /**
+     * Inserts a profile object into database without conflicts.
+     *
+     * @param profile A Profile object
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Profile profile);
 
-    // Deletes a profile object
+    /**
+     * Deletes a profile object from the database.
+     *
+     * @param profile A Profile object
+     */
     @Delete
     void delete(Profile profile);
 
+    /**
+     * Updates a profile object from the database.
+     *
+     * @param profile A Profile object
+     */
     @Update
     void update(Profile profile);
 }

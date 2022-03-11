@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
+import com.example.birdsofafeather.db.Wave;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 
@@ -187,12 +188,10 @@ public class MatchProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Destroys MatchProfileActivity by unpublishing the wave Message and cancelling futures.
+     * Destroys MatchProfileActivity by cancelling futures.
      */
     @Override
     protected void onDestroy() {
-        this.messagesClient.unpublish(waveMessage);
-
         if (this.f1 != null) {
             this.f1.cancel(true);
         }
@@ -244,11 +243,16 @@ public class MatchProfileActivity extends AppCompatActivity {
      * @param view The send wave button.
      */
     public void onSendWaveClicked(View view) {
-        String selfInformation = encodeSelfInformation();
-        selfInformation += this.matchId + ",wave,,,";
+        String waveString = Utilities.encodeWaveMessage(selfProfile, selfCourses, this.matchId);
+
+        this.f3 = this.backgroundThreadExecutor.submit(() -> {
+           Wave wave = new Wave(matchId, waveString);
+           this.db.waveDao().insert(wave);
+           return null;
+        });
 
         // Publish wave message
-        this.waveMessage = new Message(selfInformation.getBytes(StandardCharsets.UTF_8));
+        this.waveMessage = new Message(waveString.getBytes(StandardCharsets.UTF_8));
         this.messagesClient.publish(this.waveMessage);
         Toast.makeText(this, "Wave sent!", Toast.LENGTH_SHORT).show();
 
@@ -274,58 +278,6 @@ public class MatchProfileActivity extends AppCompatActivity {
         Log.d(TAG, "Back button pressed, going back to MatchActivity!");
         Intent intent = new Intent(this, MatchActivity.class);
         startActivity(intent);
-    }
-
-    /**
-     * Encodes the information of the self user into a CSV format.
-     *
-     * @return The CSV String of the user's information.
-     */
-    public String encodeSelfInformation() {
-        // Look at BDD Scenario for CSV format
-        // Were are encoding our own profile
-        StringBuilder encodedMessage = new StringBuilder();
-        String selfUUID = this.selfProfile.getProfileId();
-        String selfName = this.selfProfile.getName();
-        String selfPhoto = this.selfProfile.getPhoto();
-
-        encodedMessage.append(selfUUID + ",,,,\n");
-        encodedMessage.append(selfName + ",,,,\n");
-        encodedMessage.append(selfPhoto + ",,,,\n");
-        for (Course course : this.selfCourses) {
-            encodedMessage.append(course.getYear() + ",");
-            encodedMessage.append(encodeQuarter(course.getQuarter()) + ",");
-            encodedMessage.append(course.getSubject() + ",");
-            encodedMessage.append(course.getNumber() + ",");
-            encodedMessage.append(course.getClassSize() + "\n");
-        }
-
-        return encodedMessage.toString();
-    }
-
-    /**
-     * Encodes the full quarter name to an abbreviation.
-     *
-     * @param quarter A given quarter.
-     * @return The abbreviation of the full quarter name.
-     */
-    public String encodeQuarter(String quarter) {
-        switch(quarter) {
-            case "Fall":
-                return "FA";
-            case "Winter":
-                return "WI";
-            case "Spring":
-                return "SP";
-            case "Summer Session 1":
-                return "S1";
-            case "Summer Session 2":
-                return "S2";
-            case "Special Summer Session":
-                return "SS";
-            default:
-                Log.e("<MatchProfileActivity>", "Quarter cannot be encoded");
-                return null;
-        }
+        finish();
     }
 }

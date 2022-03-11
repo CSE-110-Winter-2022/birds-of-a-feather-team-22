@@ -15,7 +15,7 @@ import androidx.room.RoomDatabase;
 /*
  * This class allows for storing of courses, profiles, and discovered users.
  */
-@Database(entities = {Course.class, Profile.class, DiscoveredUser.class, Session.class}, version = 1)
+@Database(entities = {Course.class, Profile.class, DiscoveredUser.class, Session.class, Wave.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase singletonInstance;
 
@@ -51,14 +51,13 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Provides a CourseDao object.
      *
-     * @param
      * @return A CourseDao object
      */
     public abstract CourseDao courseDao();
 
     /**
      * Provides a ProfileDao object.
-     * @param
+     *
      * @return A ProfileDao object
      */
     public abstract ProfileDao profileDao();
@@ -66,7 +65,6 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Provides a DiscoveredUserDao object.
      *
-     * @param
      * @return A DiscoveredUserDao object.
      */
     public abstract DiscoveredUserDao discoveredUserDao();
@@ -74,8 +72,14 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Provides a SessionDao object.
      *
-     * @param
      * @return A SessionDao object
      */
     public abstract SessionDao sessionDao();
+
+    /**
+     * Provides a WaveDao object.
+     *
+     * @return A WaveDao object
+     */
+    public abstract WaveDao waveDao();
 }

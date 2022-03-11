@@ -2,8 +2,10 @@ package com.example.birdsofafeather;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.util.Log;
 
 import com.example.birdsofafeather.db.Course;
+import com.example.birdsofafeather.db.Profile;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +21,7 @@ public class Utilities {
 
     // Static field storing the most recent AlertDialog
     public static AlertDialog mostRecentDialog = null;
+    public static final String TAG = "<Utilities>";
 
     /**
      * Shows an AlertDialog for an alert
@@ -187,6 +190,71 @@ public class Utilities {
                 return 4;
             default:
                 return 0;
+        }
+    }
+
+    /**
+     * Encodes the information of the self user into a CSV format.
+     *
+     * @return The CSV String of the user's information.
+     */
+    public static String encodeSelfInformation(Profile selfProfile, List<Course> selfCourses) {
+        Log.d(TAG, "Encoding profile and course information!");
+
+        StringBuilder encodedMessage = new StringBuilder();
+        String selfUUID = selfProfile.getProfileId();
+        String selfName = selfProfile.getName();
+        String selfPhoto = selfProfile.getPhoto();
+
+        encodedMessage.append(selfUUID).append(",,,,\n");
+        encodedMessage.append(selfName).append(",,,,\n");
+        encodedMessage.append(selfPhoto).append(",,,,\n");
+        for (Course course : selfCourses) {
+            encodedMessage.append(course.getYear()).append(",");
+            encodedMessage.append(encodeQuarter(course.getQuarter())).append(",");
+            encodedMessage.append(course.getSubject()).append(",");
+            encodedMessage.append(course.getNumber()).append(",");
+            encodedMessage.append(course.getClassSize()).append("\n");
+        }
+
+        return encodedMessage.toString();
+    }
+
+    /**
+     * Encodes the information of the self user and a wave to another user with a profile id of profileId
+     *
+     * @param profileId The profile id of the user the wave is sent to.
+     * @return The CSV String of the self user's information and the wave.
+     */
+    public static String encodeWaveMessage(Profile selfProfile, List<Course> selfCourses, String profileId) {
+        Log.d(TAG, "Encoding wave message!");
+        return encodeSelfInformation(selfProfile, selfCourses) + profileId + ",wave,,,\n";
+    }
+
+    /**
+     * Encodes the full quarter name to an abbreviation.
+     *
+     * @param quarter A given quarter.
+     * @return The abbreviation of the full quarter name.
+     */
+    public static String encodeQuarter(String quarter) {
+        Log.d(TAG, "Encoding quarter to abbreviation!");
+        switch(quarter) {
+            case "Fall":
+                return "FA";
+            case "Winter":
+                return "WI";
+            case "Spring":
+                return "SP";
+            case "Summer Session 1":
+                return "S1";
+            case "Summer Session 2":
+                return "S2";
+            case "Special Summer Session":
+                return "SS";
+            default:
+                Log.d("<MatchActivity>", "Quarter cannot be encoded");
+                return null;
         }
     }
 }

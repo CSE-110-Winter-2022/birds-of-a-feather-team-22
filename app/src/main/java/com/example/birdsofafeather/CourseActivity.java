@@ -21,13 +21,19 @@ import android.widget.TextView;
 import com.example.birdsofafeather.db.AppDatabase;
 import com.example.birdsofafeather.db.Course;
 import com.example.birdsofafeather.db.Profile;
+import com.example.birdsofafeather.db.Wave;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessagesClient;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -43,13 +49,20 @@ public class CourseActivity extends AppCompatActivity {
     // DB/Thread fields
     private AppDatabase db;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private Future<Profile> f1;
-    private Future<String> f2;
+    private Future<List<String>> f1;
+    private Future<Profile> f2;
+    private Future<List<Course>> f3;
+    private Future<String> f4;
+    private Future<Void> f5;
 
     // Self fields
-    private Profile self;
+    private Profile selfProfile;
+    private List<Course> selfCourses;
     private String name;
     private String photo;
+
+    // For determining if we are coming from MatchActivity or not
+    private boolean isBack;
 
     // UI View fields
     private Spinner year_spinner;
@@ -59,7 +72,8 @@ public class CourseActivity extends AppCompatActivity {
     private TextView number_view;
     private Button doneButton;
 
-    // For mocking
+    // Nearby fields
+    private BoFMessagesClient messagesClient;
     private ArrayList<String> mockedMessages;
 
     /**
@@ -77,6 +91,9 @@ public class CourseActivity extends AppCompatActivity {
 
         // DB-related initializations
         this.db = AppDatabase.singleton(this);
+        this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+
+        this.isBack = getIntent().getBooleanExtra("isBack", false);
 
         // View initializations
         this.year_spinner = findViewById(R.id.year_spinner);
@@ -93,16 +110,18 @@ public class CourseActivity extends AppCompatActivity {
         this.name = getIntent().getStringExtra("name");
         this.photo = getIntent().getStringExtra("photo");
 
-        // Check if user is going back to add more courses, and change UI accordingly
-        this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getSelfProfile(true));
-
+        // Get self profile
+        this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getSelfProfile(true));
         try {
-            this.self = this.f1.get();
-            if (this.self != null) {
-                this.doneButton.setVisibility(View.VISIBLE);
-            }
+            this.selfProfile = this.f2.get();
+            Log.d(TAG, "Self profile retrieved!");
         } catch (Exception e) {
-            Log.d(TAG, "Unable to retrieve self profile!");
+            Log.e(TAG, "Error retrieving self profile!");
+            e.printStackTrace();
+        }
+
+        if (isBack) {
+            this.doneButton.setVisibility(View.VISIBLE);
         }
 
         // For resuming session with mock data
@@ -120,6 +139,16 @@ public class CourseActivity extends AppCompatActivity {
         if (this.f2 != null) {
             this.f2.cancel(true);
         }
+        if (this.f3 != null) {
+            this.f3.cancel(true);
+        }
+        if (this.f4 != null) {
+            this.f4.cancel(true);
+        }
+        if (this.f5 != null) {
+            this.f5.cancel(true);
+        }
+
         super.onDestroy();
         Log.d(TAG, "CourseActivity destroyed!");
     }
@@ -130,7 +159,6 @@ public class CourseActivity extends AppCompatActivity {
      * @param view The current view
      */
     public void onEnterClicked(View view) {
-
         Log.d(TAG, "Enter button clicked");
 
         String year = this.year_spinner.getSelectedItem().toString().trim();
@@ -146,13 +174,13 @@ public class CourseActivity extends AppCompatActivity {
             Log.d(TAG, "Course information is valid!");
 
             // Set and insert profile to DB if the self's profile has not been made yet
-            if (this.self == null) {
+            if (this.selfProfile == null) {
                 Log.d(TAG, "User profile has not been created, creating now");
-                this.self = new Profile(UUID.randomUUID().toString(), name, photo);
-                this.self.setIsSelf(true);
+                this.selfProfile = new Profile(UUID.randomUUID().toString(), name, photo);
+                this.selfProfile.setIsSelf(true);
 
                 this.f1 = this.backgroundThreadExecutor.submit(() -> {
-                    this.db.profileDao().insert(self);
+                    this.db.profileDao().insert(selfProfile);
 
                     return null;
                 });
@@ -161,29 +189,70 @@ public class CourseActivity extends AppCompatActivity {
             }
 
             // Get course id
-            String userId = this.self.getProfileId();
-            this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSizeType));
+            String userId = this.selfProfile.getProfileId();
+            this.f4 = this.backgroundThreadExecutor.submit(() -> this.db.courseDao().getCourseId(userId, year, quarter, subject, number, classSizeType));
 
             String courseId;
             try {
-                courseId = this.f2.get();
+                courseId = this.f4.get();
 
                 // Insert course to DB if it is not already there (avoid duplicates)
                 if (courseId == null) {
                     Log.d(TAG, "Adding course to DB");
                     Course course = new Course(userId, year, quarter, subject, number, classSizeType);
-                    this.db.courseDao().insert(course);
+                    this.f5 = this.backgroundThreadExecutor.submit(() -> {
+                        this.db.courseDao().insert(course);
+                        return null;
+                    });
+
+                    // Get list of all self courses
+                    this.f3 = this.backgroundThreadExecutor.submit(() -> this.db.courseDao().getCoursesByProfileId(this.selfProfile.getProfileId()));
+                    try {
+                        this.selfCourses = this.f3.get();
+                        Log.d(TAG, "Self courses retrieved!");
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error retrieving self courses!");
+                        e.printStackTrace();
+                    }
+
+                    this.f5 = this.backgroundThreadExecutor.submit(() -> {
+                        List<Wave> waves = this.db.waveDao().getAllWaves();
+                        System.out.println(waves);
+                        if (waves != null) {
+                            for (Wave wave : waves) {
+                                Log.d(TAG, "Found outgoing wave, updating now...");
+                                Message oldWaveMessage = new Message(wave.getWave().getBytes(StandardCharsets.UTF_8));
+
+                                this.messagesClient.unpublish(oldWaveMessage);
+                                String newWaveMessageString = Utilities.encodeWaveMessage(this.selfProfile, this.selfCourses, wave.getProfileId());
+                                wave.setWave(newWaveMessageString);
+                                this.db.waveDao().update(wave);
+
+
+                                Message newWaveMessage = new Message(newWaveMessageString.getBytes(StandardCharsets.UTF_8));
+                                this.messagesClient.publish(newWaveMessage);
+                            }
+                        }
+                        return null;
+                    });
                 }
                 else {
                     Log.e(TAG, "Duplicate course in DB!");
                 }
-
-                setSpinnersWithoutHint();
-                autofillFields(subject, number, quarter, year, classSize);
             } catch (Exception e) {
                 Log.d(TAG, "Unable to retrieve course id!");
             }
+
+
+
+
+
         }
+
+        setSpinnersWithoutHint();
+        autofillFields(subject, number, quarter, year, classSize);
+
+
 
         // Logging current Profile and Course object counts in DB
         f1 = this.backgroundThreadExecutor.submit(() -> {
@@ -350,7 +419,6 @@ public class CourseActivity extends AppCompatActivity {
 
         // Set dynamic year spinner
         List<String> years = new ArrayList<>();
-        years.add("Year");
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int y = thisYear; y >= 1960; y--) {
             years.add(Integer.toString(y));

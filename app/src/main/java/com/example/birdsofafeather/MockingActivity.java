@@ -14,8 +14,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.birdsofafeather.db.AppDatabase;
+import com.example.birdsofafeather.db.Course;
+import com.example.birdsofafeather.db.Profile;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * This class refers to the demo and testing screen where the nearby functionality can be mocked and
@@ -27,12 +36,20 @@ public class MockingActivity extends AppCompatActivity {
 
     // DB field
     private AppDatabase db;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Future<List<String>> f1;
+    private Future<Profile> f2;
+    private Future<List<Course>> f3;
 
     // View fields
     private TextView selfProfileIdView;
     private EditText textBox;
 
-    // Mocked messages field
+    // Self information
+    private Profile selfProfile;
+    private List<Course> selfCourses;
+
+    // Nearby and Messages fields
     private ArrayList<String> mockedMessages;
 
     /**
@@ -51,8 +68,28 @@ public class MockingActivity extends AppCompatActivity {
         this.db = AppDatabase.singleton(this);
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
 
+        // Get self profile
+        this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getSelfProfile(true));
+        try {
+            this.selfProfile = this.f2.get();
+            Log.d(TAG, "Self profile retrieved!");
+        } catch (Exception e) {
+            Log.e(TAG, "Error retrieving self profile!");
+            e.printStackTrace();
+        }
+
+        // Get list of all self courses
+        this.f3 = this.backgroundThreadExecutor.submit(() -> this.db.courseDao().getCoursesByProfileId(this.selfProfile.getProfileId()));
+        try {
+            this.selfCourses = this.f3.get();
+            Log.d(TAG, "Self courses retrieved!");
+        } catch (Exception e) {
+            Log.e(TAG, "Error retrieving self courses!");
+            e.printStackTrace();
+        }
+
         // Set self profile id view to show the profile id of self
-        String selfProfileId = getIntent().getStringExtra("self_profile_id");
+        String selfProfileId = this.selfProfile.getProfileId();
         this.selfProfileIdView = findViewById(R.id.self_profile_id_view);
         this.selfProfileIdView.setText(selfProfileId);
 
@@ -124,5 +161,6 @@ public class MockingActivity extends AppCompatActivity {
         // Pass the list of mocked messages back so they can be discovered
         intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         startActivity(intent);
+        finish();
     }
 }

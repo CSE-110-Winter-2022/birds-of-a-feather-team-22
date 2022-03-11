@@ -33,20 +33,23 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
 
     // Instance variables for class
     private AppDatabase db;
-    private String sessionId;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private List<BoFObserver> observers;
     private Future<Profile> f1;
     private Future<Void> f2;
     private Future<Integer> f3;
     private Future<DiscoveredUser> f4;
+
+    // Session id of listener
+    private String sessionId;
+
+    // List of BoFObservers
+    private List<BoFObserver> observers;
 
     /**
      * Constructor for class.
      *
      * @param sessionId Current session
      * @param context The current context of the application
-     * @return none
      */
     public BoFMessageListener(String sessionId, Context context) {
         this.sessionId = sessionId;
@@ -58,7 +61,6 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      * Receives a message to allow for parsing of data.
      *
      * @param message The message being received
-     * @return none
      */
     @Override
     public synchronized void onFound(Message message) {
@@ -66,7 +68,7 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
 
         parseInfo(new String(message.getContent()));
         try {
-            Thread.sleep(250);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
             Log.d(TAG, "Unable to sleep thread for 500ms");
@@ -81,7 +83,6 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      * A message that is lost with its data.
      *
      * @param message The message being lost
-     * @return none
      */
     @Override
     public void onLost(Message message) {
@@ -95,6 +96,7 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      * @param info A complete text with a user's information
      */
     private synchronized void parseInfo(String info) {
+        // Parse first 3 lines to get profile information
         String[] textBoxSeparated = info.split(",,,,");
 
         String profileId = textBoxSeparated[0].replaceAll("\n", "");
@@ -111,45 +113,57 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
             }
             else {
                 user = this.db.profileDao().getProfile(profileId);
+                Log.d(TAG, "Profile already exists in DB");
             }
 
             return user;
         });
-
         Profile user = null;
         try {
             user = this.f1.get();
+            Log.d(TAG, "Retrieved profile!");
         } catch (Exception e) {
-            Log.d(TAG, "Unable to retrieve profile!");
+            Log.e(TAG, "Error retrieving profile!");
+            e.printStackTrace();
         }
 
-        this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getUserProfile(true));
-
+        this.f1 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getSelfProfile(true));
         Profile self = null;
         try {
             self = this.f1.get();
+            Log.d(TAG, "Retrieved self profile!");
         } catch (Exception e) {
-            Log.d(TAG, "Unable to retrieve self profile!");
+            Log.e(TAG, "Error retrieving self profile!");
+            e.printStackTrace();
         }
 
+        // Parse remaining lines and determine if they are waves or courses
         String[] classInfo = textBoxSeparated[3].split("\n");
         for (int i = 1; i < classInfo.length; i++) {
             String[] classInfoSeparated = classInfo[i].split(",");
 
-            // TODO: Nearby for Waves
+            // If the line corresponds to a wave
             if (classInfoSeparated[1].replaceAll("\n", "").equals("wave")) {
+                Log.d(TAG, "Wave detected!");
+                // Get profile id of the recipient of the wave
                 String UUID = classInfoSeparated[0].replaceAll("\n", "");
 
+                // If self is the recipient of the wave
                 if (UUID.equals(self.getProfileId())) {
+                    Log.d(TAG, "User is waving at self, updating user profile to be waving!");
+                    // Update the profile to be waving
                     user.setIsWaving(true);
                     Profile finalUser = user;
                     this.f2 = this.backgroundThreadExecutor.submit(() -> {
                         this.db.profileDao().update(finalUser);
+                        Log.d(TAG, "Profile updated to be waving!");
                         return null;
                     });
                 }
                 continue;
             }
+
+            Log.d(TAG, "Course information detected!");
 
             String year = classInfoSeparated[0].replaceAll("\n", "");
             String quarter = parseQuarter(classInfoSeparated[1].replaceAll("\n", ""));
@@ -163,29 +177,33 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
                     db.courseDao().insert(course);
                     Log.d(TAG, "Added Course");
                 }
+                else {
+                    Log.d(TAG, "Course already exists in DB");
+                }
                 return null;
             });
-
         }
 
         Profile finalSelf = self;
         this.f3 = this.backgroundThreadExecutor.submit(() -> Utilities.getNumSharedCourses(db.courseDao().getCoursesByProfileId(finalSelf.getProfileId()),
                 db.courseDao().getCoursesByProfileId(profileId)));
-
         int numSharedCourses = 0;
         try {
             numSharedCourses = this.f3.get();
+            Log.d(TAG, "Retrieved number of shared courses between self and user!");
         } catch (Exception e) {
-            Log.d(TAG, "Unable to calculate number of shared courses!");
+            Log.e(TAG, "Error retrieving number of shared courses!");
+            e.printStackTrace();
         }
 
         this.f4 = this.backgroundThreadExecutor.submit(() -> db.discoveredUserDao().getDiscoveredUserFromSession(profileId, sessionId));
-
         DiscoveredUser discovered = null;
         try {
             discovered = this.f4.get();
+            Log.d(TAG, "Retrieved DiscoveredUser object for user!");
         } catch (Exception e) {
-            Log.d(TAG, "Unable to retrieve discovered user!");
+            Log.e(TAG, "Error retrieving DiscoveredUser object for user!");
+            e.printStackTrace();
         }
 
         DiscoveredUser finalDiscovered = discovered;
@@ -193,7 +211,7 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
         this.f2 = this.backgroundThreadExecutor.submit(() -> {
             if (finalDiscovered != null) {
                 db.discoveredUserDao().delete(finalDiscovered);
-                Log.d(TAG, "Deleted DiscoveredUser");
+                Log.d(TAG, "DiscoveredUser already in DB, deleted DiscoveredUser");
             }
 
             DiscoveredUser discoveredUser = new DiscoveredUser(profileId, this.sessionId, finalNumSharedCourses);
@@ -234,7 +252,6 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      * Register any observers to the listener.
      *
      * @param observer An observer to listener
-     * @return none
      */
     @Override
     public void register(BoFObserver observer) {
@@ -245,7 +262,6 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      * Unregister/remove an observer from observing the listener.
      *
      * @param observer An observer to listener.
-     * @return none
      */
     @Override
     public void unregister(BoFObserver observer) {

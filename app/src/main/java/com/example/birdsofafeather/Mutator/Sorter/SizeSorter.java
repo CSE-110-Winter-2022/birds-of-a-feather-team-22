@@ -99,7 +99,7 @@ public class SizeSorter extends Sorter {
      */
     private List<Course> getSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
-        String userId = this.db.profileDao().getUserProfile(true).getProfileId();
+        String userId = this.db.profileDao().getSelfProfile(true).getProfileId();
         List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
 
         return Utilities.getSharedCourses(userCourses, matchCourses);
@@ -113,7 +113,7 @@ public class SizeSorter extends Sorter {
      */
     private int getNumSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
-        String userId = this.db.profileDao().getUserProfile(true).getProfileId();
+        String userId = this.db.profileDao().getSelfProfile(true).getProfileId();
         List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
 
         return Utilities.getNumSharedCourses(userCourses, matchCourses);

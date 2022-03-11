@@ -5,20 +5,22 @@
  */
 package com.example.birdsofafeather;
 
+/**
+ * Interface for a BoFSubject which composes BoFObservers
+ */
 public interface BoFSubject {
     /**
-     * Register a new listener.
+     * Register a BoFObserver.
      *
-     * @param observer An observer
+     * @param observer A BoFObserver
      * @return none
      */
     void register(BoFObserver observer);
 
     /**
-     * Unregisters an observer.
+     * Unregisters a BoFObserver.
      *
-     * @param observer An observer
-     * @return none
+     * @param observer A BoFObserver
      */
     void unregister(BoFObserver observer);
 }

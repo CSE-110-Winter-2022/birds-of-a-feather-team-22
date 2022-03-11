@@ -99,6 +99,7 @@ public class MatchActivity extends AppCompatActivity {
     private AlertDialog currentPopup;
 
     // Nearby/MatchViewMediator fields
+    private BoFMessagesClient messagesClient;
     private BoFMessageListener messageListener;
     private Message selfMessage;
     private ArrayList<String> mockedMessages;
@@ -106,10 +107,9 @@ public class MatchActivity extends AppCompatActivity {
     private BoFObserver mvm;
 
     /**
-     * Initializes the screen for this activity.
+     * Initializes the activity and screen for MatchActivity.
      *
      * @param savedInstanceState A bundle that contains information regarding layout and data
-     * @return none
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +129,7 @@ public class MatchActivity extends AppCompatActivity {
         }
 
         // Get self profile
-        this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getUserProfile(true));
+        this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getSelfProfile(true));
         try {
             this.selfProfile = this.f2.get();
         } catch (Exception e) {
@@ -155,6 +155,8 @@ public class MatchActivity extends AppCompatActivity {
         // Get current courses
         this.currentCourses = getCurrentCourses();
 
+        this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+
         // Get mocked messages
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
         if (this.mockedMessages == null) {
@@ -168,7 +170,7 @@ public class MatchActivity extends AppCompatActivity {
             List<String> wavedProfileIds = this.f1.get();
             for (String profileId : wavedProfileIds) {
                 Message wavedMessage = new Message(encodeWaveMessage(profileId).getBytes(StandardCharsets.UTF_8));
-                Nearby.getMessagesClient(this).publish(wavedMessage);
+                this.messagesClient.publish(wavedMessage);
                 this.wavedMessages.add(wavedMessage);
             }
         } catch (Exception e) {
@@ -219,7 +221,7 @@ public class MatchActivity extends AppCompatActivity {
         this.stopButton = findViewById(R.id.stop_button);
         this.startButton = findViewById(R.id.start_button);
         this.sessionLabel = findViewById(R.id.session_name_view);
-        this.sessionLabel.setText(this.session.getName());
+
 
         // Set up dynamic sort/filter spinner
         this.sortFilterSpinner = findViewById(R.id.sort_filter_spinner);
@@ -282,15 +284,16 @@ public class MatchActivity extends AppCompatActivity {
              * Ensures that nothing occurs when nothing is selected from spinner.
              *
              * @param parent Given parent view
-             * @return none
              */
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
+        this.sessionLabel.setText(this.session.getName());
+
         // Setting up Nearby and MatchViewMediator dependencies
-        this.mvm = new MatchViewMediator(this, this.db, this.mutator, this.matchesRecyclerView, this.sessionId);
+        this.mvm = new MatchesViewMediator(this, this.db, this.mutator, this.matchesRecyclerView, this.sessionId);
         this.messageListener = new BoFMessageListener(this.sessionId, this);
         this.messageListener.register(this.mvm);
         this.selfMessage = null;
@@ -304,7 +307,7 @@ public class MatchActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         for (Message wavedMessage : this.wavedMessages) {
-            Nearby.getMessagesClient(this).unpublish(wavedMessage);
+            this.messagesClient.unpublish(wavedMessage);
         }
         if (this.currentPopup != null) {
             this.currentPopup.cancel();
@@ -330,6 +333,7 @@ public class MatchActivity extends AppCompatActivity {
         if (this.f6 != null) {
             this.f6.cancel(true);
         }
+        this.messageListener.unregister(this.mvm);
         super.onDestroy();
         Log.d(TAG, "MatchActivity destroyed!");
     }
@@ -401,7 +405,6 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Starts searching for matches.
-     *
      */
     public void startSearchForMatches() {
         Log.d(TAG, "Starting search for matches...");
@@ -409,10 +412,10 @@ public class MatchActivity extends AppCompatActivity {
 
         this.stopButton.setVisibility(View.VISIBLE);
         this.startButton.setVisibility(View.GONE);
-        this.selfMessage = new Message(encodeInformationMessage().getBytes(StandardCharsets.UTF_8));
-        Nearby.getMessagesClient(this).publish(this.selfMessage);
+        this.selfMessage = new Message(encodeSelfInformation().getBytes(StandardCharsets.UTF_8));
+        this.messagesClient.publish(this.selfMessage);
         Log.d(TAG, "Published a message: " + new String(this.selfMessage.getContent()));
-        Nearby.getMessagesClient(this).subscribe(this.messageListener);
+        this.messagesClient.subscribe(this.messageListener);
         Log.d(TAG, "BoFMessageListener subscribed!");
 
         // Discover mocked messages
@@ -428,7 +431,7 @@ public class MatchActivity extends AppCompatActivity {
      *
      * @return The CSV String of the user's information.
      */
-    public String encodeInformationMessage() {
+    public String encodeSelfInformation() {
         // Look at BDD Scenario for CSV format
         // Were are encoding our own profile
         StringBuilder encodedMessage = new StringBuilder();
@@ -452,11 +455,12 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Encodes the information of the self user and a wave to another user with a profile id of profileId
+     *
      * @param profileId The profile id of the user the wave is sent to.
      * @return The CSV String of the self user's information and the wave.
      */
     public String encodeWaveMessage(String profileId) {
-        return encodeInformationMessage() + profileId + ",wave,,,\n";
+        return encodeSelfInformation() + profileId + ",wave,,,\n";
     }
 
     /**
@@ -512,7 +516,6 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Stops searching for new matches.
-     *
      */
     public void stopSearchForMatches() {
         Log.d(TAG, "Stopping search for matches...");
@@ -521,9 +524,9 @@ public class MatchActivity extends AppCompatActivity {
         this.startButton.setVisibility(View.VISIBLE);
         this.stopButton.setVisibility(View.GONE);
 
-        Nearby.getMessagesClient(this).unpublish(this.selfMessage);
+        this.messagesClient.unpublish(this.selfMessage);
         Log.d(TAG, "Unpublished a message: " + new String(this.selfMessage.getContent()));
-        Nearby.getMessagesClient(this).unsubscribe(this.messageListener);
+        this.messagesClient.unsubscribe(this.messageListener);
         Log.d(TAG, "BoFMessageListener unsubscribed!");
     }
 
@@ -619,7 +622,6 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Overrides the back button to return to the CourseActivity to add more courses.
-     *
      */
     @Override
     public void onBackPressed() {
@@ -654,7 +656,7 @@ public class MatchActivity extends AppCompatActivity {
             this.allSessions = this.db.sessionDao().getAllSessions();
         });
 
-        SessionsAdapter adapter = new SessionsAdapter(this.allSessions);
+        SessionsViewAdapter adapter = new SessionsViewAdapter(this.allSessions);
         sessionsView.setAdapter(adapter);
         promptBuilder.setView(contextView);
 
@@ -718,7 +720,7 @@ public class MatchActivity extends AppCompatActivity {
         sessionsView.setLayoutManager(new LinearLayoutManager(this));
         sessionsView.setHasFixedSize(true);
 
-        SessionCoursesAdapter adapter = new SessionCoursesAdapter(this.currentCourses);
+        CurrentCoursesViewAdapter adapter = new CurrentCoursesViewAdapter(this.currentCourses);
         sessionsView.setAdapter(adapter);
         promptBuilder.setView(contextView);
 
@@ -735,8 +737,8 @@ public class MatchActivity extends AppCompatActivity {
                 "item becomes selected");
 
         //find selected item from recyclerview, grab views for course info
-        TextView courseNameView = view.findViewById(R.id.session_course_name_view);
-        TextView courseNumberView = view.findViewById(R.id.session_course_number_view);
+        TextView courseNameView = view.findViewById(R.id.course_row_subject_view);
+        TextView courseNumberView = view.findViewById(R.id.course_row_number_view);
 
         changeSessionName(courseNameView.getText() + " " +
                 courseNumberView.getText());
@@ -753,7 +755,6 @@ public class MatchActivity extends AppCompatActivity {
         Log.d(TAG, "Save Session Name button pressed on first stop prompt," +
                 " saving session with name given...");
 
-        // TODO: verify that the inputted course name is valid
         EditText enteredCourseName = this.currentPopup.findViewById(R.id.session_name_input_view);
         String courseName = enteredCourseName.getText().toString().trim();
 
@@ -766,6 +767,7 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Create and show the stop popup asking to enter a session name.
+     *
      * @param closeCurrentPopup whether to close the current popup or not.
      */
     public void showEnterSessionNameStopPopup(Boolean closeCurrentPopup){
@@ -786,6 +788,7 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * On click method for when the enter session name button is clicked in the stop popup.
+     *
      * @param view The enter session name button
      */
     public void onStopPopupEnterSessionNameClicked(View view) {
@@ -797,6 +800,7 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Checks whether a given course name is valid.
+     *
      * @param courseName The given course name.
      * @return Whether courseName is a valid course name or not.
      */
@@ -866,6 +870,7 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Changes the name of the current session to newName.
+     *
      * @param newName The new name of the current session.
      */
     private void changeSessionName(String newName) {
@@ -882,12 +887,12 @@ public class MatchActivity extends AppCompatActivity {
 
     /**
      * Retrieves the current timestamp, new sessions by default are named with current timestamp upon creation.
+     *
      * @return The formatted current timestamp String.
      */
     private String getCurrentTimestamp() {
         DateFormat df = new SimpleDateFormat("M'/'d'/'yy h:mma");
-        String timestamp = df.format(Calendar.getInstance().getTime());
-        return timestamp;
+        return df.format(Calendar.getInstance().getTime());
     }
 
     // For testing

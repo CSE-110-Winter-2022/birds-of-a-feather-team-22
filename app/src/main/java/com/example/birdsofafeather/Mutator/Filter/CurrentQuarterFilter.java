@@ -108,19 +108,9 @@ public class CurrentQuarterFilter extends Filter {
      */
     private List<Course> getSharedCoursesFromProfile(Profile match) {
         List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
-        String userId = this.db.profileDao().getUserProfile(true).getProfileId();
+        String userId = this.db.profileDao().getSelfProfile(true).getProfileId();
         List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
 
         return Utilities.getSharedCourses(userCourses, matchCourses);
-    }
-
-    // TODO: Check if method is to be removed or kept
-    // Helper method to get the shared courses between a profile and the user profile
-    private int getNumSharedCoursesFromProfile(Profile match) {
-        List<Course> matchCourses = this.db.courseDao().getCoursesByProfileId(match.getProfileId());
-        String userId = this.db.profileDao().getUserProfile(true).getProfileId();
-        List<Course> userCourses= this.db.courseDao().getCoursesByProfileId(userId);
-
-        return Utilities.getNumSharedCourses(userCourses, matchCourses);
     }
 }

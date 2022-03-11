@@ -25,15 +25,9 @@ import java.util.List;
 @Dao
 public interface DiscoveredUserDao {
 
-    // TODO: Look to see if this method is to be removed or kept
-    // Retrieves a list of DiscoveredUser objects with a matching profile id
-    @Query("SELECT * FROM DISCOVEREDUSER WHERE profileId=:profileId")
-    List<DiscoveredUser> getDiscoveredUser(String profileId);
-
     /**
      * Retrieves a list of all DiscoveredUser objects across all sessions (may contain duplicates).
      *
-     * @param
      * @return List of all DiscoveredUser objects
      */
     @Transaction
@@ -72,31 +66,32 @@ public interface DiscoveredUserDao {
     /**
      * Retrieves the number of DiscoveredUser objects in database.
      *
-     * @param
      * @return Number of DiscoveredUser objects
      */
     @Query("SELECT COUNT(*) FROM DISCOVEREDUSER")
     int count();
 
     /**
-     * Inserts a DiscoveredUser object into the database without conflicts.
+     * Inserts du into the database without conflicts.
      *
      * @param du A given DiscoveredUser object
-     * @return none
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(DiscoveredUser du);
 
     /**
-     * Deletes a DiscoveredUser object from the database.
+     * Deletes du from the database.
      *
      * @param du A given DiscoveredUser object
-     * @return none
      */
     @Delete
     void delete(DiscoveredUser du);
 
-    // TODO: Check to see if this method should be deleted or kept
+    /**
+     * Updates du in the database.
+     *
+     * @param du A given DiscoveredUser object
+     */
     @Update
     void update(DiscoveredUser du);
 }

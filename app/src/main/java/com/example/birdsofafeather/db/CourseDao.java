@@ -48,9 +48,6 @@ public interface CourseDao {
     @Query("SELECT courseId FROM COURSE WHERE profileId=:profileId AND year=:year AND quarter=:quarter AND subject=:subject AND number=:number AND classSize=:classSize")
     String getCourseId(String profileId, String year, String quarter, String subject, String number, String classSize);
 
-    // TODO: Look at this method, to see if it is to be deleted
-    @Query("SELECT * FROM COURSE WHERE quarter=:quarter AND year=:year")
-    Course getCourseFromQuarter(String quarter, String year);
 
     /**
      * Retrieves the course object with specific course information.
@@ -68,30 +65,30 @@ public interface CourseDao {
     /**
      * Retruns the number of course objects stored into the database.
      *
-     * @param
      * @return Number of course objects in database
      */
     @Query("SELECT COUNT(*) FROM COURSE")
     int count();
 
     /**
-     * Inserts a course object without any conflict.
+     * Inserts course without any conflict.
      *
      * @param course A given course object
-     * @return none
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Course course);
 
     /**
-     * Deletes a course object from the database.
+     * Deletes course from the database.
      * @param course A given course object
-     * @return none
      */
     @Delete
     void delete(Course course);
 
-    // TODO: Look at this method, if it is to be deleted
+    /**
+     * Updates course in the database.
+     * @param course A given course object
+     */
     @Update
     void update(Course course);
 }

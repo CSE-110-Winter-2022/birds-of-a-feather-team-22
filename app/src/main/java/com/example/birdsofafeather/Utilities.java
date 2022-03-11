@@ -11,12 +11,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-// A collection of static method for general use
+/**
+ * Class storing a collection of static methods that provide universal functionality across all
+ * classes and activities.
+ */
 public class Utilities {
 
+    // Static field storing the most recent AlertDialog
     public static AlertDialog mostRecentDialog = null;
 
-    // Show an alert message
+    /**
+     * Shows an AlertDialog for an alert
+     *
+     * @param activity The activity
+     * @param message The message
+     */
     public static void showAlert(Activity activity, String message){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
 
@@ -33,7 +42,14 @@ public class Utilities {
         mostRecentDialog = alertDialog;
     }
 
-    // Show an error message
+    /**
+     * Shows an AlertDialog for an error
+     *
+     * @param activity The activity
+     * @param title The title
+     * @param message The message
+     * @return An AlertDialog
+     */
     public static AlertDialog showError(Activity activity, String title, String message){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
 
@@ -47,16 +63,24 @@ public class Utilities {
         alertDialog.show();
         mostRecentDialog = alertDialog;
         return alertDialog;
-
-
     }
 
-    // Get the number of shared courses between two lists of courses
+    /**
+     * Gets the number of shared courses given two lists of courses
+     * @param myCourses A list of my courses
+     * @param theirCourses A list of their courses
+     * @return The number of shared courses
+     */
     public static int getNumSharedCourses(List<Course> myCourses, List<Course> theirCourses) {
         return getSharedCourses(myCourses, theirCourses).size();
     }
 
-    // Get the list of shared courses between two lists of courses
+    /**
+     * Gets the list of shared courses given two lists of courses
+     * @param myCourses A list of my courses
+     * @param theirCourses A list of their courses
+     * @return A list of shared courses
+     */
     public static List<Course> getSharedCourses(List<Course> myCourses, List<Course> theirCourses)  {
         List<Course> sharedCourses = new ArrayList<>();
 
@@ -69,15 +93,25 @@ public class Utilities {
         }
 
         return sharedCourses;
-
     }
 
-    // Compare if two courses are equal
+    /**
+     * Compares whether two courses are equal
+     *
+     * @param c1 A course
+     * @param c2 Another course
+     * @return Whether the two courses are equal
+     */
     public static boolean compareCourses(Course c1, Course c2) {
         return c1.getYear().equals(c2.getYear()) && c1.getQuarter().equals(c2.getQuarter()) &&
                 c1.getSubject().equals(c2.getSubject()) && c1.getNumber().equals(c2.getNumber());
     }
 
+    /**
+     * Gets the current quarter
+     *
+     * @return The current quarter
+     */
     public static String getCurrentQuarter() {
         DateFormat df = new SimpleDateFormat("MMddyyyy");
         String date = df.format(Calendar.getInstance().getTime());
@@ -122,12 +156,23 @@ public class Utilities {
         return quarter;
     }
 
+    /**
+     * Gets the current year
+     *
+     * @return The current year
+     */
     public static String getCurrentYear() {
         DateFormat df = new SimpleDateFormat("MMddyyyy");
         String date = df.format(Calendar.getInstance().getTime());
         return date.substring(4, 8);
     }
 
+    /**
+     * Enumerates a quarter to make it easier to compare quarters
+     *
+     * @param quarter A given quarter
+     * @return The enumeration of the quarter
+     */
     public static int enumerateQuarter(String quarter) {
         switch(quarter) {
             case "Winter":

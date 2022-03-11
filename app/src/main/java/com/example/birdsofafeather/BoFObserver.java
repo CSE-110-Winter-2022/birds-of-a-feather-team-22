@@ -7,13 +7,13 @@ package com.example.birdsofafeather;
 
 import com.example.birdsofafeather.mutator.Mutator;
 
+/**
+ * Interface for a BoFObserver which observes a BoFSubject
+ */
 public interface BoFObserver {
 
     /**
-     * Updates the list of the current matches to the user.
-     *
-     * @param
-     * @return none
+     * Updates the match view.
      */
     void updateMatchView();
 
@@ -21,7 +21,6 @@ public interface BoFObserver {
      * Sets the mutator of the observer.
      *
      * @param mutator A mutator object
-     * @return none
      */
     void setMutator(Mutator mutator);
 }

@@ -160,7 +160,7 @@ public class TestMatchProfileActivity {
         sharedCourses.add(new Course("UUID2", "2020", "Fall", "CSE", "110", "Large (150-250)"));
         sharedCourses.add(new Course("UUID3", "2020", "Fall", "CSE", "110", "Large (150-250)"));
 
-        ProfileViewAdapter adapter = new ProfileViewAdapter(sharedCourses);
+        SharedCoursesViewAdapter adapter = new SharedCoursesViewAdapter(sharedCourses);
         assertEquals(3, adapter.getItemCount());
     }
 

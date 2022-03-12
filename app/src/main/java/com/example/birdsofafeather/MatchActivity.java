@@ -164,7 +164,7 @@ public class MatchActivity extends AppCompatActivity {
         // Get current courses
         this.currentCourses = getCurrentCourses();
 
-        this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+        this.messagesClient = new BoFMessagesClient(this);
 
         // Get mocked messages
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");

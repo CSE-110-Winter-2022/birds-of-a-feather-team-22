@@ -92,7 +92,7 @@ public class CourseActivity extends AppCompatActivity {
 
         // DB-related initializations
         this.db = AppDatabase.singleton(this);
-        this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+        this.messagesClient = new BoFMessagesClient(this);
 
         this.isBack = getIntent().getBooleanExtra("isBack", false);
         Log.d(TAG, "isBack is " + this.isBack);
@@ -130,7 +130,7 @@ public class CourseActivity extends AppCompatActivity {
             this.doneButton.setVisibility(View.VISIBLE);
 
             this.messageListener = new BoFMessageListener(this.sessionId, this);
-            this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+            this.messagesClient = new BoFMessagesClient(this);
             this.messagesClient.subscribe(this.messageListener);
         }
         // For resuming session with mock data

@@ -201,7 +201,7 @@ public class MatchProfileActivity extends AppCompatActivity {
         this.mpvm = new MatchProfileViewMediator(this, this.db, this.matchId, this.wave);
         this.messageListener = new BoFMessageListener(this.sessionId, this);
         this.messageListener.register(this.mpvm);
-        this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+        this.messagesClient = new BoFMessagesClient(this);
         this.messagesClient.subscribe(this.messageListener);
         this.waveMessage = null;
     }

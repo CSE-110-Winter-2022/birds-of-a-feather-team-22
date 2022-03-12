@@ -96,6 +96,9 @@ public class CourseActivity extends AppCompatActivity {
 
         this.isBack = getIntent().getBooleanExtra("isBack", false);
         this.sessionId = getIntent().getStringExtra("session_id");
+        if (this.sessionId == null) {
+
+        }
 
         // View initializations
         this.year_spinner = findViewById(R.id.year_spinner);
@@ -153,7 +156,9 @@ public class CourseActivity extends AppCompatActivity {
         if (this.f5 != null) {
             this.f5.cancel(true);
         }
-        this.messagesClient.unsubscribe(this.messageListener);
+        if (isBack) {
+            this.messagesClient.unsubscribe(this.messageListener);
+        }
         super.onDestroy();
         Log.d(TAG, "CourseActivity destroyed!");
     }

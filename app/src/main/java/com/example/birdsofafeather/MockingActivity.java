@@ -53,12 +53,17 @@ public class MockingActivity extends AppCompatActivity {
     private TextView selfProfileIdView;
     private EditText textBox;
 
-    // Self information
+    // Self and Session information
     private Profile selfProfile;
     private List<Course> selfCourses;
+    private String sessionId;
 
     // Nearby and Messages fields
     private ArrayList<String> mockedMessages;
+
+    // Nearby fields
+    private BoFMessagesClient messagesClient;
+    private BoFMessageListener messageListener;
 
     /**
      * Initializes the screen and activity for MockingActivity.
@@ -78,6 +83,7 @@ public class MockingActivity extends AppCompatActivity {
         if (this.mockedMessages == null) {
             this.mockedMessages = new ArrayList<>();
         }
+        this.sessionId = getIntent().getStringExtra("session_id");
 
         // Get self profile
         this.f2 = this.backgroundThreadExecutor.submit(() -> this.db.profileDao().getSelfProfile(true));
@@ -105,6 +111,10 @@ public class MockingActivity extends AppCompatActivity {
         this.selfProfileIdView.setText(selfProfileId);
 
         this.textBox = findViewById(R.id.mocking_input_view);
+
+        this.messageListener = new BoFMessageListener(this.sessionId, this);
+        this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+        this.messagesClient.subscribe(this.messageListener);
     }
 
     /**
@@ -112,6 +122,7 @@ public class MockingActivity extends AppCompatActivity {
      */
     @Override
     protected void onDestroy() {
+        this.messagesClient.unsubscribe(this.messageListener);
         super.onDestroy();
         Log.d(TAG, "MockingActivity destroyed!");
     }

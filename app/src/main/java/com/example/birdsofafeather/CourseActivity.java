@@ -54,11 +54,12 @@ public class CourseActivity extends AppCompatActivity {
     private Future<String> f4;
     private Future<Void> f5;
 
-    // Self fields
+    // Self and session fields
     private Profile selfProfile;
     private List<Course> selfCourses;
     private String name;
     private String photo;
+    private String sessionId;
 
     // For determining if we are coming from MatchActivity or not
     private boolean isBack;
@@ -74,6 +75,7 @@ public class CourseActivity extends AppCompatActivity {
     // Nearby fields
     private BoFMessagesClient messagesClient;
     private ArrayList<String> mockedMessages;
+    private BoFMessageListener messageListener;
 
     /**
      * Initializes the screen and activity for CourseActivity.
@@ -93,6 +95,7 @@ public class CourseActivity extends AppCompatActivity {
         this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
 
         this.isBack = getIntent().getBooleanExtra("isBack", false);
+        this.sessionId = getIntent().getStringExtra("session_id");
 
         // View initializations
         this.year_spinner = findViewById(R.id.year_spinner);
@@ -121,8 +124,11 @@ public class CourseActivity extends AppCompatActivity {
 
         if (isBack) {
             this.doneButton.setVisibility(View.VISIBLE);
-        }
 
+            this.messageListener = new BoFMessageListener(this.sessionId, this);
+            this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+            this.messagesClient.subscribe(this.messageListener);
+        }
         // For resuming session with mock data
         this.mockedMessages = getIntent().getStringArrayListExtra("mocked_messages");
     }
@@ -147,7 +153,7 @@ public class CourseActivity extends AppCompatActivity {
         if (this.f5 != null) {
             this.f5.cancel(true);
         }
-
+        this.messagesClient.unsubscribe(this.messageListener);
         super.onDestroy();
         Log.d(TAG, "CourseActivity destroyed!");
     }
@@ -270,7 +276,7 @@ public class CourseActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MatchActivity.class);
 
         // Perpetuate mocked messages in the event that the user has mocked messages but decided to add more courses
-        if (this.mockedMessages == null) {
+        if (!isBack) {
             intent.putExtra("session_id", "");
         }
         else {

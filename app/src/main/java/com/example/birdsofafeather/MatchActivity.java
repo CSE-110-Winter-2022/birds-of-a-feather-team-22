@@ -76,7 +76,6 @@ public class MatchActivity extends AppCompatActivity {
     // Self information fields
     private List<Session> allSessions;
     private Session session;
-    private String sessionId;
     private Profile selfProfile;
     private List<Course> selfCourses;
     private List<Course> currentCourses;
@@ -178,15 +177,14 @@ public class MatchActivity extends AppCompatActivity {
         }
 
         // Gets the current session depending on the "session_id" extra
-        this.sessionId = getIntent().getStringExtra("session_id");
+        String sessionId = getIntent().getStringExtra("session_id");
         // Open/resume last session
-        if (this.sessionId == null) {
+        if (sessionId == null) {
             Log.d(TAG, "Opening last saved session!");
             this.f6 = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getLastSession(true));
 
             try {
                 this.session = this.f6.get();
-                this.sessionId = this.session.getSessionId();
                 Log.d(TAG, "Retrieved last saved session!");
             } catch (Exception e) {
                 Log.e(TAG, "Error retrieving last session!");
@@ -194,10 +192,10 @@ public class MatchActivity extends AppCompatActivity {
             }
         }
         // Create a new session
-        else if (this.sessionId.equals("")) {
+        else if (sessionId.equals("")) {
             Log.d(TAG, "Making new session!");
-            this.sessionId = UUID.randomUUID().toString();
-            this.session = new Session(this.sessionId, getCurrentTimestamp(), true);
+            sessionId = UUID.randomUUID().toString();
+            this.session = new Session(sessionId, getCurrentTimestamp(), true);
             this.f5 = this.backgroundThreadExecutor.submit(() -> {
                 this.db.sessionDao().insert(this.session);
                 return null;
@@ -207,7 +205,8 @@ public class MatchActivity extends AppCompatActivity {
         // Resume a previous session
         else {
             Log.d(TAG, "Resuming previous session!");
-            this.f6 = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getSession(this.sessionId));
+            String finalSessionId = sessionId;
+            this.f6 = this.backgroundThreadExecutor.submit(() -> this.db.sessionDao().getSession(finalSessionId));
 
             try {
                 this.session = this.f6.get();
@@ -307,8 +306,8 @@ public class MatchActivity extends AppCompatActivity {
 
         Log.d(TAG, "Setting up Nearby and MVM dependencies...");
         // Setting up Nearby and MatchesViewMediator dependencies
-        this.mvm = new MatchesViewMediator(this, this.db, this.mutator, this.matchesRecyclerView, this.sessionId);
-        this.messageListener = new BoFMessageListener(this.sessionId, this);
+        this.mvm = new MatchesViewMediator(this, this.db, this.mutator, this.matchesRecyclerView, this.session.getSessionId());
+        this.messageListener = new BoFMessageListener(this.session.getSessionId(), this);
         this.messageListener.register(this.mvm);
         this.selfMessage = null;
     }
@@ -587,6 +586,7 @@ public class MatchActivity extends AppCompatActivity {
     public void onNearbyClicked(View view) {
         Log.d(TAG, "Nearby button clicked, moving to the mocking screen!");
         Intent intent = new Intent(this, MockingActivity.class);
+        intent.putExtra("session_id", this.session.getSessionId());
         intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         startActivity(intent);
         finish();
@@ -614,6 +614,7 @@ public class MatchActivity extends AppCompatActivity {
 
         Log.d(TAG, "Moving back to the add courses screen!");
         Intent intent = new Intent(this, CourseActivity.class);
+        intent.putExtra("session_id", this.session.getSessionId());
         intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         intent.putExtra("isBack", true);
         startActivity(intent);
@@ -663,7 +664,7 @@ public class MatchActivity extends AppCompatActivity {
         String selectedSessionName = selectedSessionNameView.getText().toString();
 
         Log.d(TAG, "Previous session " + selectedSessionName + " selected, resuming previous session...");
-        if (this.sessionId.equals(selectedSessionId)) {
+        if (this.session.getSessionId().equals(selectedSessionId)) {
             Log.d(TAG, "Previous session is current session!");
             // Discover Bluetooth messages
             this.currentPopup.cancel();

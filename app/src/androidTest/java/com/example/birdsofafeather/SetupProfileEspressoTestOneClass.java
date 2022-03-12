@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class SetupProfileEspressoTestOneClass {
 
     @Rule
-    public ActivityTestRule<HomeScreenActivity> mActivityTestRule = new ActivityTestRule<>(HomeScreenActivity.class);
+    public ActivityTestRule<MatchActivity> mActivityTestRule = new ActivityTestRule<>(MatchActivity.class);
 
     @Test
     public void setupProfileEspressoTestOneClass() {
@@ -110,6 +110,16 @@ public class SetupProfileEspressoTestOneClass {
                                 2),
                         isDisplayed()));
         appCompatSpinner.perform(click());
+
+        ViewInteraction appCompatSpinner1 = onView(
+                allOf(withId(R.id.class_size_spinner),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatSpinner1.perform(click());
 
         DataInteraction appCompatCheckedTextView = onData(anything())
                 .inAdapterView(childAtPosition(

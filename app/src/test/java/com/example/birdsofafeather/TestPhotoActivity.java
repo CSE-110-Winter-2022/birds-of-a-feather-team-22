@@ -61,7 +61,7 @@ public class TestPhotoActivity {
             photo.setText("not_valid_test_photo.png");
             submitButton.performClick();
 
-            Profile p = new Profile(1, "name", photo.getText().toString());
+            Profile p = new Profile("name", photo.getText().toString());
 
             //default photo if photo not valid: https://imgur.com/a/vgBKZMN
             assertEquals("https://i.imgur.com/MZH5yxZ.png", p.getPhoto());
@@ -81,7 +81,7 @@ public class TestPhotoActivity {
             photo.setText("https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/griswold17-115x150.jpg");
             submitButton.performClick();
 
-            Profile p = new Profile(1, "name", photo.getText().toString());
+            Profile p = new Profile("name", photo.getText().toString());
 
             //default photo if photo not valid: https://imgur.com/a/vgBKZMN
             assertEquals("https://cse.ucsd.edu/sites/cse.ucsd.edu/files/faculty/griswold17-115x150.jpg", p.getPhoto());

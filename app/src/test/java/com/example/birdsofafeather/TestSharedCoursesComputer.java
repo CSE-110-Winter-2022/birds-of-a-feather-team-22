@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.birdsofafeather.db.Course;
+import com.example.birdsofafeather.db.Profile;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,41 +22,46 @@ public class TestSharedCoursesComputer {
     public void TestComputeSharedCourses() {
         List<Course> courses1 = new ArrayList<>();
         List<Course> courses2 = new ArrayList<>();
+        Profile p1 = new Profile("name1", "test_photo1");
+        Profile p2 = new Profile("name2", "test_photo1");
 
-        courses1.add(new Course(1, 1, "2020", "Fall", "CSE", "110"));
-        courses1.add(new Course(2, 1, "2020", "Fall", "CSE", "105"));
-        courses1.add(new Course(3, 1, "2020", "Fall", "CSE", "100"));
 
-        courses2.add(new Course(4, 2, "2020", "Fall", "CSE", "110"));
-        courses2.add(new Course(5, 2, "2021", "Fall", "CSE", "105"));
-        courses2.add(new Course(6, 2, "2020", "Winter", "CSE", "100"));
+        courses1.add(new Course(p1.getProfileId(), "2020", "Fall", "CSE", "110", "Gigantic (400+)"));
+        courses1.add(new Course(p1.getProfileId(), "2020", "Fall", "CSE", "105", "Huge (250-400)"));
+        courses1.add(new Course(p1.getProfileId(), "2020", "Fall", "CSE", "100", "Large (150-250)"));
 
-        assertEquals(Utilities.getSharedCourses(courses1, courses2).size(), 1);
-        assertEquals(Utilities.getNumSharedCourses(courses1, courses2), 1);
+        courses2.add(new Course(p2.getProfileId(), "2020", "Fall", "CSE", "110", "Gigantic (400+)"));
+        courses2.add(new Course(p2.getProfileId(), "2021", "Fall", "CSE", "105", "Huge (250-400)"));
+        courses2.add(new Course(p2.getProfileId(), "2020", "Winter", "CSE", "100", "Large (150-250)"));
+
+        assertEquals(1, Utilities.getSharedCourses(courses1, courses2).size());
+        assertEquals(1, Utilities.getNumSharedCourses(courses1, courses2));
         Course shared = Utilities.getSharedCourses(courses1, courses2).get(0);
-        assertEquals(shared.getSubject(), "CSE");
-        assertEquals(shared.getNumber(), "110");
-        assertEquals(shared.getQuarter(), "Fall");
-        assertEquals(shared.getYear(), "2020");
+        assertEquals("CSE", shared.getSubject());
+        assertEquals("110", shared.getNumber());
+        assertEquals("Fall", shared.getQuarter());
+        assertEquals("2020", shared.getYear());
+        assertEquals("Gigantic (400+)",shared.getClassSize());
     }
 
 
     @Test
     public void TestCompareCourses() {
-        Course c1 = new Course(1, 1, "2020", "Fall", "CSE", "110");
-        Course c2 = new Course(1, 1, "2020", "Fall", "CSE", "110");
+        Profile p1 = new Profile("name1", "test_photo");
+        Course c1 = new Course(p1.getProfileId(), "2020", "Fall", "CSE", "110", "Medium (75-150)");
+        Course c2 = new Course(p1.getProfileId(), "2020", "Fall", "CSE", "110", "Medium (75-150)");
         assertTrue(Utilities.compareCourses(c1, c2));
 
-        Course c3 = new Course(2, 1, "2020", "Fall", "CSE", "110");
+        Course c3 = new Course(p1.getProfileId(), "2020", "Fall", "CSE", "110", "Medium (75-150)");
         assertTrue(Utilities.compareCourses(c1, c3));
 
-        Course c4 = new Course(1, 2, "2020", "Fall", "CSE", "110");
+        Course c4 = new Course(p1.getProfileId(), "2020", "Fall", "CSE", "110", "Medium (75-150)");
         assertTrue(Utilities.compareCourses(c1, c4));
 
-        Course c5 = new Course(2, 2, "2020", "Fall", "CSE", "110");
+        Course c5 = new Course(p1.getProfileId(), "2020", "Fall", "CSE", "110", "Medium (75-150)");
         assertTrue(Utilities.compareCourses(c1, c5));
 
-        Course c6 = new Course(1, 1, "2021", "Fall", "CSE", "110");
+        Course c6 = new Course(p1.getProfileId(), "2021", "Fall", "CSE", "110", "Medium (75-150)");
         assertFalse(Utilities.compareCourses(c1, c6));
     }
 }

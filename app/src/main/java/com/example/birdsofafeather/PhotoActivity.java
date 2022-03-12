@@ -1,3 +1,10 @@
+/*
+ * This file is capable of taking in a photo URL to allow for the creation of the self user profile.
+ *
+ * Authors: CSE 110 Winter 2022, Group 22
+ * Alvin Hsu, Drake Omar, Fernando Tello, Raul Martinez Beltran, Robert Jiang, Stephen Shen
+ */
+
 package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,33 +16,58 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-// Refers to the screen where the user can enter and submit their profile photo URL
+/**
+ * Refers to the screen where the user can enter and submit their profile photo URL.
+ */
 public class PhotoActivity extends AppCompatActivity {
+    // Log tag
+    private final String TAG = "<Photo>";
+
     // UI/View fields
     private TextView photo_view;
 
+    /**
+     * Initializes the activity and screen for PhotoActivity.
+     *
+     * @param savedInstanceState A bundle that contains information regarding layout and data.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         this.setTitle("Setup: Add Photo");
 
-        Log.d("<Photo>", "Setting up Photo Screen");
+        Log.d(TAG, "Setting up Photo Screen");
 
         // View initialization
         this.photo_view = findViewById(R.id.photo_view);
     }
 
-    // When the submit button is clicked
+    /**
+     * Destroys PhotoActivity.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "PhotoActivity Destroyed!");
+    }
+
+    /**
+     * On click method for when the user clicks on the submit button.
+     *
+     * @param view The submit button.
+     */
     public void onSubmitClicked(View view) {
-        Log.d("<Photo>", "Submit button pressed");
-        Log.d("<Photo>", "Saving photo");
-        // Retrieve name from previous activity and photo URL and pass along to the add courses activity
+        Log.d(TAG, "Submit button pressed");
+        Log.d(TAG, "Saving photo");
+
+        // Retrieve name from previous activity and photo URL
         String photo = this.photo_view.getText().toString().trim();
         String name = getIntent().getStringExtra("name");
 
         Intent intent = new Intent(this, CourseActivity.class);
 
+        // Pass on the name and photo to CourseActivity
         intent.putExtra("photo", photo);
         intent.putExtra("name", name);
 
@@ -43,14 +75,19 @@ public class PhotoActivity extends AppCompatActivity {
         finish();
     }
 
-    // Overrides back button to clearing all fields
+    /**
+     * Overrides the back button to clear all fields.
+     */
     @Override
     public void onBackPressed() {
         clearFields();
     }
 
+    /**
+     * Clears the photo URL input field.
+     */
     private void clearFields() {
-        Log.d("<Photo>", "Back button pressed, clearing fields");
+        Log.d(TAG, "Back button pressed, clearing fields");
         this.photo_view.setText("");
     }
 }

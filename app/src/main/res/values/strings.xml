@@ -18,4 +18,5 @@
     <string name="delete_db">Delete DB</string>
     <string name="shared_courses">Shared Courses</string>
     <string name="profile_picture">profile picture</string>
+    <string name="nearby_button">Nearby</string>
 </resources>

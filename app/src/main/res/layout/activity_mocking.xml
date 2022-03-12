@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MockingActivity">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mock_enter_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="600dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
+        android:onClick="onEnterClicked"
+        android:shadowColor="@color/white"
+        android:text="@string/enter"
+        android:textColor="@color/seafoam"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="OnClick,TextContrastCheck" />
+
+    <EditText
+        android:id="@+id/mocking_input_view"
+        android:layout_width="360dp"
+        android:layout_height="460dp"
+        android:layout_marginTop="100dp"
+        android:background="@null"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="UUID,,,,\nName,,,,\nPhoto URL,,,,\nYear,Qtr,Subject,Number,Size\n...\nUUID,wave,,,\n..."
+        android:inputType="textMultiLine"
+        android:textAlignment="viewStart"
+        android:textColor="@color/dark_seafoam"
+        android:textColorHint="@color/seafoam"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/clear_db_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="28dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
+        android:onClick="onClearDBClicked"
+        android:shadowColor="@color/white"
+        android:text="Clear DB"
+        android:textColor="@color/seafoam"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.919"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="OnClick,TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/self_profile_id_view"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="28dp"
+        android:gravity="center"
+        android:onClick="onSelfProfileIdClicked"
+        android:text="Self Profile ID"
+        android:textAlignment="center"
+        android:textColor="@color/seafoam"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

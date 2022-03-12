@@ -241,14 +241,12 @@ public class CourseActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.d(TAG, "Unable to retrieve course id!");
             }
-
-
-
-
-
+            setSpinnersWithoutHint();
+        }
+        else {
+            setSpinnersWithHint();
         }
 
-        setSpinnersWithoutHint();
         autofillFields(subject, number, quarter, year, classSize);
 
 

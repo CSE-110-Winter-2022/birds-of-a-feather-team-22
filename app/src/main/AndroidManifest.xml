@@ -23,9 +23,7 @@
         android:theme="@style/Theme.BirdsOfAFeather">
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyAjQUPYzOa6vfxAENqhmEtBKSVql3ibkGg" />
-
-
+            android:value="AIzaSyCoLLs41ZmYuTIefzoDmiGrgcPro1WiP2w" />
         <activity
             android:name=".MockingActivity"
             android:exported="false" />

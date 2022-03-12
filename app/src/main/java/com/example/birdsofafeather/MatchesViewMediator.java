@@ -77,7 +77,7 @@ public class MatchesViewMediator implements BoFObserver {
      * Updates the match view to display new matches as they are being discovered via Nearby Messages
      */
     @Override
-    public synchronized void updateMatchView() {
+    public synchronized void updateView() {
         // Get current position of RecyclerView
         int currentVisiblePosition = ((LinearLayoutManager) Objects.requireNonNull(this.rv.getLayoutManager())).findFirstCompletelyVisibleItemPosition();
 

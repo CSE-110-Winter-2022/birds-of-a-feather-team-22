@@ -55,6 +55,7 @@ public class MatchProfileActivity extends AppCompatActivity {
     private List<Course> sharedCourses;
     private Profile selfProfile;
     private List<Course> selfCourses;
+    private String sessionId;
 
     // View initializations
     private TextView nameTextView;
@@ -67,7 +68,9 @@ public class MatchProfileActivity extends AppCompatActivity {
     private ImageView sendWave;
 
     // Nearby and Message
+    private BoFObserver mpvm;
     private BoFMessagesClient messagesClient;
+    private BoFMessageListener messageListener;
     private Message waveMessage;
 
     /**
@@ -81,6 +84,8 @@ public class MatchProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         Log.d(TAG, "Setting up Match Profile Screen");
+
+        this.sessionId = getIntent().getStringExtra("session_id");
 
         // DB-related instantiations
         this.db = AppDatabase.singleton(this);
@@ -191,7 +196,11 @@ public class MatchProfileActivity extends AppCompatActivity {
             Log.e(TAG, "Error retrieving self courses!");
             e.printStackTrace();
         }
+        this.mpvm = new MatchProfileViewMediator(this, this.db, this.matchId, this.wave);
+        this.messageListener = new BoFMessageListener(this.sessionId, this);
+        this.messageListener.register(this.mpvm);
         this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
+        this.messagesClient.subscribe(this.messageListener);
         this.waveMessage = null;
     }
 
@@ -209,6 +218,9 @@ public class MatchProfileActivity extends AppCompatActivity {
         if (this.f3 != null) {
             this.f3.cancel(true);
         }
+
+        this.messageListener.unregister(this.mpvm);
+        this.messagesClient.unsubscribe(this.messageListener);
         super.onDestroy();
         Log.d(TAG, "MatchProfileActivity destroyed!");
     }
@@ -274,8 +286,6 @@ public class MatchProfileActivity extends AppCompatActivity {
 
             return null;
         });
-
-
 
         Log.d(TAG, "Wave sent: " + new String(this.waveMessage.getContent()));
     }

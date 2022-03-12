@@ -75,7 +75,7 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
             Log.d(TAG, "Unable to sleep thread for 500ms");
         }
         for (BoFObserver observer : this.observers) {
-            observer.updateMatchView();
+            observer.updateView();
         }
 
     }

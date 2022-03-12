@@ -261,23 +261,23 @@ public class MatchActivity extends AppCompatActivity {
                 switch(sortFilterSpinner.getSelectedItem().toString()) {
                     case "No Sort/Filter":
                         Log.d(TAG, "No sort/filter selected, using QuantitySorter!");
-                        mutator = (Mutator) new QuantitySorter(context);
+                        mutator = new QuantitySorter(context);
                         break;
                     case "Prioritize Recent":
                         Log.d(TAG, "Prioritize Recent selected, using RecencySorter!");
-                        mutator = (Mutator) new RecencySorter(context);
+                        mutator = new RecencySorter(context);
                         break;
                     case "Prioritize Small Classes":
                         Log.d(TAG, "Prioritize Small Classes selected, using SizeSorter!");
-                        mutator = (Mutator) new SizeSorter(context);
+                        mutator = new SizeSorter(context);
                         break;
                     case "This Quarter Only":
                         Log.d(TAG, "This Quarter Only selected, using CurrentQuarterFilter!");
-                        mutator = (Mutator) new CurrentQuarterFilter(context);
+                        mutator = new CurrentQuarterFilter(context);
                         break;
                     case "Favorites Only":
                         Log.d(TAG, "Favorites Only selected, using FavoritesFilter!");
-                        mutator = (Mutator) new FavoritesFilter(context);
+                        mutator = new FavoritesFilter(context);
                         break;
                 }
 
@@ -288,7 +288,7 @@ public class MatchActivity extends AppCompatActivity {
                 });
 
                 mvm.setMutator(mutator);
-                mvm.updateMatchView();
+                mvm.updateView();
             }
 
             /**
@@ -452,8 +452,8 @@ public class MatchActivity extends AppCompatActivity {
         this.stopButton.setVisibility(View.VISIBLE);
         this.startButton.setVisibility(View.GONE);
         this.selfMessage = new Message(Utilities.encodeSelfInformation(this.selfProfile, this.selfCourses).getBytes(StandardCharsets.UTF_8));
-        this.messagesClient.publish(this.selfMessage);
         this.messagesClient.subscribe(this.messageListener);
+        this.messagesClient.publish(this.selfMessage);
         Log.d(TAG, "BoFMessageListener subscribed!");
 
         // Discover mocked messages
@@ -519,6 +519,7 @@ public class MatchActivity extends AppCompatActivity {
         String matchId = matchProfileIdView.getText().toString();
 
         Intent intent = new Intent(this, MatchProfileActivity.class);
+        intent.putExtra("session_id", this.session.getSessionId());
         intent.putExtra("match_id", matchId);
         intent.putStringArrayListExtra("mocked_messages", this.mockedMessages);
         startActivity(intent);
@@ -571,7 +572,7 @@ public class MatchActivity extends AppCompatActivity {
             });
 
             // Update match view in light of changes
-            this.mvm.updateMatchView();
+            this.mvm.updateView();
         } catch (Exception e) {
             Log.e(TAG, "Error retrieving match profile!");
             e.printStackTrace();
@@ -899,7 +900,7 @@ public class MatchActivity extends AppCompatActivity {
      * Utilized for testing the view.
      */
     public void mockSearch() {
-        this.mvm.updateMatchView();
+        this.mvm.updateView();
     }
 }
 

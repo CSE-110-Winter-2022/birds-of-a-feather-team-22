@@ -95,6 +95,7 @@ public class CourseActivity extends AppCompatActivity {
         this.messagesClient = new BoFMessagesClient(Nearby.getMessagesClient(this));
 
         this.isBack = getIntent().getBooleanExtra("isBack", false);
+        Log.d(TAG, "isBack is " + this.isBack);
         this.sessionId = getIntent().getStringExtra("session_id");
         if (this.sessionId == null) {
 
@@ -226,25 +227,27 @@ public class CourseActivity extends AppCompatActivity {
                     }
 
                     // Update outgoing waves due to added courses
-                    this.f5 = this.backgroundThreadExecutor.submit(() -> {
-                        List<Wave> waves = this.db.waveDao().getAllWaves();
-                        if (waves != null) {
-                            for (Wave wave : waves) {
-                                Log.d(TAG, "Found outgoing wave, updating now...");
-                                Message oldWaveMessage = new Message(wave.getWave().getBytes(StandardCharsets.UTF_8));
+                    if (isBack) {
+                        this.f5 = this.backgroundThreadExecutor.submit(() -> {
+                            List<Wave> waves = this.db.waveDao().getAllWaves();
+                            if (waves != null) {
+                                for (Wave wave : waves) {
+                                    Log.d(TAG, "Found outgoing wave, updating now...");
+                                    Message oldWaveMessage = new Message(wave.getWave().getBytes(StandardCharsets.UTF_8));
 
-                                this.messagesClient.unpublish(oldWaveMessage);
-                                String newWaveMessageString = Utilities.encodeWaveMessage(this.selfProfile, this.selfCourses, wave.getProfileId());
-                                wave.setWave(newWaveMessageString);
-                                this.db.waveDao().update(wave);
+                                    this.messagesClient.unpublish(oldWaveMessage);
+                                    String newWaveMessageString = Utilities.encodeWaveMessage(this.selfProfile, this.selfCourses, wave.getProfileId());
+                                    wave.setWave(newWaveMessageString);
+                                    this.db.waveDao().update(wave);
 
 
-                                Message newWaveMessage = new Message(newWaveMessageString.getBytes(StandardCharsets.UTF_8));
-                                this.messagesClient.publish(newWaveMessage);
+                                    Message newWaveMessage = new Message(newWaveMessageString.getBytes(StandardCharsets.UTF_8));
+                                    this.messagesClient.publish(newWaveMessage);
+                                }
                             }
-                        }
-                        return null;
-                    });
+                            return null;
+                        });
+                    }
                 }
                 else {
                     Log.e(TAG, "Duplicate course in DB!");

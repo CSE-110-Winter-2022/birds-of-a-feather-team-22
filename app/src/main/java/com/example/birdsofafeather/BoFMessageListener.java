@@ -64,15 +64,15 @@ public class BoFMessageListener extends MessageListener implements BoFSubject {
      * @param message The message being received
      */
     @Override
-    public synchronized void onFound(Message message) {
+    public void onFound(Message message) {
         Log.d(TAG, "Found message: " + new String(message.getContent()));
 
         parseInfo(new String(message.getContent()));
         try {
-            Thread.sleep(1);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Log.d(TAG, "Unable to sleep thread for 500ms");
+            Log.d(TAG, "Unable to sleep thread for 100ms");
         }
         for (BoFObserver observer : this.observers) {
             observer.updateView();

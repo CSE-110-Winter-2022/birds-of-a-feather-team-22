@@ -453,7 +453,7 @@ public class MatchActivity extends AppCompatActivity {
         this.selfMessage = new Message(Utilities.encodeSelfInformation(this.selfProfile, this.selfCourses).getBytes(StandardCharsets.UTF_8));
         this.messagesClient.subscribe(this.messageListener);
         this.messagesClient.publish(this.selfMessage);
-        Log.d(TAG, "BoFMessageListener subscribed!");
+
 
         // Discover mocked messages
         for (String msg : this.mockedMessages) {
@@ -499,10 +499,8 @@ public class MatchActivity extends AppCompatActivity {
 
         this.startButton.setVisibility(View.VISIBLE);
         this.stopButton.setVisibility(View.GONE);
-
         this.messagesClient.unpublish(this.selfMessage);
         this.messagesClient.unsubscribe(this.messageListener);
-        Log.d(TAG, "BoFMessageListener unsubscribed!");
     }
 
     /**

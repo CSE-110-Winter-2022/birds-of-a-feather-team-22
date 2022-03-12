@@ -25,7 +25,6 @@ import com.example.birdsofafeather.db.Profile;
 import com.example.birdsofafeather.db.Wave;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
-import com.google.android.gms.nearby.messages.MessagesClient;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;

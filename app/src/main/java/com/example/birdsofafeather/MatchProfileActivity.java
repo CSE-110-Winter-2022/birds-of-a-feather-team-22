@@ -264,6 +264,10 @@ public class MatchProfileActivity extends AppCompatActivity {
         this.messagesClient.publish(this.waveMessage);
         Toast.makeText(this, "Wave sent!", Toast.LENGTH_SHORT).show();
 
+        // Change send wave button to be filled
+        this.sendWave.setImageResource(R.drawable.filled_hand);
+        this.match.setIsWaved(true);
+
         // Update waved status
         this.f3 = backgroundThreadExecutor.submit(() -> {
             this.db.profileDao().update(this.match);
@@ -271,9 +275,7 @@ public class MatchProfileActivity extends AppCompatActivity {
             return null;
         });
 
-        // Change send wave button to be filled
-        this.sendWave.setImageResource(R.drawable.filled_hand);
-        this.match.setIsWaved(true);
+
 
         Log.d(TAG, "Wave sent: " + new String(this.waveMessage.getContent()));
     }

@@ -55,19 +55,16 @@ public class MockScreenUITest {
                 for (String content : PROFILE_TEST1) {
                     csvString.append(content);
                 }
-
                 return csvString.toString();
             case 2:
                 for (String content : PROFILE_TEST2) {
                     csvString.append(content);
                 }
-
                 return csvString.toString();
             case 3:
                 for (String content : PROFILE_TEST3) {
                     csvString.append(content);
                 }
-
                 return csvString.toString();
             default:
                 return new StringBuilder().toString();

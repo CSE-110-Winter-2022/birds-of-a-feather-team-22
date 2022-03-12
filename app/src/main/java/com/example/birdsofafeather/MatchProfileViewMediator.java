@@ -15,6 +15,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * This class mediates the wave GIF when a wave is received on the MatchProfileActivity
+ */
 public class MatchProfileViewMediator implements BoFObserver {
     // Log tag
     private final String TAG = "<MPVM>";
@@ -25,11 +28,14 @@ public class MatchProfileViewMediator implements BoFObserver {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future<Profile> f1;
 
+    // Profile id
     private String profileId;
+
+    // Wave view
     private ImageView wave;
 
     /**
-     * Default constructor for MatchesViewMediator
+     * Default constructor for MatchProfileViewMediator
      *
      * @param wave ImageView wave
      */
@@ -41,7 +47,7 @@ public class MatchProfileViewMediator implements BoFObserver {
     }
 
     /**
-     * Updates the match view to display new matches as they are being discovered via Nearby Messages
+     * Updates the wave view as waves are received via Nearby Messages
      */
     @Override
     public synchronized void updateView() {
@@ -57,11 +63,16 @@ public class MatchProfileViewMediator implements BoFObserver {
                 this.wave.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            Log.d(TAG, "Error retrieving match profile id!");
+            Log.e(TAG, "Error retrieving match profile id!");
             e.printStackTrace();
         }
     }
 
+    /**
+     * Does nothing but needs to be implemented
+     *
+     * @param mutator A mutator object
+     */
     @Override
     public void setMutator(Mutator mutator) {
     }

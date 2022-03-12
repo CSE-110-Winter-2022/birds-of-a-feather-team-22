@@ -32,6 +32,15 @@ public interface WaveDao {
 
 
     /**
+     * Gets a Wave with matching profileId
+     *
+     * @param profileId The profile id
+     * @return The Wave with matching profileId
+     */
+    @Query("SELECT * FROM WAVE WHERE profileId=:profileId")
+    Wave getWave(String profileId);
+
+    /**
      * Inserts a Wave into the database.
      *
      * @param wave A Wave object

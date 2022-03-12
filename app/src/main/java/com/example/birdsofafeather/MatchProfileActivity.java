@@ -31,6 +31,7 @@ import com.google.android.gms.nearby.messages.Message;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -47,6 +48,7 @@ public class MatchProfileActivity extends AppCompatActivity {
     private Future<Profile> f1;
     private Future<List<Course>> f2;
     private Future<Void> f3;
+    private Future<Wave> f4;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
 
     // Self and Match initializations
@@ -271,6 +273,19 @@ public class MatchProfileActivity extends AppCompatActivity {
            return null;
         });
 
+        this.f4 = this.backgroundThreadExecutor.submit(() -> this.db.waveDao().getWave(this.matchId));
+        Wave oldWaveMessage;
+        try {
+            oldWaveMessage = this.f4.get();
+            this.messagesClient.unpublish(new Message(oldWaveMessage.getWave().getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception e) {
+            Log.e(TAG, "Error retrieving old wave message!");
+            e.printStackTrace();
+        }
+
+
+
+
         // Publish wave message
         this.waveMessage = new Message(waveString.getBytes(StandardCharsets.UTF_8));
         this.messagesClient.publish(this.waveMessage);
@@ -287,7 +302,7 @@ public class MatchProfileActivity extends AppCompatActivity {
             return null;
         });
 
-        Log.d(TAG, "Wave sent: " + new String(this.waveMessage.getContent()));
+        Log.d(TAG, "Wave sent!");
     }
 
     /**
